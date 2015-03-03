@@ -64,7 +64,8 @@ public class Scheduler {
 
 		try {
 			// yyyy-MM-dd'T'HH:mm:ss
-			DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			timeToPost += "GMT-06:00";
+			DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssz");
 			Date date = dateFormat.parse(timeToPost);
 			long time = date.getTime();
 			String sheduletAt = new Timestamp(time).toString();
