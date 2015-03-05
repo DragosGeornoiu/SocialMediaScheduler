@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+<%-- <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" 
 	"http://www.w3.org/TR/html4/loose.dtd">
@@ -17,12 +17,13 @@
 	</form>
 
 </body>
-</html> 
+</html>  --%>
 
-<%-- 
 <script type="text/javascript">
-	var monthtext = [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug',
-			'Sept', 'Oct', 'Nov', 'Dec' ];
+/* 	var monthtext = [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug',
+			'Sept', 'Oct', 'Nov', 'Dec' ]; */
+	var monthtext = [ '01', '02', '03', '04', '05', '06', '07', '08',
+	      			'09', '12', '11', '12' ];
 
 	function populatedropdown(dayfield, monthfield, yearfield, hourfield,
 			minutefield) {
@@ -91,4 +92,4 @@
 		}
 	</script>
 </body>
-</html>--%>
+</html>
