@@ -2,11 +2,9 @@ package ro.project.parser;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,44 +16,65 @@ import org.jsoup.select.Elements;
 
 public class QuoteWebsiteParser {
 
-	/** website String the url of the website from which we get the quotes	 */
+	/** String representing the URL of the web site from which we get the quotes */
 	private String website;
-	
+
 	public QuoteWebsiteParser(String website) {
 		this.website = website;
 	}
-	
-	/** Save quotes from the web site in quotes.txt file.  */
+
+	/**
+	 * Check if any new quotes were posted on web site. If the file of quotes is
+	 * empty, it will proceed to download the entire web site.
+	 */
+	public void updateQuotes() {
+		List<String> newQuotes = new ArrayList<String>();
+		List<String> tempQuotes = new ArrayList<String>();
+
+		String url = website;
+		newQuotes = getQuotesFromFile("src/main/resources/quotes.txt");
+
+		if (newQuotes.size() == 0) {
+			saveQuotesFromWebsite();
+		} else {
+			String idOfLastQuote = newQuotes.get(0).split(" - ")[0];
+
+			boolean endCondition = false;
+			while (!endCondition) {
+
+				List<String> pageQuotes = getQuotesFromPage(url);
+				url = getPreviousPageLink(url);
+
+				for (int i = 0; i < pageQuotes.size(); i++) {
+					if (idOfLastQuote.equals(pageQuotes.get(i).split(" - ")[0])) {
+						endCondition = true;
+						i = pageQuotes.size();
+					} else {
+						tempQuotes.add(pageQuotes.get(i));
+					}
+				}
+			}
+
+			newQuotes.addAll(0, tempQuotes);
+			saveQuotesToFile(newQuotes);
+		}
+	}
+
+	/** Save quotes from the web site in quotes.txt file. */
 	public void saveQuotesFromWebsite() {
 		List<String> quotesList = new ArrayList<String>();
 		quotesList.addAll(parseWebsiteForQuotes(website));
-
-		BufferedWriter writer = null;
-		try {
-			writer = new BufferedWriter(new FileWriter("quotes"));
-			for (int i = 0; i < quotesList.size(); i++) {
-				writer.write(quotesList.get(i) + "\n");
-			}
-
-		} catch (IOException e) {
-		} finally {
-			try {
-				if (writer != null)
-					writer.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
+		saveQuotesToFile(quotesList);
 	}
 
 	/**
 	 * Parse entire web site and return the quotes as a list
 	 * 
-	 * @param url String pointing to the web site.  
+	 * @param url
+	 *            String pointing to the web site.
 	 * @return List<String> containing all the quotes as a list.
 	 */
 	private List<String> parseWebsiteForQuotes(String url) {
-
 		List<String> allQuotesFromWebsite = new ArrayList<String>();
 		do {
 			List<String> temp = getQuotesFromPage(url);
@@ -69,7 +88,8 @@ public class QuoteWebsiteParser {
 	/**
 	 * Parse current page for all the quotes on it.
 	 * 
-	 * @param url String pointing to the current page.
+	 * @param url
+	 *            String pointing to the current page.
 	 * @return List<String> containing all the quotes from current page.
 	 */
 	private List<String> getQuotesFromPage(String url) {
@@ -92,11 +112,12 @@ public class QuoteWebsiteParser {
 
 		return quotesPageList;
 	}
-	
+
 	/**
 	 * Returns the quotes a a List of type String.
 	 * 
-	 * @param elements All the quotes returned as type Elements from the web page.
+	 * @param elements
+	 *            All the quotes returned as type Elements from the web page.
 	 * @return List<String> of all quotes stored as elements initially.
 	 */
 	private List<String> getQuotesAsList(Elements elements) {
@@ -118,8 +139,9 @@ public class QuoteWebsiteParser {
 
 	/**
 	 * Get the URL pointing to the previous page.
-	 *  
-	 * @param url the URL of current page.
+	 * 
+	 * @param url
+	 *            the URL of current page.
 	 * @return the URL of previous page.
 	 */
 	private String getPreviousPageLink(String url) {
@@ -143,50 +165,11 @@ public class QuoteWebsiteParser {
 		return "";
 	}
 
-	// NOT TESTED
-	public void updateQuotes() {
-		List<String> quotesList = getQuotesFromFile("quotes");
-
-		boolean isUpToDate = false;
-
-		List<String> recentQuotes = new ArrayList<String>();
-		String url = website;
-
-		do {
-			List<String> temp = getQuotesFromPage(url);
-
-			for (int i = 0; i < temp.size(); i++) {
-				if (temp.get(i).equals(quotesList.get(0))) {
-					isUpToDate = true;
-				} else {
-					recentQuotes.add(temp.get(i));
-				}
-			}
-
-			for (int i = 0; i < recentQuotes.size(); i++) {
-				quotesList.add(0, recentQuotes.get(i));
-				url = getPreviousPageLink(url);
-			}
-		} while (isUpToDate);
-		
-		try {
-			PrintWriter writer = new PrintWriter("quotes");
-			
-			for (int i = 0; i < quotesList.size(); i++) {
-				writer.print(quotesList.get(i) + "\n");
-			}
-			writer.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		};
-
-	}
-
-	
 	/**
-	 * Returns all quotes stored in file as a List<String>
+	 * Returns all quotes stored in file as a List<String>.
 	 * 
-	 * @param fileName String representing the name of the file.
+	 * @param fileName
+	 *            String representing the name of the file.
 	 * @return List<String> representing all the quotes from the file.
 	 */
 	private List<String> getQuotesFromFile(String fileName) {
@@ -205,4 +188,38 @@ public class QuoteWebsiteParser {
 
 		return quotesList;
 	}
+
+	/**
+	 * Saves all the quotes stored in the list in the quotes.txt file
+	 * 
+	 * @param quotesList
+	 *            the list of quotes.
+	 */
+	private void saveQuotesToFile(List<String> quotesList) {
+		BufferedWriter writer = null;
+		try {
+			writer = new BufferedWriter(new FileWriter("src/main/resources/quotes.txt"));
+			for (int i = 0; i < quotesList.size(); i++) {
+				writer.write(quotesList.get(i) + "\n");
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (writer != null)
+					writer.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public String getWebsite() {
+		return website;
+	}
+
+	public void setWebsite(String website) {
+		this.website = website;
+	}
+	
 }

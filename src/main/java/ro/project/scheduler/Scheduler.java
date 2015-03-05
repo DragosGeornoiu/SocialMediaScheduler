@@ -13,44 +13,9 @@ import java.util.Date;
 import javax.net.ssl.HttpsURLConnection;
 
 public class Scheduler {
-	private static final String USER_ID = "54f4480b76a9a2b75cb71256";
+	private String userId = "54f4480b76a9a2b75cb71256";
 	private final String ACCESS_TOKEN = "1/8793662c87b64d9d96d519cb84227de0";
 	private final String USER_AGENT = "Mozilla/5.0";
-
-	public void authenticate() {
-		String url = "https://api.bufferapp.com/1/profiles.json?access_token=" + ACCESS_TOKEN;
-
-		try {
-			URL obj = new URL(url);
-			HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-
-			// optional default is GET
-			con.setRequestMethod("GET");
-
-			// add request header
-			con.setRequestProperty("User-Agent", USER_AGENT);
-
-			int responseCode = con.getResponseCode();
-
-			System.out.println("\nSending 'GET' request to URL : " + url);
-			System.out.println("Response Code : " + responseCode);
-
-			BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-			String inputLine;
-			StringBuffer response = new StringBuffer();
-
-			while ((inputLine = in.readLine()) != null) {
-				response.append(inputLine);
-			}
-			in.close();
-
-			// print result
-			System.out.println(response.toString());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-	}
 
 	/**
 	 * Posts the specified message at the timeToPost date.
@@ -60,275 +25,222 @@ public class Scheduler {
 	 * @param timeToPost
 	 *            the time at which to post the message.
 	 */
-	public void sendMessage(String message, String timeToPost) {
+	public int sendMessage(String message, String timeToPost) {
+		StringBuffer response = null;
+		String url = "";
+		String urlParameters = "";
+		int responseCode = 0;
 
 		try {
-			// yyyy-MM-dd'T'HH:mm:ss
 			timeToPost += "GMT-06:00";
 			DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssz");
 			Date date = dateFormat.parse(timeToPost);
 			long time = date.getTime();
 			String sheduletAt = new Timestamp(time).toString();
 
-			String url = "https://api.bufferapp.com/1/updates/create.json?access_token=" + ACCESS_TOKEN;
+			url = "https://api.bufferapp.com/1/updates/create.json?access_token=" + ACCESS_TOKEN;
 			URL obj = new URL(url);
 			HttpsURLConnection con = (HttpsURLConnection) obj.openConnection();
 
-			// add reuqest header
 			con.setRequestMethod("POST");
 			con.setRequestProperty("User-Agent", USER_AGENT);
 			con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
 
-			String urlParameters = "text=" + message + "&profile_ids[]=" + USER_ID + "&scheduled_at=" + sheduletAt;
+			urlParameters = "text=" + message + "&profile_ids[]=" + userId + "&scheduled_at=" + sheduletAt;
 
-			// Send post request
 			con.setDoOutput(true);
 			DataOutputStream wr = new DataOutputStream(con.getOutputStream());
 			wr.writeBytes(urlParameters);
 			wr.flush();
 			wr.close();
 
-			int responseCode = con.getResponseCode();
-			System.out.println("\nSending 'POST' request to URL : " + url);
-			System.out.println("Post parameters : " + urlParameters);
-			System.out.println("Response Code : " + responseCode);
-
 			BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
 			String inputLine;
-			StringBuffer response = new StringBuffer();
+			responseCode = con.getResponseCode();
+			response = new StringBuffer();
 
 			while ((inputLine = in.readLine()) != null) {
 				response.append(inputLine);
 			}
 			in.close();
-
-			// print result
-			System.out.println(response.toString());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		return responseCode;
 
 	}
 
-	/**
-	 * Posts the specified message now.
-	 * 
-	 * @param message
-	 *            to be posted.
-	 */
-	public void sendMessageNow(String message) {
-		try {
+	public String getTwitterUpdates(int page) {
+		userId = "54f4480b76a9a2b75cb71256";
+		return getUpdates(page);
+	}
 
-			String url = "https://api.bufferapp.com/1/updates/create.json?access_token=" + ACCESS_TOKEN;
-			URL obj = new URL(url);
-			HttpsURLConnection con = (HttpsURLConnection) obj.openConnection();
-
-			// add reuqest header
-			con.setRequestMethod("POST");
-			con.setRequestProperty("User-Agent", USER_AGENT);
-			con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
-
-			String urlParameters = "text=" + message + "&profile_ids[]=" + USER_ID + "&now=true";
-
-			// Send post request
-			con.setDoOutput(true);
-			DataOutputStream wr = new DataOutputStream(con.getOutputStream());
-			wr.writeBytes(urlParameters);
-			wr.flush();
-			wr.close();
-
-			int responseCode = con.getResponseCode();
-			System.out.println("\nSending 'POST' request to URL : " + url);
-			System.out.println("Post parameters : " + urlParameters);
-			System.out.println("Response Code : " + responseCode);
-
-			BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-			String inputLine;
-			StringBuffer response = new StringBuffer();
-
-			while ((inputLine = in.readLine()) != null) {
-				response.append(inputLine);
-			}
-			in.close();
-
-			// print result
-			System.out.println(response.toString());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+	public String getFacebookUpdates(int page) {
+		userId = "54f5cffee090e41029541d73";
+		return getUpdates(page);
 	}
 
 	/**
 	 * Returns all the updates posted with Buffer API.
 	 */
-	// https://api.bufferapp.com/1/profiles/54f4480b76a9a2b75cb71256/updates/sent.json?access_token=1/8793662c87b64d9d96d519cb84227de0
+	public String getUpdates(int page) {
 
-	public void getUpdates() {
+		String url = "https://api.bufferapp.com/1/profiles/" + userId + "/updates/sent.json?" + "page=" + page
+				+ "&access_token=" + ACCESS_TOKEN;
 
-		String url = "https://api.bufferapp.com/1/profiles/" + USER_ID + "/updates/sent.json?access_token="
-				+ ACCESS_TOKEN;
-
+		StringBuffer response = null;
 		try {
 			URL obj = new URL(url);
 			HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-
-			// optional default is GET
 			con.setRequestMethod("GET");
-
-			// add request header
 			con.setRequestProperty("User-Agent", USER_AGENT);
-
-			int responseCode = con.getResponseCode();
-
-			System.out.println("\nSending 'GET' request to URL : " + url);
-			System.out.println("Response Code : " + responseCode);
 
 			BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
 			String inputLine;
-			StringBuffer response = new StringBuffer();
+			response = new StringBuffer();
 
 			while ((inputLine = in.readLine()) != null) {
 				response.append(inputLine);
 			}
 			in.close();
-
-			// print result
-			System.out.println(response.toString());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		return response.toString();
 
+	}
+
+	public String getTwitterPendingUpdates(int page) {
+		userId = "54f4480b76a9a2b75cb71256";
+		return getPendingUpdates(page);
+	}
+
+	public String getFacebookPendingUpdates(int page) {
+		userId = "54f5cffee090e41029541d73";
+		return getPendingUpdates(page);
 	}
 
 	/**
 	 * Returns all the updates pending to be posted.
 	 */
-	// https://api.bufferapp.com/1/profiles/4eb854340acb04e870000010/updates/pending.jso
-	public void getPendingUpdates() {
-		String url = "https://api.bufferapp.com/1/profiles/" + USER_ID + "/updates/pending.json?access_token="
-				+ ACCESS_TOKEN;
-
+	public String getPendingUpdates(int page) {
+		String url = "https://api.bufferapp.com/1/profiles/" + userId + "/updates/pending.json?" + "page=" + page
+				+ "&access_token=" + ACCESS_TOKEN;
+		StringBuffer response = null;
 		try {
 			URL obj = new URL(url);
 			HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-
-			// optional default is GET
 			con.setRequestMethod("GET");
-
-			// add request header
 			con.setRequestProperty("User-Agent", USER_AGENT);
-
-			int responseCode = con.getResponseCode();
-
-			System.out.println("\nSending 'GET' request to URL : " + url);
-			System.out.println("Response Code : " + responseCode);
+			// responseCode = con.getResponseCode();
 
 			BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
 			String inputLine;
-			StringBuffer response = new StringBuffer();
+			response = new StringBuffer();
 
 			while ((inputLine = in.readLine()) != null) {
 				response.append(inputLine);
 			}
 			in.close();
 
-			// print result
-			System.out.println(response.toString());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
+		return response.toString();
+
 	}
 
-	/**
-	 * Returns the details of a specific update.
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+
+	/*
+	 * public void sendMessageNow(String message) { try {
 	 * 
-	 * @param updateId
-	 *            String by which the update is recognized.
-	 */
-	// 54f5747827a8114256bb98eb
-	public void getSpecificUpdate(String updateId) {
-
-		String url = "https://api.bufferapp.com/1/updates/" + updateId + ".json?access_token=" + ACCESS_TOKEN;
-
-		try {
-			URL obj = new URL(url);
-			HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-
-			// optional default is GET
-			con.setRequestMethod("GET");
-
-			// add request header
-			con.setRequestProperty("User-Agent", USER_AGENT);
-
-			int responseCode = con.getResponseCode();
-
-			System.out.println("\nSending 'GET' request to URL : " + url);
-			System.out.println("Response Code : " + responseCode);
-
-			BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-			String inputLine;
-			StringBuffer response = new StringBuffer();
-
-			while ((inputLine = in.readLine()) != null) {
-				response.append(inputLine);
-			}
-			in.close();
-
-			// print result
-			System.out.println(response.toString());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-	}
-
-	/**
-	 * Deletes a specific update
+	 * String url =
+	 * "https://api.bufferapp.com/1/updates/create.json?access_token=" +
+	 * ACCESS_TOKEN; URL obj = new URL(url); HttpsURLConnection con =
+	 * (HttpsURLConnection) obj.openConnection();
 	 * 
-	 * @param id
-	 *            String by which the update is recognized.
+	 * // add reuqest header con.setRequestMethod("POST");
+	 * con.setRequestProperty("User-Agent", USER_AGENT);
+	 * con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
+	 * 
+	 * // String urlParameters = "text=" + message + "&profile_ids[]=" + //
+	 * USER_ID + "&now=true"; String urlParameters = "text=" + message +
+	 * "&profile_ids[]=" + "54f5cffee090e41029541d73" + "&now=true";
+	 * 
+	 * // Send post request con.setDoOutput(true); DataOutputStream wr = new
+	 * DataOutputStream(con.getOutputStream()); wr.writeBytes(urlParameters);
+	 * wr.flush(); wr.close();
+	 * 
+	 * int responseCode = con.getResponseCode(); BufferedReader in = new
+	 * BufferedReader(new InputStreamReader(con.getInputStream())); String
+	 * inputLine; StringBuffer response = new StringBuffer();
+	 * 
+	 * while ((inputLine = in.readLine()) != null) { response.append(inputLine);
+	 * } in.close();
+	 * 
+	 * } catch (Exception e) { e.printStackTrace(); } }
+	 * 
+	 * public void getSpecificUpdate(String updateId) {
+	 * 
+	 * String url = "https://api.bufferapp.com/1/updates/" + updateId +
+	 * ".json?access_token=" + ACCESS_TOKEN;
+	 * 
+	 * try { URL obj = new URL(url); HttpURLConnection con = (HttpURLConnection)
+	 * obj.openConnection(); con.setRequestMethod("GET");
+	 * con.setRequestProperty("User-Agent", USER_AGENT);
+	 * 
+	 * BufferedReader in = new BufferedReader(new
+	 * InputStreamReader(con.getInputStream())); String inputLine; StringBuffer
+	 * response = new StringBuffer();
+	 * 
+	 * while ((inputLine = in.readLine()) != null) { response.append(inputLine);
+	 * } in.close(); } catch (Exception e) { e.printStackTrace(); }
+	 * 
+	 * }
+	 * 
+	 * public void authenticate() { String url =
+	 * "https://api.bufferapp.com/1/profiles.json?access_token=" + ACCESS_TOKEN;
+	 * 
+	 * try { URL obj = new URL(url); HttpURLConnection con = (HttpURLConnection)
+	 * obj.openConnection(); con.setRequestMethod("GET");
+	 * con.setRequestProperty("User-Agent", USER_AGENT); BufferedReader in = new
+	 * BufferedReader(new InputStreamReader(con.getInputStream())); String
+	 * inputLine; StringBuffer response = new StringBuffer();
+	 * 
+	 * while ((inputLine = in.readLine()) != null) { response.append(inputLine);
+	 * } in.close(); } catch (Exception e) { e.printStackTrace(); }
+	 * 
+	 * }
+	 * 
+	 * public void deleteUpdate(String id) { try {
+	 * 
+	 * String url = "https://api.bufferapp.com/1/updates/" + id +
+	 * "/destroy.json?access_token=" + ACCESS_TOKEN; URL obj = new URL(url);
+	 * HttpsURLConnection con = (HttpsURLConnection) obj.openConnection();
+	 * 
+	 * // add reuqest header con.setRequestMethod("POST");
+	 * con.setRequestProperty("User-Agent", USER_AGENT);
+	 * con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
+	 * 
+	 * String urlParameters = "profile_ids[]=" + userId;
+	 * 
+	 * // Send post request con.setDoOutput(true); DataOutputStream wr = new
+	 * DataOutputStream(con.getOutputStream()); wr.writeBytes(urlParameters);
+	 * wr.flush(); wr.close();
+	 * 
+	 * int responseCode = con.getResponseCode(); BufferedReader in = new
+	 * BufferedReader(new InputStreamReader(con.getInputStream())); String
+	 * inputLine; StringBuffer response = new StringBuffer();
+	 * 
+	 * while ((inputLine = in.readLine()) != null) { response.append(inputLine);
+	 * } in.close(); } catch (Exception e) { e.printStackTrace(); } }
 	 */
-	// https://api.bufferapp.com/1/updates/4ecda256512f7ee521000004/destroy.json
-	public void deleteUpdate(String id) {
-		try {
-
-			String url = "https://api.bufferapp.com/1/updates/" + id + "/destroy.json?access_token=" + ACCESS_TOKEN;
-			URL obj = new URL(url);
-			HttpsURLConnection con = (HttpsURLConnection) obj.openConnection();
-
-			// add reuqest header
-			con.setRequestMethod("POST");
-			con.setRequestProperty("User-Agent", USER_AGENT);
-			con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
-
-			String urlParameters = "profile_ids[]=" + USER_ID;
-
-			// Send post request
-			con.setDoOutput(true);
-			DataOutputStream wr = new DataOutputStream(con.getOutputStream());
-			wr.writeBytes(urlParameters);
-			wr.flush();
-			wr.close();
-
-			int responseCode = con.getResponseCode();
-			System.out.println("\nSending 'POST' request to URL : " + url);
-			System.out.println("Post parameters : " + urlParameters);
-			System.out.println("Response Code : " + responseCode);
-
-			BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-			String inputLine;
-			StringBuffer response = new StringBuffer();
-
-			while ((inputLine = in.readLine()) != null) {
-				response.append(inputLine);
-			}
-			in.close();
-
-			// print result
-			System.out.println(response.toString());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 }
