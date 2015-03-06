@@ -6,6 +6,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,28 +18,26 @@ import org.jsoup.select.Elements;
 
 public class QuoteWebsiteParser {
 
-	/** String representing the URL of the web site from which we get the quotes */
-	private String website;
-
-	public QuoteWebsiteParser(String website) {
-		this.website = website;
-	}
-
+	private FileManager fileManager;
+	private String path;
 	/**
 	 * Check if any new quotes were posted on web site. If the file of quotes is
 	 * empty, it will proceed to download the entire web site.
 	 */
-	public void updateQuotes() {
+	public String updateQuotes(String website) {
+		fileManager = new FileManager();
+		String fileName = fileManager.createFileNameFromUrl(website);
+		path = fileManager.createFileInPath(fileName);
 		List<String> newQuotes = new ArrayList<String>();
 		List<String> tempQuotes = new ArrayList<String>();
 
 		String url = website;
-		newQuotes = getQuotesFromFile("src/main/resources/quotes.txt");
+		newQuotes = getQuotesFromFile(path);
 
 		if (newQuotes.size() == 0) {
-			saveQuotesFromWebsite();
+			saveQuotesFromWebsite(website);
 		} else {
-			String idOfLastQuote = newQuotes.get(0).split(" - ")[0];
+			String quote = newQuotes.get(0).split(" - ")[0];
 
 			boolean endCondition = false;
 			while (!endCondition) {
@@ -46,9 +46,10 @@ public class QuoteWebsiteParser {
 				url = getPreviousPageLink(url);
 
 				for (int i = 0; i < pageQuotes.size(); i++) {
-					if (idOfLastQuote.equals(pageQuotes.get(i).split(" - ")[0])) {
+					if (quote.equals(pageQuotes.get(i).split(" - ")[0])) {
 						endCondition = true;
-						i = pageQuotes.size();
+						// i = pageQuotes.size();
+						break;
 					} else {
 						tempQuotes.add(pageQuotes.get(i));
 					}
@@ -58,10 +59,12 @@ public class QuoteWebsiteParser {
 			newQuotes.addAll(0, tempQuotes);
 			saveQuotesToFile(newQuotes);
 		}
+
+		return path;
 	}
 
 	/** Save quotes from the web site in quotes.txt file. */
-	public void saveQuotesFromWebsite() {
+	private void saveQuotesFromWebsite(String website) {
 		List<String> quotesList = new ArrayList<String>();
 		quotesList.addAll(parseWebsiteForQuotes(website));
 		saveQuotesToFile(quotesList);
@@ -77,6 +80,7 @@ public class QuoteWebsiteParser {
 	private List<String> parseWebsiteForQuotes(String url) {
 		List<String> allQuotesFromWebsite = new ArrayList<String>();
 		do {
+			// System.out.println("Parsing page " + url);
 			List<String> temp = getQuotesFromPage(url);
 			allQuotesFromWebsite.addAll(temp);
 			url = getPreviousPageLink(url);
@@ -124,13 +128,11 @@ public class QuoteWebsiteParser {
 		List<String> tempList = new ArrayList<String>();
 		for (Element element : elements) {
 
-			String value = element.attr("id");
 			String quote = element.select("p").toString();
-			quote = value.replace("post-", "")
-					+ " -"
-					+ quote.replace("&laquo;", "").replace("&raquo;", "").replace("<p>", "").replace("<em>", "")
-							.replace("</em>", "").replace("<strong>", "").replace("</strong>", "").replace("</p>", "")
-							.replace("<br />", "- ");
+			quote = quote.replace("&laquo;", "").replace("&raquo;", "").replace("<p>", "").replace("<em>", "")
+					.replace("</em>", "").replace("<strong>", "").replace("</strong>", "").replace("</p>", "")
+					.replace("<br />", "- ");
+
 			tempList.add(quote);
 		}
 		return tempList;
@@ -198,7 +200,7 @@ public class QuoteWebsiteParser {
 	private void saveQuotesToFile(List<String> quotesList) {
 		BufferedWriter writer = null;
 		try {
-			writer = new BufferedWriter(new FileWriter("src/main/resources/quotes.txt"));
+			writer = new BufferedWriter(new FileWriter(path));
 			for (int i = 0; i < quotesList.size(); i++) {
 				writer.write(quotesList.get(i) + "\n");
 			}
@@ -214,12 +216,4 @@ public class QuoteWebsiteParser {
 		}
 	}
 
-	public String getWebsite() {
-		return website;
-	}
-
-	public void setWebsite(String website) {
-		this.website = website;
-	}
-	
 }

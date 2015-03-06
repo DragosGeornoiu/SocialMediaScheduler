@@ -20,10 +20,10 @@
 </html>  --%>
 
 <script type="text/javascript">
-/* 	var monthtext = [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug',
-			'Sept', 'Oct', 'Nov', 'Dec' ]; */
-	var monthtext = [ '01', '02', '03', '04', '05', '06', '07', '08',
-	      			'09', '12', '11', '12' ];
+	/* 	var monthtext = [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug',
+	 'Sept', 'Oct', 'Nov', 'Dec' ]; */
+	var monthtext = [ '01', '02', '03', '04', '05', '06', '07', '08', '09',
+			'12', '11', '12' ];
 
 	function populatedropdown(dayfield, monthfield, yearfield, hourfield,
 			minutefield) {
@@ -66,7 +66,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>My first JSP</title>
+<title>Random Quote</title>
 </head>
 <body>
 	<form action="HelloServlet">
@@ -79,8 +79,12 @@
 			id="monthdropdown" name="monthdropdown"></select> <select
 			id="daydropdown" name="daydropdown"></select> <select
 			id="hourdropdown" name="hourdropdown"></select> <select
-			id="minutedropdown" name="minutedropdown"></select> <br> <input
-			type="submit" value="Submit"> <br> <br>
+			id="minutedropdown" name="minutedropdown"></select> <br> <br>
+		<br> <br> <INPUT TYPE="radio" NAME="radios" VALUE="http://persdev-q.com/"
+			CHECKED> http://persdev-q.com/ <BR> <INPUT TYPE="radio"
+			NAME="radios" VALUE="radio2"> Radio Button 2 <BR> <INPUT
+			TYPE="radio" NAME="radios" VALUE="radio3"> Radio Button 3 <BR>
+		</select> <input type="submit" value="Submit"> <br> <br>
 	</form>
 
 

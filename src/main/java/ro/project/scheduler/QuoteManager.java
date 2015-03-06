@@ -6,23 +6,26 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 public class QuoteManager {
+	private final String FILE_TWITTER = "D:/workspace/SocialMediaScheduler/src/main/resources/quotes/twitterQuotes.txt";
+	private final String FILE_FACEBOOK = "D:/workspace/SocialMediaScheduler/src/main/resources/quotes/facebookQuotes.txt";
+	private String quotesFile;
 
-	/**
-	 * fileName String representing the file name where the id's of the posted
-	 * quotes are stored
-	 */
-	private final String FILE_TWITTER = "D:/workspace/SocialMediaScheduler/src/main/resources/postedTwitter.txt";
-	private final String FILE_FACEBOOK = "D:/workspace/SocialMediaScheduler/src/main/resources/postedFacebook.txt";
-	
+	public QuoteManager(String quotesFile) {
+		this.quotesFile = "D:/workspace/SocialMediaScheduler/src/main/resources/quotes/" + quotesFile;
+	}
 
 	public String getRandomQuoteForTwitter() {
 		String quote = getRandomQuote(FILE_TWITTER);
-		while(quote.length() > 140) {
+		System.out.println("quote length: " + quote.length());
+		while (quote.length() > 140) {
+			System.out.println("Measurement of length: " + quote);
 			quote = getRandomQuote(FILE_TWITTER);
 		}
 		return quote;
@@ -43,7 +46,7 @@ public class QuoteManager {
 		List<String> quotesList = new ArrayList<String>();
 		BufferedReader br = null;
 		try {
-			br = new BufferedReader(new FileReader("D:/workspace/SocialMediaScheduler/src/main/resources/quotes.txt"));
+			br = new BufferedReader(new FileReader(quotesFile));
 			String line;
 			while ((line = br.readLine()) != null) {
 				quotesList.add(line);
@@ -54,14 +57,23 @@ public class QuoteManager {
 		}
 
 		do {
+			if (quotesList.size() == 0) {
+				return "";
+			}
 			Random rand = new Random();
 			int randomNum = rand.nextInt(quotesList.size());
 			quote = quotesList.get(randomNum);
+			quotesList.remove(randomNum);
+
 		} while ((checkIfQuotePostedBefore(quote, fileName)));
 
 		saveQuoteId(quote, fileName);
 
-		return (quote.split(" - ")[1] + " - " + quote.split(" - ")[2]).replaceAll(" ", "+").replaceAll("’", "'");
+		if (quote.trim().isEmpty()) {
+			return "";
+		} else {
+			return (quote.split(" - ")[0] + " - " + quote.split(" - ")[1]).replaceAll(" ", "+").replaceAll("’", "'");
+		}
 	}
 
 	/**
@@ -73,7 +85,7 @@ public class QuoteManager {
 	private void saveQuoteId(String quote, String fileName) {
 		try {
 			PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(fileName, true)));
-			out.println(quote.split(" - ")[0]);
+			out.println(hashToMd5(quote.split(" - ")[0]));
 			out.close();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -91,12 +103,14 @@ public class QuoteManager {
 	 */
 	private boolean checkIfQuotePostedBefore(String quote, String fileName) {
 		String id = quote.split(" - ")[0];
-
+		id = hashToMd5(id);
 		BufferedReader br = null;
 		try {
 			br = new BufferedReader(new FileReader(fileName));
 			String line;
 			while ((line = br.readLine()) != null) {
+				System.out.println("line: " + line);
+				System.out.println("id: " + id);
 				if (line.equals(id)) {
 					return true;
 				}
@@ -114,4 +128,24 @@ public class QuoteManager {
 		return false;
 	}
 
+	private String hashToMd5(String quote) {
+
+		MessageDigest md = null;
+		try {
+			md = MessageDigest.getInstance("MD5");
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
+		md.update(quote.getBytes());
+
+		byte byteData[] = md.digest();
+
+		// convert the byte to hex format method 1
+		StringBuffer sb = new StringBuffer();
+		for (int i = 0; i < byteData.length; i++) {
+			sb.append(Integer.toString((byteData[i] & 0xff) + 0x100, 16).substring(1));
+		}
+
+		return sb.toString();
+	}
 }

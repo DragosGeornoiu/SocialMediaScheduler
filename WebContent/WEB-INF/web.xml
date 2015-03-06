@@ -13,7 +13,7 @@
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>History</servlet-name>
-		<servlet-class>ro.project.servlet.QuoteHistory</servlet-class>
+		<servlet-class>ro.project.servlet.QuoteHistoryServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>History</servlet-name>
@@ -21,11 +21,27 @@
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>Pending</servlet-name>
-		<servlet-class>ro.project.servlet.PendingQuotes</servlet-class>
+		<servlet-class>ro.project.servlet.PendingQuotesServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>Pending</servlet-name>
 		<url-pattern>/PendingQuotes</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>Parse</servlet-name>
+		<servlet-class>ro.project.servlet.ParseWebsiteServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Parse</servlet-name>
+		<url-pattern>/ParseWebsite</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>parsejsp</servlet-name>
+		<jsp-file>/parse.jsp</jsp-file>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>parsejsp</servlet-name>
+		<url-pattern>/parse</url-pattern>
 	</servlet-mapping>
 	<welcome-file-list>
 		<welcome-file>Home.jsp</welcome-file>

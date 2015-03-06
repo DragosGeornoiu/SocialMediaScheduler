@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import ro.project.parser.FileManager;
 import ro.project.scheduler.QuoteManager;
 import ro.project.scheduler.Scheduler;
 
@@ -15,54 +16,61 @@ public class SocialMediaServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private QuoteManager quoteManager;
 	private Scheduler scheduler;
+	private FileManager fileManager;
 
+	// MAKE SELECTE FROM WHAT WEBSITE TO GET THE QUOTE
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		int code = 0;
-
 		PrintWriter out = response.getWriter();
-		quoteManager = new QuoteManager();
+		fileManager = new FileManager();
+		String fileName = fileManager.createFileNameFromUrl(request.getParameter("radios"));
+		fileName += ".txt";
+		quoteManager = new QuoteManager(fileName);
 		scheduler = new Scheduler();
+
 		out.println("<html>\n <body>");
-		
 		out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/\">Schedule Quote</a>");
 		out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/QuoteHistory\">Quote History</a>");
 		out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/PendingQuotes\">Pending Quotes</a><br><br>");
-		String date = request.getParameter("date");
-		/*	String date = request.getParameter("yeardropdown")
-		+ "-"	+ request.getParameter("monthdropdown") 
-		+ "-" + request.getParameter("daydropdown") 
-		+ " " + request.getParameter("hourdropdown") 
-		+ ":" + request.getParameter("minutedropdown") + ":00";*/
+
+		String date = request.getParameter("yeardropdown") + "-" + request.getParameter("monthdropdown") + "-"
+				+ request.getParameter("daydropdown") + " " + request.getParameter("hourdropdown") + ":"
+				+ request.getParameter("minutedropdown") + ":00";
 
 		String[] where = request.getParameterValues("where");
-		String message = "";
-		
 
-		for (int i = 0; i < where.length; i++) {
-			message = where[i];
-			if (message.equals("Twitter")) {
-				code = 0;
-				scheduler.setUserId("54f4480b76a9a2b75cb71256");
-				String quote = quoteManager.getRandomQuoteForTwitter();
-				if (scheduler.sendMessage(quote, date) == 200) {
-					out.println("Quote \"" + quote.replaceAll("\\+", " ") + "\" was schedulet to be posted on " + date
-							+ " on " + message + "<BR>");
-				} else if (code != 0) {
-					out.println("Something went wrong when trying to post on Twitter" + "<BR>");
-				}
-			} else if (message.equals("Facebook")) {
-				code = 0;
-				scheduler.setUserId("54f5cffee090e41029541d73");
-				String quote = quoteManager.getRandomQuoteForFacebook();
-				if (scheduler.sendMessage(quote, date) == 200) {
-					out.println("Quote \"" + quote.replaceAll("\\+", " ") + "\" was schedulet to be posted on " + date
-							+ " on " + message + "<BR>");
-				} else if (code != 0) {
-					out.println("Something went wrong when trying to post on Twitter" + "<BR>");
+		if (where != null) {
+			for (int i = 0; i < where.length; i++) {
+				if (where[i].equals("Twitter")) {
+					scheduler.setUserId("54f4480b76a9a2b75cb71256");
+					String quote = quoteManager.getRandomQuoteForTwitter();
+					if (quote.trim().isEmpty()) {
+						out.print("Found nothing to print");
+					} else {
+						if (scheduler.sendMessage(quote, date) == 200) {
+							out.println("Quote \"" + quote.replaceAll("\\+", " ") + "\" was schedulet to be posted on "
+									+ date + " on " + where[i] + "<BR>");
+						} else {
+							out.println("<br>Something went wrong when trying to post on Twitter" + "<BR>");
+						}
+					}
+				} else if (where[i].equals("Facebook")) {
+					scheduler.setUserId("54f5cffee090e41029541d73");
+					String quote = quoteManager.getRandomQuoteForFacebook();
+					System.out.println(quote);
+					if (quote.trim().isEmpty()) {
+						out.print("Found nothing to print");
+					} else {
+						if (scheduler.sendMessage(quote, date) == 200) {
+							out.println("Quote \"" + quote.replaceAll("\\+", " ") + "\" was schedulet to be posted on "
+									+ date + " on " + where[i] + "<BR>");
+						} else {
+							out.println("<br>Something went wrong when trying to post on Facebook" + "<BR>");
+						}
+					}
 				}
 			}
 		}
-		
+
 		out.print("</html>\n</body>");
 	}
 }

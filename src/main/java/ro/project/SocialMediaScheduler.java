@@ -14,8 +14,7 @@ import ro.project.parser.QuoteWebsiteParser;
 
 public class SocialMediaScheduler {
 	public static void main(String[] args) {
-		QuoteWebsiteParser parser = new QuoteWebsiteParser("http://persdev-q.com/");
-		parser.updateQuotes();
+		/*QuoteWebsiteParser parser = new QuoteWebsiteParser("http://persdev-q.com/");
+		parser.updateQuotes();*/
 	}
-
 }
