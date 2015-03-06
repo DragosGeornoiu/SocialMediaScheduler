@@ -43,7 +43,15 @@
 		<servlet-name>parsejsp</servlet-name>
 		<url-pattern>/parse</url-pattern>
 	</servlet-mapping>
-	<welcome-file-list>
+	<servlet>
+		<servlet-name>Post</servlet-name>
+		<servlet-class>ro.project.servlet.PostToSocialMediaServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Post</servlet-name>
+		<url-pattern>/Post</url-pattern>
+	</servlet-mapping>
+<!-- 	<welcome-file-list>
 		<welcome-file>Home.jsp</welcome-file>
-	</welcome-file-list>
+	</welcome-file-list> -->
 </web-app>

@@ -28,7 +28,7 @@ public class SocialMediaServlet extends HttpServlet {
 		scheduler = new Scheduler();
 
 		out.println("<html>\n <body>");
-		out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/\">Schedule Quote</a>");
+		out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/Post\">Schedule Quote</a>");
 		out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/QuoteHistory\">Quote History</a>");
 		out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/PendingQuotes\">Pending Quotes</a><br><br>");
 

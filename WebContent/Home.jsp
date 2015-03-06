@@ -23,7 +23,7 @@
 	/* 	var monthtext = [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug',
 	 'Sept', 'Oct', 'Nov', 'Dec' ]; */
 	var monthtext = [ '01', '02', '03', '04', '05', '06', '07', '08', '09',
-			'12', '11', '12' ];
+			'10', '11', '12' ];
 
 	function populatedropdown(dayfield, monthfield, yearfield, hourfield,
 			minutefield) {
@@ -34,8 +34,8 @@
 		var minutefield = document.getElementById(minutefield)
 		var hourfield = document.getElementById(hourfield)
 
-		for (var i = 0; i < 31; i++)
-			dayfield.options[i] = new Option(i, i + 1)
+		for (var i = 1; i < 31; i++)
+			dayfield.options[i] = new Option(i, i)
 		dayfield.options[today.getDate()] = new Option(today.getDate(), today
 				.getDate(), true, true) //select today's day
 
@@ -52,11 +52,11 @@
 		yearfield.options[0] = new Option(today.getFullYear(), today
 				.getFullYear(), true, true)
 
-		for (var i = 0; i < 23; i++)
-			hourfield.options[i] = new Option(i, i + 1)
+		for (var i = 0; i <= 23; i++)
+			hourfield.options[i] = new Option(i, i)
 
 		for (var i = 0; i < 60; i++)
-			minutefield.options[i] = new Option(i, i + 1)
+			minutefield.options[i] = new Option(i, i)
 		minutefield.options[today.getMinutes()] = new Option(minutetext[today
 				.getMinutes()], minutetext[today.getMinutes()], true, true)
 

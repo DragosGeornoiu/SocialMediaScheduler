@@ -39,12 +39,10 @@ public class BrainyQuoteParser extends Parser{
 	public List<String> getQuotesAsList(Elements elements) {
 		List<String> tempList = new ArrayList<String>();
 		for (Element element : elements) {
-			System.out.println(element);
 
 			String quote = element.getElementsByClass("bqQuoteLink").select("a").text().toString();
 			String auth = element.getElementsByClass("bq-aut").select("a").text().toString();
 
-			System.out.println(quote + " - " + auth);
 			tempList.add(quote + " - " + auth);
 		}
 		return tempList;
