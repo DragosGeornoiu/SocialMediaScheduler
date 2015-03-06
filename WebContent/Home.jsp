@@ -81,9 +81,8 @@
 			id="hourdropdown" name="hourdropdown"></select> <select
 			id="minutedropdown" name="minutedropdown"></select> <br> <br>
 		<br> <br> <INPUT TYPE="radio" NAME="radios" VALUE="http://persdev-q.com/"
-			CHECKED> http://persdev-q.com/ <BR> <INPUT TYPE="radio"
-			NAME="radios" VALUE="radio2"> Radio Button 2 <BR> <INPUT
-			TYPE="radio" NAME="radios" VALUE="radio3"> Radio Button 3 <BR>
+			CHECKED> From Persdev-q <BR> <INPUT TYPE="radio"
+			NAME="radios" VALUE="http://www.brainyquote.com/quotes/topics/topic_motivational.html">From Brainyquote - motivational<BR>
 		</select> <input type="submit" value="Submit"> <br> <br>
 	</form>
 

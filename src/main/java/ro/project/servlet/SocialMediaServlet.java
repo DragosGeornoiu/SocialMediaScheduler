@@ -56,7 +56,6 @@ public class SocialMediaServlet extends HttpServlet {
 				} else if (where[i].equals("Facebook")) {
 					scheduler.setUserId("54f5cffee090e41029541d73");
 					String quote = quoteManager.getRandomQuoteForFacebook();
-					System.out.println(quote);
 					if (quote.trim().isEmpty()) {
 						out.print("Found nothing to print");
 					} else {

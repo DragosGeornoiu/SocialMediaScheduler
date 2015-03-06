@@ -23,9 +23,7 @@ public class QuoteManager {
 
 	public String getRandomQuoteForTwitter() {
 		String quote = getRandomQuote(FILE_TWITTER);
-		System.out.println("quote length: " + quote.length());
 		while (quote.length() > 140) {
-			System.out.println("Measurement of length: " + quote);
 			quote = getRandomQuote(FILE_TWITTER);
 		}
 		return quote;
@@ -109,8 +107,6 @@ public class QuoteManager {
 			br = new BufferedReader(new FileReader(fileName));
 			String line;
 			while ((line = br.readLine()) != null) {
-				System.out.println("line: " + line);
-				System.out.println("id: " + id);
 				if (line.equals(id)) {
 					return true;
 				}

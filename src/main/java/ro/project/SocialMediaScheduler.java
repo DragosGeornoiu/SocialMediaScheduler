@@ -1,6 +1,5 @@
 package ro.project;
 
-import ro.project.parser.QuoteWebsiteParser;
 
 /*1) Create a parser that will get all the quotes from: http://persdev-q.com/
  2) Schedule them as Tweets/Facebook posts with the buffer API

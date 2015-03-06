@@ -48,8 +48,6 @@ public class Scheduler {
 
 			urlParameters = "text=" + message + "&profile_ids[]=" + userId + "&scheduled_at=" + sheduletAt;
 
-			System.out.println("url: " + url);
-			System.out.println("urlParameters: " + urlParameters);
 			con.setDoOutput(true);
 			DataOutputStream wr = new DataOutputStream(con.getOutputStream());
 			wr.writeBytes(urlParameters);
