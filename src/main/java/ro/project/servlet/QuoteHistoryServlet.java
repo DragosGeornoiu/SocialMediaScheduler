@@ -13,6 +13,11 @@ import org.json.JSONObject;
 
 import ro.project.scheduler.Scheduler;
 
+/**
+ * 
+ * The updates posted on twitter and facebook are shown using this servlet.
+ *
+ */
 public class QuoteHistoryServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private Scheduler scheduler;

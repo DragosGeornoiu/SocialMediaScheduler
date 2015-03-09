@@ -18,7 +18,6 @@ public class SocialMediaServlet extends HttpServlet {
 	private Scheduler scheduler;
 	private FileManager fileManager;
 
-	// MAKE SELECTE FROM WHAT WEBSITE TO GET THE QUOTE
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		PrintWriter out = response.getWriter();
 		fileManager = new FileManager();

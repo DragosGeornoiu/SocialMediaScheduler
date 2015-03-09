@@ -21,6 +21,11 @@ public class QuoteManager {
 		this.quotesFile = "D:/workspace/SocialMediaScheduler/src/main/resources/quotes/" + quotesFile;
 	}
 
+	/**
+	 * Returns a random quote to be posted on Twitter.
+	 * 
+	 * @return String representing a quote under 140 characters.
+	 */
 	public String getRandomQuoteForTwitter() {
 		String quote = getRandomQuote(FILE_TWITTER);
 		while (quote.length() > 140) {
@@ -29,14 +34,24 @@ public class QuoteManager {
 		return quote;
 	}
 
+	/**
+	 * Returns a random quote to be posted on Facebook.
+	 * 
+	 * @return String representing a quote.
+	 */
 	public String getRandomQuoteForFacebook() {
 		return getRandomQuote(FILE_FACEBOOK);
 	}
 
 	/**
-	 * Returns a random quote that has not been posted before.
+	 * Returns a random quote which has not been posted to the social network
+	 * provided by fileName.
 	 * 
-	 * @return String representing a quote.
+	 * @param fileName
+	 *            the location of the text file where the previous quotes on
+	 *            that specific social network were stored.
+	 * 
+	 * @return String representing a random quote.
 	 */
 	public String getRandomQuote(String fileName) {
 		String quote;
@@ -65,7 +80,7 @@ public class QuoteManager {
 
 		} while ((checkIfQuotePostedBefore(quote, fileName)));
 
-		saveQuoteId(quote, fileName);
+		saveQuote(quote, fileName);
 
 		if (quote.trim().isEmpty()) {
 			return "";
@@ -75,12 +90,16 @@ public class QuoteManager {
 	}
 
 	/**
-	 * Saves the quote id in the fileName file.
+	 * Saves the quote so that in the future the same quote won't be posted on
+	 * the same social network in was previously posted.
 	 * 
 	 * @param quote
-	 *            String representing the quote from which we can take the id.
+	 *            String representing the actual quote.
+	 * @param fileName
+	 *            String representing the location where previously posted
+	 *            quotes on a specific social network were posted.
 	 */
-	private void saveQuoteId(String quote, String fileName) {
+	private void saveQuote(String quote, String fileName) {
 		try {
 			PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(fileName, true)));
 			out.println(hashToMd5(quote.split(" - ")[0]));
@@ -91,13 +110,15 @@ public class QuoteManager {
 	}
 
 	/**
-	 * Checks if the quote has been posted before or is bigger than 160
-	 * characters.
+	 * Check if the given quote was posted previously on the specific social
+	 * network.
 	 * 
 	 * @param quote
-	 *            String representing the quote.
-	 * @return true if quote is under 160 characters and has not been posted
-	 *         before, false otherwise.
+	 *            String representing the actual quote.
+	 * @param fileName
+	 *            String representing the location where previously posted
+	 *            quotes on the specific social network were posted.
+	 * @return true if it was posted previously, false if not.
 	 */
 	private boolean checkIfQuotePostedBefore(String quote, String fileName) {
 		String id = quote.split(" - ")[0];
@@ -124,6 +145,13 @@ public class QuoteManager {
 		return false;
 	}
 
+	/**
+	 * Converts the quote to MD5.
+	 * 
+	 * @param quote
+	 *            String representing the actual quote.
+	 * @return the MD5 representation of the quotes
+	 */
 	private String hashToMd5(String quote) {
 
 		MessageDigest md = null;

@@ -12,22 +12,17 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ro.project.parser.FileManager;
-import ro.project.scheduler.QuoteManager;
-import ro.project.scheduler.Scheduler;
-
+/**
+ * 
+ * An update is scheduled using this servlet.
+ *
+ */
 public class PostToSocialMediaServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private final String path = "D:\\\\workspace\\\\SocialMediaScheduler\\\\src\\\\main\\\\resources\\\\quotes";
-	private QuoteManager quoteManager;
-	private Scheduler scheduler;
-	private FileManager fileManager;
 
-	// MAKE SELECTE FROM WHAT WEBSITE TO GET THE QUOTE
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		PrintWriter out = response.getWriter();
-		fileManager = new FileManager();
-		scheduler = new Scheduler();
 		List<String> optionsList = new ArrayList<String>();
 		optionsList = getOptionsList();
 
@@ -88,8 +83,6 @@ public class PostToSocialMediaServlet extends HttpServlet {
 		for(int i=0;i<optionsList.size();i++) {
 			out.println("<INPUT TYPE=\"radio\" NAME=\"radios\" VALUE=" + optionsList.get(i) + "> From " + optionsList.get(i) +  "<BR>");
 		}
-		/*out.println("<INPUT TYPE=\"radio\" NAME=\"radios\" VALUE=\"http://persdev-q.com/\" CHECKED> From Persdev-q <BR>");
-		out.println("<INPUT TYPE=\"radio\" NAME=\"radios\" VALUE=\"http://www.brainyquote.com/quotes/topics/topic_motivational.html\">From Brainyquote - motivational<BR>");*/
 		out.println("<input type=\"submit\" value=\"Submit\"> <br> <br>");
 		out.println("</form>");
 		out.println("");

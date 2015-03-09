@@ -24,6 +24,9 @@ public class Scheduler {
 	 *            the message to be posted.
 	 * @param timeToPost
 	 *            the time at which to post the message.
+	 * 
+	 * @param responseCode
+	 *            int representing the response code of the Post request.
 	 */
 	public int sendMessage(String message, String timeToPost) {
 		StringBuffer response = null;
@@ -70,18 +73,42 @@ public class Scheduler {
 
 	}
 
+	/**
+	 * Returns the twitter updates.
+	 * 
+	 * @param page
+	 *            The number of the page to be returned. If there are more than
+	 *            20 twitter updates, they won't be returned in a single JSON.
+	 *            
+	 * @return  String representing the Twitter updates.
+	 */
 	public String getTwitterUpdates(int page) {
 		userId = "54f4480b76a9a2b75cb71256";
 		return getUpdates(page);
 	}
 
+	/**
+	 * Returns the facebook updates.
+	 * 
+	 * @param page
+	 *            The number of the page to be returned. If there are more than
+	 *            20 facebook updates, they won't be returned in a single JSON.
+	 *            
+	 * @return  String representing the Facebook updates.
+	 */
 	public String getFacebookUpdates(int page) {
 		userId = "54f5cffee090e41029541d73";
 		return getUpdates(page);
 	}
 
 	/**
-	 * Returns all the updates posted with Buffer API.
+	 * Returns the updates posted with Buffer API..
+	 * 
+	 * @param page
+	 *            The number of the page to be returned. If there are more than
+	 *            20 updates, they won't be returned in a single JSON.
+	 *            
+	 * @return  String representing the updates.
 	 */
 	public String getUpdates(int page) {
 
@@ -110,18 +137,42 @@ public class Scheduler {
 
 	}
 
+	/**
+	 * Returns the pending twitter updates.
+	 * 
+	 * @param page
+	 *            The number of the page to be returned. If there are more than
+	 *            20 pending twitter updates, they won't be returned in a single JSON.
+	 *            
+	 * @return  String representing the pending Twitter updates.
+	 */
 	public String getTwitterPendingUpdates(int page) {
 		userId = "54f4480b76a9a2b75cb71256";
 		return getPendingUpdates(page);
 	}
 
+	/**
+	 * Returns the pending facebook updates.
+	 * 
+	 * @param page
+	 *            The number of the page to be returned. If there are more than
+	 *            20 pending facebook updates, they won't be returned in a single JSON.
+	 *            
+	 * @return  String representing the pending facebook updates.
+	 */
 	public String getFacebookPendingUpdates(int page) {
 		userId = "54f5cffee090e41029541d73";
 		return getPendingUpdates(page);
 	}
 
 	/**
-	 * Returns all the updates pending to be posted.
+	 * Returns the pending updates created with Buffer API..
+	 * 
+	 * @param page
+	 *            The number of the page to be returned. If there are more than
+	 *            20 pending updates, they won't be returned in a single JSON.
+	 *            
+	 * @return  String representing the pending updates.
 	 */
 	public String getPendingUpdates(int page) {
 		String url = "https://api.bufferapp.com/1/profiles/" + userId + "/updates/pending.json?" + "page=" + page

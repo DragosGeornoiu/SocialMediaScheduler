@@ -1,7 +1,5 @@
 package ro.project.servlet;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
@@ -14,12 +12,13 @@ import ro.project.parser.BrainyQuoteParser;
 import ro.project.parser.FileManager;
 import ro.project.parser.Parser;
 import ro.project.parser.PersdevParser;
-import ro.project.scheduler.Scheduler;
 
+/**
+ * Gives the URL of the website to be parsed.
+ *
+ */
 public class ParseWebsiteServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private final String PATH = "D:\\\\workspace\\\\SocialMediaScheduler\\\\src\\\\main\\\\resources\\\\quotes";
-	private Scheduler scheduler;
 	Parser parser;
 	FileManager fileManager;
 
@@ -27,9 +26,7 @@ public class ParseWebsiteServlet extends HttpServlet {
 
 		PrintWriter out = response.getWriter();
 		out.println("<html>\n <body>");
-		scheduler = new Scheduler();
 		fileManager = new FileManager();
-		// fileManager = new FileManager();
 		String website = request.getParameter("website");
 		if (website.equals("http://persdev-q.com/")) {
 			parser = new PersdevParser();
@@ -37,16 +34,9 @@ public class ParseWebsiteServlet extends HttpServlet {
 			parser = new BrainyQuoteParser();
 		}
 		
-		saveWebsiteAsOption(website);
 
-		// } else if
-		// (website.equals("http://www.brainyquote.com/quotes/topics/topic_motivational.html"))
-		// {
-		// parser = new BrainyQuoteParser();
-		// }
-
-		String path = parser.updateQuotes(website);
-		System.out.println(path);
+		/*String path = parser.updateQuotes(website);*/
+		parser.updateQuotes(website);
 		fileManager.createFileInPath("facebookquotes");
 		fileManager.createFileInPath("twitterquotes");
 
@@ -57,13 +47,5 @@ public class ParseWebsiteServlet extends HttpServlet {
 		out.print("</html>\n</body>");
 	}
 	
-	private void saveWebsiteAsOption(String website) {
-		try {
-			PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(PATH + "\\\\" + "parser.txt", true)));
-			out.println(website);
-			out.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+
 }

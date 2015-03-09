@@ -9,6 +9,13 @@ import java.util.List;
 public class FileManager {
 	private final String PATH = "D:\\\\workspace\\\\SocialMediaScheduler\\\\src\\\\main\\\\resources\\\\quotes";
 
+	/**
+	 * Given an URL it creates a file name from it.
+	 * 
+	 * @param url
+	 *            the given URL.
+	 * @return the name of the file.
+	 */
 	public String createFileNameFromUrl(String url) {
 		List<String> files = splitUrlToFileNames(url);
 		String dir = "";
@@ -17,22 +24,13 @@ public class FileManager {
 			dir += files.get(i);
 		}
 
-		/*
-		 * ClassLoader loader = this.getClass().getClassLoader(); String
-		 * projectDir = loader.getResource("").toString(); String resourcesDir =
-		 * projectDir.split("target")[0] .replace("/", "\\\\") +
-		 * "src\\\\main\\\\resources" + dir; String finalDir =
-		 * resourcesDir.split(":")[1] + ":" + resourcesDir.split(":")[2];
-		 * finalDir = finalDir.replaceFirst("\\\\\\\\", "");
-		 */
-
 		return dir;
 	}
 
 	/**
 	 * Given a String representation of an URL, the method returns a list with
 	 * the URL split for an appropriate folder creation for the placement of the
-	 * HTML.
+	 * the new file.
 	 * 
 	 * @param url
 	 *            String representation of a URL.
@@ -63,8 +61,8 @@ public class FileManager {
 	 * create a correct directory for each web site. The URLS
 	 * http://stackoverflow.com/, http://wwww.stackoverflow.com/ and
 	 * stackoverflow.com/ represent the same web site, so we should be able to
-	 * check correctly if a previous version of that web site was already
-	 * stored, even though this time it has or not HTTP or WWW in front of it.
+	 * check correctly if quotes from that web site were already stored, even
+	 * though this time it has or not HTTP or WWW in front of it.
 	 * 
 	 * @param fileName
 	 *            String to remove from not allowed folder creation characters,
@@ -82,13 +80,11 @@ public class FileManager {
 	}
 
 	/**
-	 * Creates a HTML file at the given path with the name fileName;
+	 * Creates a text file at the given path with the name fileName;
 	 * 
-	 * @param path
-	 *            The location where the HTML file should be created
 	 * @param filename
-	 *            The name of the HTML file, meaning the version of the file
-	 * @return
+	 *            The name of the text file, meaning the version of the file.
+	 * @return the location where the text file name fileName will be located.
 	 */
 	public String createFileInPath(String fileName) {
 		File file = new File(PATH + "\\\\" + fileName + ".txt");

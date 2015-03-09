@@ -10,10 +10,16 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+
+/**
+ * 
+ * Parser for http://persdev-q.com/.
+ *
+ */
 public class PersdevParser extends Parser {
 
 	@Override
-	public List<String> getQuotesFromPage(String url) {
+	protected List<String> getQuotesFromPage(String url) {
 		Document document = null;
 		Elements elements = null;
 		List<String> quotesPageList = new ArrayList<String>();
@@ -35,7 +41,7 @@ public class PersdevParser extends Parser {
 	}
 
 	@Override
-	public List<String> getQuotesAsList(Elements elements) {
+	protected List<String> getQuotesAsList(Elements elements) {
 		List<String> tempList = new ArrayList<String>();
 		for (Element element : elements) {
 
@@ -51,7 +57,7 @@ public class PersdevParser extends Parser {
 	}
 
 	@Override
-	public String getPreviousPageLink(String url) {
+	protected String getPreviousPageLink(String url) {
 		Document document = null;
 		Elements elements = null;
 		try {
