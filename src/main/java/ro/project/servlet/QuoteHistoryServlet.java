@@ -40,34 +40,82 @@ public class QuoteHistoryServlet extends HttpServlet {
 		// se face suma lor
 		// se vede de cate pagini sunt necesare pt a le exprima 10 pe pagina
 
-		/*try {
-			if((request.getParameter("pageNumber") == null) || request.getParameter("pageNumber").trim().isEmpty()) {
-				
+	/*	try {
+			if ((request.getParameter("pageNumber") == null) || request.getParameter("pageNumber").trim().isEmpty()) {
+
 			}
-			int total = 0;
+			int totalUpdates = 0;
 			String jString = scheduler.getFacebookUpdates(1);
 			JSONObject jsonObject = new JSONObject(jString);
-			total += jsonObject.getInt("total");
+			int totalFacebookUpdates = jsonObject.getInt("total");
 			jString = scheduler.getTwitterUpdates(1);
 			jsonObject = new JSONObject(jString);
-			total += jsonObject.getInt("total");
-			
-			int numberOfPages = total % 10 + 1;
+			int totalTwitterUpdates = jsonObject.getInt("total");
+			totalUpdates = totalFacebookUpdates + totalTwitterUpdates;
 
+			int numberOfPages = totalUpdates % 10 + 1;
+
+			// 35 si 45 => total 80
+			for (int i = 0; i < totalUpdates; i++) {
+				if (i < totalFacebookUpdates) {
+					int j = 1;
+					jString = scheduler.getFacebookUpdates(j);
+					jsonObject = new JSONObject(jString);
+					JSONArray updates = jsonObject.getJSONArray("updates");
+					if ((i % 20 == 0) && (i != 0)) {
+
+						j++;
+						jString = scheduler.getFacebookUpdates(j);
+						jsonObject = new JSONObject(jString);
+						updates = jsonObject.getJSONArray("updates");
+					}
+					JSONObject update = updates.getJSONObject(i % 20);
+					out.print("<BR>");
+					out.print("Count: " + (i + 1) + "<BR>");
+					Calendar c = Calendar.getInstance();
+					c.setTimeInMillis(new Long(((int) update.get("due_at"))) * 1000);
+					int mYear = c.get(Calendar.YEAR);
+					out.print("Due at: " + update.get("due_time") + "; " + update.get("day") + "; " + mYear + "<BR>");
+					out.print("Service: " + update.get("profile_service") + "<BR>");
+					out.print("Text: " + update.get("text") + "<BR>");
+					out.print("<BR>");
+				} else {
+					// i- totalFacebookUpdates
+					int j = 1;
+					jString = scheduler.getTwitterUpdates(j);
+					jsonObject = new JSONObject(jString);
+					JSONArray updates = jsonObject.getJSONArray("updates");
+					System.out.println("i-totalFacebookUpdates: " + (i - totalFacebookUpdates));
+					System.out.println("(i-totalFacebookUpdates) % 20: " + (i - totalFacebookUpdates) % 20);
+					if (((i - totalFacebookUpdates) % 20 == 0) && ((i - totalFacebookUpdates) != 0)) {
+						j++;
+						System.out.println("j: " + j);
+						jString = scheduler.getTwitterUpdates(j);
+						jsonObject = new JSONObject(jString);
+						updates = jsonObject.getJSONArray("updates");
+					}
+					JSONObject update = updates.getJSONObject(i - totalFacebookUpdates % 20);
+					out.print("<BR>");
+					out.print("Count: " + (i + 1) + "<BR>");
+					Calendar c = Calendar.getInstance();
+					c.setTimeInMillis(new Long(((int) update.get("due_at"))) * 1000);
+					int mYear = c.get(Calendar.YEAR);
+					out.print("Due at: " + update.get("due_time") + "; " + update.get("day") + "; " + mYear + "<BR>");
+					out.print("Service: " + update.get("profile_service") + "<BR>");
+					out.print("Text: " + update.get("text") + "<BR>");
+					out.print("<BR>");
+				}
+			}
 		} catch (Exception e) {
 
-		}*/
-
-		
-		
-		
-		
+		}
+*/
 		try {
 
 			j = 1;
 			String jString = scheduler.getFacebookUpdates(j);
-/*			out.print("<font color=\"red\">FACEBOOK</font>" + "<BR>");
-*/			JSONObject jsonObject = new JSONObject(jString);
+			out.print("<font color=\"red\">FACEBOOK</font>" + "<BR>");
+			JSONObject jsonObject = new JSONObject(jString);
 			int total = jsonObject.getInt("total");
 			JSONArray updates = jsonObject.getJSONArray("updates");
 			for (int i = 0; i < total; i++) {
@@ -80,17 +128,16 @@ public class QuoteHistoryServlet extends HttpServlet {
 				JSONObject update = updates.getJSONObject(i % 20);
 				out.print("<BR>");
 				out.print("Count: " + (i + 1) + "<BR>");
-				/*out.print("Day: " + update.get("day") + "<BR>");
-				out.print("Due_time: " + update.get("due_time") + "<BR>");
-				Calendar c = Calendar.getInstance();
-				c.setTimeInMillis(new Long(((int) update.get("due_at"))) * 1000);
-				int mYear = c.get(Calendar.YEAR);
-				out.print("Year: " + mYear + "<BR>");
-				out.print("Service: " + update.get("profile_service") + "<BR>");
-				out.print("Text: " + update.get("text") + "<BR>");
-				out.print("<BR>");*/
-				
-				
+				/*
+				 * out.print("Day: " + update.get("day") + "<BR>");
+				 * out.print("Due_time: " + update.get("due_time") + "<BR>");
+				 * Calendar c = Calendar.getInstance(); c.setTimeInMillis(new
+				 * Long(((int) update.get("due_at"))) * 1000); int mYear =
+				 * c.get(Calendar.YEAR); out.print("Year: " + mYear + "<BR>");
+				 * out.print("Service: " + update.get("profile_service") +
+				 * "<BR>"); out.print("Text: " + update.get("text") + "<BR>");
+				 * out.print("<BR>");
+				 */
 				Calendar c = Calendar.getInstance();
 				c.setTimeInMillis(new Long(((int) update.get("due_at"))) * 1000);
 				int mYear = c.get(Calendar.YEAR);
@@ -102,8 +149,8 @@ public class QuoteHistoryServlet extends HttpServlet {
 
 			j = 1;
 			jString = scheduler.getTwitterUpdates(j);
-/*			out.print("<font color=\"red\">TWITTER</font>" + "<BR>");
-*/			jsonObject = new JSONObject(jString);
+			out.print("<font color=\"red\">TWITTER</font>" + "<BR>");
+			jsonObject = new JSONObject(jString);
 			total = jsonObject.getInt("total");
 			updates = jsonObject.getJSONArray("updates");
 			for (int i = 0; i < total; i++) {
@@ -116,7 +163,7 @@ public class QuoteHistoryServlet extends HttpServlet {
 				JSONObject update = updates.getJSONObject(i % 20);
 				out.print("<BR>");
 				out.print("Count: " + (i + 1) + "<BR>");
-		/*		out.print("Id: " + update.get("_id") + "<BR>");
+				/*out.print("Id: " + update.get("_id") + "<BR>");
 				out.print("Day: " + update.get("day") + "<BR>");
 				out.print("Due_time: " + update.get("due_time") + "<BR>");
 				Calendar c = Calendar.getInstance();
@@ -126,8 +173,7 @@ public class QuoteHistoryServlet extends HttpServlet {
 				out.print("Service: " + update.get("profile_service") + "<BR>");
 				out.print("Text: " + update.get("text") + "<BR>");
 				out.print("<BR>");*/
-				
-				
+
 				Calendar c = Calendar.getInstance();
 				c.setTimeInMillis(new Long(((int) update.get("due_at"))) * 1000);
 				int mYear = c.get(Calendar.YEAR);
@@ -139,6 +185,7 @@ public class QuoteHistoryServlet extends HttpServlet {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+
 		out.print("</html>\n</body>");
 	}
 }

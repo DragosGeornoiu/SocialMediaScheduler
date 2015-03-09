@@ -22,7 +22,8 @@ public class SocialMediaServlet extends HttpServlet {
 		PrintWriter out = response.getWriter();
 		fileManager = new FileManager();
 		String fileName = fileManager.createFileNameFromUrl(request.getParameter("radios"));
-		fileName += ".txt";
+		//fileName += ".txt";
+		fileName += ".ser";
 		quoteManager = new QuoteManager(fileName);
 		scheduler = new Scheduler();
 

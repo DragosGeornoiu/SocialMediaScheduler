@@ -87,14 +87,14 @@ public class FileManager {
 	 * @return the location where the text file name fileName will be located.
 	 */
 	public String createFileInPath(String fileName) {
-		File file = new File(PATH + "\\\\" + fileName + ".txt");
+		File file = new File(PATH + "\\\\" + fileName);
 		file.getParentFile().mkdirs();
 		try {
 			file.createNewFile();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return PATH + "\\\\" + fileName + ".txt";
+		return PATH + "\\\\" + fileName ;
 	}
 
 }

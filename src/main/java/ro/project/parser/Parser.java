@@ -2,9 +2,11 @@ package ro.project.parser;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +34,7 @@ public abstract class Parser {
 		fileManager = new FileManager();
 		String fileName = fileManager.createFileNameFromUrl(website);
 
-		path = fileManager.createFileInPath(fileName);
+		path = fileManager.createFileInPath(fileName+".ser");
 		List<Quote> newQuotes = new ArrayList<Quote>();
 		List<Quote> tempQuotes = new ArrayList<Quote>();
 
@@ -141,7 +143,7 @@ public abstract class Parser {
 	 *            the list of quotes.
 	 */
 	protected void saveQuotesToFile(List<Quote> quotesList) {
-		BufferedWriter writer = null;
+		/*BufferedWriter writer = null;
 		try {
 			writer = new BufferedWriter(new FileWriter(path));
 			for (int i = 0; i < quotesList.size(); i++) {
@@ -157,7 +159,21 @@ public abstract class Parser {
 				e.printStackTrace();
 			}
 		}
+		
+		*/
+		
+		try {
+	        FileOutputStream fileOut = new FileOutputStream(path);
+	        ObjectOutputStream out = new ObjectOutputStream(fileOut);
+	        out.writeObject(quotesList);
+	        out.close();
+	        fileOut.close();
+	    } catch (IOException ex) {
+	    	ex.printStackTrace();
+	    }
 	}
+	
+
 
 	
 	/**

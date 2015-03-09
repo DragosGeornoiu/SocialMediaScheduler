@@ -2,13 +2,12 @@ package ro.project.scheduler;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.PrintWriter;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -56,7 +55,7 @@ public class QuoteManager {
 	public String getRandomQuote(String fileName) {
 		Quote quote;
 
-		List<Quote> quotesList = new ArrayList<Quote>();
+		/*List<Quote> quotesList = new ArrayList<Quote>();
 		BufferedReader br = null;
 		try {
 			br = new BufferedReader(new FileReader(quotesFile));
@@ -67,8 +66,19 @@ public class QuoteManager {
 			br.close();
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
+		}*/
 
+		
+		
+		 List<Quote> quotesList = null;
+		    try {
+		        ObjectInputStream in = new ObjectInputStream(new FileInputStream(quotesFile));
+		        quotesList = (List<Quote>) in.readObject(); 
+		        in.close();
+		    }
+		    catch(Exception e) {}
+		
+		
 		do {
 			if (quotesList.size() == 0) {
 				return "";

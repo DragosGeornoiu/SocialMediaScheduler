@@ -1,9 +1,10 @@
 package ro.project.scheduler;
 
+import java.io.Serializable;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-public class Quote {
+public class Quote implements Serializable {
 	private String quote;
 	private String author;
 	private String MD5;
@@ -34,6 +35,10 @@ public class Quote {
 
 	public String getMD5() {
 		return MD5;
+	}
+	
+	public void setMD5(String MD5) {
+		this.MD5 = MD5;
 	}
 
 	/**
