@@ -27,13 +27,16 @@ public class SocialMediaServlet extends HttpServlet {
 		scheduler = new Scheduler();
 
 		out.println("<html>\n <body>");
+		out.println("<head>");
+		out.print("<a href=\"http://localhost:8080/SocialMediaScheduler/parse\">Parse</a>");
 		out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/Post\">Schedule Quote</a>");
 		out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/QuoteHistory\">Quote History</a>");
 		out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/PendingQuotes\">Pending Quotes</a><br><br>");
+		out.print("</head>");
 
 		String date = request.getParameter("yeardropdown") + "-" + request.getParameter("monthdropdown") + "-"
 				+ request.getParameter("daydropdown") + " " + request.getParameter("hourdropdown") + ":"
-				+ request.getParameter("minutedropdown") + ":00";
+				+ request.getParameter("minutedropdown") + ":00" + "GMT" + request.getParameter("gmtdropdown") + ":00" ;
 
 		String[] where = request.getParameterValues("where");
 

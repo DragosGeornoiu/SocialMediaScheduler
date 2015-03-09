@@ -25,6 +25,11 @@
 	var monthtext = [ '01', '02', '03', '04', '05', '06', '07', '08', '09',
 			'10', '11', '12' ];
 
+	var gmttext = [ '-12', '-11', '-10', '-09', '-08', '-07', '-06', '-05',
+			'-04', '-03', '-02', '-01', '00', '+01', '+02', '+03' + '+04',
+			'+05', '+06', '+07', '+08', '+09', '+10', '+11', '+12', '+13',
+			'+14' ]
+
 	function populatedropdown(dayfield, monthfield, yearfield, hourfield,
 			minutefield) {
 		var today = new Date()
@@ -39,6 +44,11 @@
 		dayfield.options[today.getDate()] = new Option(today.getDate(), today
 				.getDate(), true, true) //select today's day
 
+				
+				
+		for(var m = -12; m<=14;m++)
+			gmtfield.options[m] = new Option(gmttext[m], gmttext[m])
+		
 		for (var m = 0; m < 12; m++)
 			monthfield.options[m] = new Option(monthtext[m], monthtext[m])
 		monthfield.options[today.getMonth()] = new Option(monthtext[today
@@ -79,11 +89,15 @@
 			id="monthdropdown" name="monthdropdown"></select> <select
 			id="daydropdown" name="daydropdown"></select> <select
 			id="hourdropdown" name="hourdropdown"></select> <select
-			id="minutedropdown" name="minutedropdown"></select> <br> <br>
-		<br> <br> <INPUT TYPE="radio" NAME="radios" VALUE="http://persdev-q.com/"
-			CHECKED> From Persdev-q <BR> <INPUT TYPE="radio"
-			NAME="radios" VALUE="http://www.brainyquote.com/quotes/topics/topic_motivational.html">From Brainyquote - motivational<BR>
-		</select> <input type="submit" value="Submit"> <br> <br>
+			id="minutedropdown" name="minutedropdown"></select>
+			<select
+			id="gmtdropdown" name="gmtdropdown"></select> <br> <br>
+		<br> <br> <INPUT TYPE="radio" NAME="radios"
+			VALUE="http://persdev-q.com/" CHECKED> From Persdev-q <BR>
+		<INPUT TYPE="radio" NAME="radios"
+			VALUE="http://www.brainyquote.com/quotes/topics/topic_motivational.html">From
+		Brainyquote - motivational<BR> </select> <input type="submit"
+			value="Submit"> <br> <br>
 	</form>
 
 
@@ -91,7 +105,7 @@
 		//populatedropdown(id_of_day_select, id_of_month_select, id_of_year_select)
 		window.onload = function() {
 			populatedropdown("daydropdown", "monthdropdown", "yeardropdown",
-					"hourdropdown", "minutedropdown")
+					"hourdropdown", "minutedropdown", "gmtdropdown")
 		}
 	</script>
 </body>

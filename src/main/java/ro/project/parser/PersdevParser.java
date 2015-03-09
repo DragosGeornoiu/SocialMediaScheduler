@@ -10,6 +10,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import ro.project.scheduler.Quote;
+
 
 /**
  * 
@@ -19,10 +21,10 @@ import org.jsoup.select.Elements;
 public class PersdevParser extends Parser {
 
 	@Override
-	protected List<String> getQuotesFromPage(String url) {
+	protected List<Quote> getQuotesFromPage(String url) {
 		Document document = null;
 		Elements elements = null;
-		List<String> quotesPageList = new ArrayList<String>();
+		List<Quote> quotesPageList = new ArrayList<Quote>();
 
 		try {
 			document = Jsoup.connect(url)
@@ -41,8 +43,8 @@ public class PersdevParser extends Parser {
 	}
 
 	@Override
-	protected List<String> getQuotesAsList(Elements elements) {
-		List<String> tempList = new ArrayList<String>();
+	protected List<Quote> getQuotesAsList(Elements elements) {
+		List<Quote> tempList = new ArrayList<Quote>();
 		for (Element element : elements) {
 
 			String quote = element.select("p").toString();
@@ -50,7 +52,7 @@ public class PersdevParser extends Parser {
 					.replace("</em>", "").replace("<strong>", "").replace("</strong>", "").replace("</p>", "")
 					.replace("<br />", "- ");
 
-			tempList.add(quote);
+			tempList.add(new Quote(quote.split(" - ")[0], quote.split(" - ")[1]));
 		}
 		return tempList;
 

@@ -11,6 +11,8 @@ import java.util.List;
 
 import org.jsoup.select.Elements;
 
+import ro.project.scheduler.Quote;
+
 public abstract class Parser {
 	protected FileManager fileManager;
 	protected String path;
@@ -31,8 +33,8 @@ public abstract class Parser {
 		String fileName = fileManager.createFileNameFromUrl(website);
 
 		path = fileManager.createFileInPath(fileName);
-		List<String> newQuotes = new ArrayList<String>();
-		List<String> tempQuotes = new ArrayList<String>();
+		List<Quote> newQuotes = new ArrayList<Quote>();
+		List<Quote> tempQuotes = new ArrayList<Quote>();
 
 		String url = website;
 		newQuotes = getQuotesFromFile(path);
@@ -41,16 +43,16 @@ public abstract class Parser {
 			saveWebsiteAsOption(website);
 			saveQuotesFromWebsite(website);
 		} else {
-			String quote = newQuotes.get(0).split(" - ")[0];
+			String quote = newQuotes.get(0).getQuote();
 
 			boolean endCondition = false;
 			while (!endCondition) {
 
-				List<String> pageQuotes = getQuotesFromPage(url);
+				List<Quote> pageQuotes = getQuotesFromPage(url);
 				url = getPreviousPageLink(url);
 
 				for (int i = 0; i < pageQuotes.size(); i++) {
-					if (quote.equals(pageQuotes.get(i).split(" - ")[0])) {
+					if (quote.equals(pageQuotes.get(i).getQuote())) {
 						endCondition = true;
 						break;
 					} else {
@@ -72,7 +74,7 @@ public abstract class Parser {
 	 *            String representing the name of the web site.
 	 */
 	protected void saveQuotesFromWebsite(String website) {
-		List<String> quotesList = new ArrayList<String>();
+		List<Quote> quotesList = new ArrayList<Quote>();
 		quotesList.addAll(parseWebsiteForQuotes(website));
 		saveQuotesToFile(quotesList);
 	}
@@ -84,10 +86,10 @@ public abstract class Parser {
 	 *            the URl parsed.
 	 * @return the quotes as a List of type String.
 	 */
-	protected List<String> parseWebsiteForQuotes(String url) {
-		List<String> allQuotesFromWebsite = new ArrayList<String>();
+	protected List<Quote> parseWebsiteForQuotes(String url) {
+		List<Quote> allQuotesFromWebsite = new ArrayList<Quote>();
 		do {
-			List<String> temp = getQuotesFromPage(url);
+			List<Quote> temp = getQuotesFromPage(url);
 			allQuotesFromWebsite.addAll(temp);
 			url = getPreviousPageLink(url);
 		} while (!url.trim().isEmpty());
@@ -102,9 +104,9 @@ public abstract class Parser {
 	 * 
 	 * @return the quotes as a List of type String.
 	 */
-	protected abstract List<String> getQuotesFromPage(String url);
+	protected abstract List<Quote> getQuotesFromPage(String url);
 
-	protected abstract List<String> getQuotesAsList(Elements elements);
+	protected abstract List<Quote> getQuotesAsList(Elements elements);
 
 	protected abstract String getPreviousPageLink(String url);
 
@@ -115,14 +117,14 @@ public abstract class Parser {
 	 *            String representing the name of the file.
 	 * @return List<String> representing all the quotes from the file.
 	 */
-	protected List<String> getQuotesFromFile(String fileName) {
-		List<String> quotesList = new ArrayList<String>();
+	protected List<Quote> getQuotesFromFile(String fileName) {
+		List<Quote> quotesList = new ArrayList<Quote>();
 		BufferedReader br = null;
 		try {
 			br = new BufferedReader(new FileReader(fileName));
 			String line;
 			while ((line = br.readLine()) != null) {
-				quotesList.add(line);
+				quotesList.add(new Quote(line.split(" - ")[0], line.split(" - ")[1]));
 			}
 			br.close();
 		} catch (Exception e) {
@@ -138,7 +140,7 @@ public abstract class Parser {
 	 * @param quotesList
 	 *            the list of quotes.
 	 */
-	protected void saveQuotesToFile(List<String> quotesList) {
+	protected void saveQuotesToFile(List<Quote> quotesList) {
 		BufferedWriter writer = null;
 		try {
 			writer = new BufferedWriter(new FileWriter(path));

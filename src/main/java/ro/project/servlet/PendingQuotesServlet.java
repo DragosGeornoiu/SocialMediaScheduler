@@ -2,6 +2,7 @@ package ro.project.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Calendar;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -29,10 +30,13 @@ public class PendingQuotesServlet extends HttpServlet {
 		int j;
 
 		out.println("<html>\n <body>");
+
+		out.println("<head>");
+		out.print("<a href=\"http://localhost:8080/SocialMediaScheduler/parse\">Parse</a>");
 		out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/Post\">Schedule Quote</a>");
 		out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/QuoteHistory\">Quote History</a>");
 		out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/PendingQuotes\">Pending Quotes</a><br><br>");
-
+		out.print("</head>");
 		try {
 			j = 1;
 			String jString = scheduler.getFacebookPendingUpdates(j);
@@ -53,7 +57,16 @@ public class PendingQuotesServlet extends HttpServlet {
 				out.print("Id: " + update.get("_id") + "<BR>");
 				out.print("Day: " + update.get("day") + "<BR>");
 				out.print("Due_time: " + update.get("due_time") + "<BR>");
+				Calendar c = Calendar.getInstance();
+				c.setTimeInMillis(new Long(((int)update.get("due_at")))*1000);
+				int mYear = c.get(Calendar.YEAR);
+				out.print("Year: " + mYear + "<BR>");
+				out.print("Service: " + update.get("profile_service") + "<BR>");
 				out.print("Text: " + update.get("text") + "<BR>");
+				out.println("<form ACTION=\"DeletePending\">");
+				out.println("<INPUT TYPE=\"hidden\" name=\"url\" value=" + update.get("_id") + ">");
+				out.println("<input type=\"submit\" value=\"Delete\">");
+				out.println("</form>");
 				out.print("<BR>");
 			}
 
@@ -76,7 +89,16 @@ public class PendingQuotesServlet extends HttpServlet {
 				out.print("Id: " + update.get("_id") + "<BR>");
 				out.print("Day: " + update.get("day") + "<BR>");
 				out.print("Due_time: " + update.get("due_time") + "<BR>");
+				Calendar c = Calendar.getInstance();
+				c.setTimeInMillis(new Long(((int)update.get("due_at")))*1000);
+				int mYear = c.get(Calendar.YEAR);
+				out.print("Year: " + mYear + "<BR>");
+				out.print("Service: " + update.get("profile_service") + "<BR>");
 				out.print("Text: " + update.get("text") + "<BR>");
+				out.println("<form ACTION=\"DeletePending\">");
+				out.println("<INPUT TYPE=\"hidden\" name=\"url\" value=" + update.get("_id") + ">");
+				out.println("<input type=\"submit\" value=\"Delete\">");
+				out.println("</form>");
 				out.print("<BR>");
 			}
 

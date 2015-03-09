@@ -54,15 +54,15 @@ public class QuoteManager {
 	 * @return String representing a random quote.
 	 */
 	public String getRandomQuote(String fileName) {
-		String quote;
+		Quote quote;
 
-		List<String> quotesList = new ArrayList<String>();
+		List<Quote> quotesList = new ArrayList<Quote>();
 		BufferedReader br = null;
 		try {
 			br = new BufferedReader(new FileReader(quotesFile));
 			String line;
 			while ((line = br.readLine()) != null) {
-				quotesList.add(line);
+				quotesList.add(new Quote(line.split(" - ")[0], line.split(" - ")[1]));
 			}
 			br.close();
 		} catch (Exception e) {
@@ -80,12 +80,13 @@ public class QuoteManager {
 
 		} while ((checkIfQuotePostedBefore(quote, fileName)));
 
-		saveQuote(quote, fileName);
+		saveQuoteHashing(quote, fileName);
 
-		if (quote.trim().isEmpty()) {
+		if (quote.getQuote().trim().isEmpty()) {
 			return "";
 		} else {
-			return (quote.split(" - ")[0] + " - " + quote.split(" - ")[1]).replaceAll(" ", "+").replaceAll("’", "'");
+			return quote.toString().replaceAll(" ", "+").replaceAll("’", "'");
+			// REMEMBER: return (quote.split(" - ")[0] + " - " + quote.split(" - ")[1]).replaceAll(" ", "+").replaceAll("’", "'");
 		}
 	}
 
@@ -99,10 +100,10 @@ public class QuoteManager {
 	 *            String representing the location where previously posted
 	 *            quotes on a specific social network were posted.
 	 */
-	private void saveQuote(String quote, String fileName) {
+	private void saveQuoteHashing(Quote quote, String fileName) {
 		try {
 			PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(fileName, true)));
-			out.println(hashToMd5(quote.split(" - ")[0]));
+			out.println(quote.getMD5());
 			out.close();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -120,15 +121,13 @@ public class QuoteManager {
 	 *            quotes on the specific social network were posted.
 	 * @return true if it was posted previously, false if not.
 	 */
-	private boolean checkIfQuotePostedBefore(String quote, String fileName) {
-		String id = quote.split(" - ")[0];
-		id = hashToMd5(id);
+	private boolean checkIfQuotePostedBefore(Quote quote, String fileName) {
 		BufferedReader br = null;
 		try {
 			br = new BufferedReader(new FileReader(fileName));
 			String line;
 			while ((line = br.readLine()) != null) {
-				if (line.equals(id)) {
+				if (line.equals(quote.getMD5())) {
 					return true;
 				}
 			}
@@ -145,31 +144,4 @@ public class QuoteManager {
 		return false;
 	}
 
-	/**
-	 * Converts the quote to MD5.
-	 * 
-	 * @param quote
-	 *            String representing the actual quote.
-	 * @return the MD5 representation of the quotes
-	 */
-	private String hashToMd5(String quote) {
-
-		MessageDigest md = null;
-		try {
-			md = MessageDigest.getInstance("MD5");
-		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
-		}
-		md.update(quote.getBytes());
-
-		byte byteData[] = md.digest();
-
-		// convert the byte to hex format method 1
-		StringBuffer sb = new StringBuffer();
-		for (int i = 0; i < byteData.length; i++) {
-			sb.append(Integer.toString((byteData[i] & 0xff) + 0x100, 16).substring(1));
-		}
-
-		return sb.toString();
-	}
 }

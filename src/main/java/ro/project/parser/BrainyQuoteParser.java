@@ -10,6 +10,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import ro.project.scheduler.Quote;
+
 /**
  * 
  * Parser for http://www.brainyquote.com/.
@@ -18,10 +20,10 @@ import org.jsoup.select.Elements;
 public class BrainyQuoteParser extends Parser{
 
 	@Override
-	protected List<String> getQuotesFromPage(String url) {
+	protected List<Quote> getQuotesFromPage(String url) {
 		Document document = null;
 		Elements elements = null;
-		List<String> quotesPageList = new ArrayList<String>();
+		List<Quote> quotesPageList = new ArrayList<Quote>();
 
 		try {
 			document = Jsoup.connect(url)
@@ -41,14 +43,14 @@ public class BrainyQuoteParser extends Parser{
 	}
 
 	@Override
-	protected List<String> getQuotesAsList(Elements elements) {
-		List<String> tempList = new ArrayList<String>();
+	protected List<Quote> getQuotesAsList(Elements elements) {
+		List<Quote> tempList = new ArrayList<Quote>();
 		for (Element element : elements) {
 
 			String quote = element.getElementsByClass("bqQuoteLink").select("a").text().toString();
 			String auth = element.getElementsByClass("bq-aut").select("a").text().toString();
 
-			tempList.add(quote + " - " + auth);
+			tempList.add(new Quote(quote, auth));
 		}
 		return tempList;
 

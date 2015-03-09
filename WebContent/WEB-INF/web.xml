@@ -51,6 +51,15 @@
 		<servlet-name>Post</servlet-name>
 		<url-pattern>/Post</url-pattern>
 	</servlet-mapping>
+	<servlet>
+		<servlet-name>DeletePending</servlet-name>
+		<servlet-class>ro.project.servlet.DeletePendingQuoteServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>DeletePending</servlet-name>
+		<url-pattern>/DeletePending</url-pattern>
+	</servlet-mapping>
+	
 <!--  	<welcome-file-list>
 		<welcome-file>Post</welcome-file>
 	</welcome-file-list> 

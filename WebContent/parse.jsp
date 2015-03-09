@@ -6,11 +6,20 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Parse</title>
+		<a href="http://localhost:8080/SocialMediaScheduler/parse">Parse</a>
+		<br> <a href="http://localhost:8080/SocialMediaScheduler/Post">Schedule Quote</a>
+		<br> <a href="http://localhost:8080/SocialMediaScheduler/QuoteHistory">Quote History</a>
+		<br> <a href="http://localhost:8080/SocialMediaScheduler/PendingQuotes">Pending Quotes</a><br><br>
 </head>
 <body>
 	<form ACTION="ParseWebsite">
 		Please enter a website: <br> <input
-			type="text" name="website" size="20px"> <input type="submit"
+			type="text" name="website" size="20px"> <br>
+			<INPUT TYPE="radio" NAME="radios" VALUE="http://persdev-q.com/"> http://persdev-q.com/;
+			<br>
+			<INPUT TYPE="radio" NAME="radios" VALUE="http://www.brainyquote.com/"> http://www.brainyquote.com/;
+			<br>
+			 <input type="submit"
 			value="Submit"> <br> <br>
 	</form>
 
