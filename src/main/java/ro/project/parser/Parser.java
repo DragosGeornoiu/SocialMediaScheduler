@@ -2,14 +2,20 @@ package ro.project.parser;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.jsoup.select.Elements;
 
@@ -34,9 +40,9 @@ public abstract class Parser {
 		fileManager = new FileManager();
 		String fileName = fileManager.createFileNameFromUrl(website);
 
-		path = fileManager.createFileInPath(fileName+".ser");
-		List<Quote> newQuotes = new ArrayList<Quote>();
-		List<Quote> tempQuotes = new ArrayList<Quote>();
+		path = fileManager.createFileInPath(fileName + ".ser");
+		Hashtable<String, Quote> newQuotes = new Hashtable<String, Quote>();
+		Hashtable<String, Quote> tempQuotes = new Hashtable<String, Quote>();
 
 		String url = website;
 		newQuotes = getQuotesFromFile(path);
@@ -45,25 +51,49 @@ public abstract class Parser {
 			saveWebsiteAsOption(website);
 			saveQuotesFromWebsite(website);
 		} else {
-			String quote = newQuotes.get(0).getQuote();
-
+/*			String quote = newQuotes.get(0).getQuote();
+*/
 			boolean endCondition = false;
 			while (!endCondition) {
 
-				List<Quote> pageQuotes = getQuotesFromPage(url);
+				Hashtable<String, Quote> pageQuotes = getQuotesFromPage(url);
 				url = getPreviousPageLink(url);
 
-				for (int i = 0; i < pageQuotes.size(); i++) {
-					if (quote.equals(pageQuotes.get(i).getQuote())) {
+				
+				Set<Map.Entry<String,Quote>> entrySet = pageQuotes.entrySet();
+				Iterator it = entrySet.iterator();
+				while (it.hasNext()) {
+				//	System.out.println(((Map.Entry<String,Quote>)it.next()).getKey());
+					Map.Entry<String,Quote> entry = (Map.Entry<String,Quote>)it.next();
+					if(newQuotes.contains(entry.getValue())) {
+						endCondition = true;
+						break;
+					} else {
+						tempQuotes.put(entry.getValue().getMD5(), entry.getValue());
+				}
+			}
+				
+				/*Set entrySet = pageQuotes.entrySet();
+				Iterator it = entrySet.iterator();
+				while (it.hasNext()) {
+					if (quote.equals(((Quote)it.next()
+							;pageQuotes.get(i).getQuote())) {
 						endCondition = true;
 						break;
 					} else {
 						tempQuotes.add(pageQuotes.get(i));
 					}
-				}
+
+				}*/
+
+				/*
+				 * for (int i = 0; i < pageQuotes.size(); i++) { if
+				 * (quote.equals(pageQuotes.get(i).getQuote())) { endCondition =
+				 * true; break; } else { tempQuotes.add(pageQuotes.get(i)); } }
+				 */
 			}
 
-			newQuotes.addAll(0, tempQuotes);
+			newQuotes.putAll(tempQuotes);
 			saveQuotesToFile(newQuotes);
 		}
 		return path;
@@ -76,8 +106,8 @@ public abstract class Parser {
 	 *            String representing the name of the web site.
 	 */
 	protected void saveQuotesFromWebsite(String website) {
-		List<Quote> quotesList = new ArrayList<Quote>();
-		quotesList.addAll(parseWebsiteForQuotes(website));
+		Hashtable<String, Quote> quotesList = new Hashtable<String, Quote>();
+		quotesList.putAll(parseWebsiteForQuotes(website));
 		saveQuotesToFile(quotesList);
 	}
 
@@ -88,11 +118,11 @@ public abstract class Parser {
 	 *            the URl parsed.
 	 * @return the quotes as a List of type String.
 	 */
-	protected List<Quote> parseWebsiteForQuotes(String url) {
-		List<Quote> allQuotesFromWebsite = new ArrayList<Quote>();
+	protected Hashtable<String, Quote> parseWebsiteForQuotes(String url) {
+		Hashtable<String, Quote> allQuotesFromWebsite = new Hashtable<String, Quote>();
 		do {
-			List<Quote> temp = getQuotesFromPage(url);
-			allQuotesFromWebsite.addAll(temp);
+			Hashtable<String, Quote> temp = getQuotesFromPage(url);
+			allQuotesFromWebsite.putAll(temp);
 			url = getPreviousPageLink(url);
 		} while (!url.trim().isEmpty());
 
@@ -100,15 +130,17 @@ public abstract class Parser {
 	}
 
 	/**
-	 * Provided by each parser must be the method to select all quotes from a page.
+	 * Provided by each parser must be the method to select all quotes from a
+	 * page.
 	 * 
-	 * @param url the URL to get the quotes from.
+	 * @param url
+	 *            the URL to get the quotes from.
 	 * 
 	 * @return the quotes as a List of type String.
 	 */
-	protected abstract List<Quote> getQuotesFromPage(String url);
+	protected abstract Hashtable<String, Quote> getQuotesFromPage(String url);
 
-	protected abstract List<Quote> getQuotesAsList(Elements elements);
+	protected abstract Hashtable<String, Quote> getQuotesAsList(Elements elements);
 
 	protected abstract String getPreviousPageLink(String url);
 
@@ -119,21 +151,32 @@ public abstract class Parser {
 	 *            String representing the name of the file.
 	 * @return List<String> representing all the quotes from the file.
 	 */
-	protected List<Quote> getQuotesFromFile(String fileName) {
-		List<Quote> quotesList = new ArrayList<Quote>();
+	protected Hashtable<String, Quote> getQuotesFromFile(String fileName) {
+		//System.out.println("FILENAME: " + fileName);
+		/*Hashtable<String, Quote> quotesList = new Hashtable<String, Quote>();
 		BufferedReader br = null;
 		try {
 			br = new BufferedReader(new FileReader(fileName));
 			String line;
 			while ((line = br.readLine()) != null) {
-				quotesList.add(new Quote(line.split(" - ")[0], line.split(" - ")[1]));
+				Quote q = new Quote(line.split(" - ")[0], line.split(" - ")[1]);
+				quotesList.put(q.getMD5(), q);
 			}
 			br.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
-		return quotesList;
+		return quotesList;*/
+		
+		Hashtable<String, Quote> quotes = new Hashtable<String, Quote>();
+		    try {
+		        ObjectInputStream in = new ObjectInputStream(new FileInputStream(fileName));
+		        quotes = (Hashtable<String, Quote>) in.readObject(); 
+		        in.close();
+		    }
+		    catch(Exception e) {}
+		    return quotes;
 	}
 
 	/**
@@ -142,44 +185,31 @@ public abstract class Parser {
 	 * @param quotesList
 	 *            the list of quotes.
 	 */
-	protected void saveQuotesToFile(List<Quote> quotesList) {
-		/*BufferedWriter writer = null;
+	protected void saveQuotesToFile(Hashtable<String, Quote> quotesList) {
+		/*
+		 * BufferedWriter writer = null; try { writer = new BufferedWriter(new
+		 * FileWriter(path)); for (int i = 0; i < quotesList.size(); i++) {
+		 * writer.write(quotesList.get(i) + "\n"); } } catch (IOException e) {
+		 * e.printStackTrace(); } finally { try { if (writer != null)
+		 * writer.close(); } catch (IOException e) { e.printStackTrace(); } }
+		 */
+
 		try {
-			writer = new BufferedWriter(new FileWriter(path));
-			for (int i = 0; i < quotesList.size(); i++) {
-				writer.write(quotesList.get(i) + "\n");
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if (writer != null)
-					writer.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			FileOutputStream fileOut = new FileOutputStream(path);
+			ObjectOutputStream out = new ObjectOutputStream(fileOut);
+			out.writeObject(quotesList);
+			out.close();
+			fileOut.close();
+		} catch (IOException ex) {
+			ex.printStackTrace();
 		}
-		
-		*/
-		
-		try {
-	        FileOutputStream fileOut = new FileOutputStream(path);
-	        ObjectOutputStream out = new ObjectOutputStream(fileOut);
-	        out.writeObject(quotesList);
-	        out.close();
-	        fileOut.close();
-	    } catch (IOException ex) {
-	    	ex.printStackTrace();
-	    }
 	}
-	
 
-
-	
 	/**
 	 * Saves the web site as a option.
-	 *  
-	 * @param website the URL to save as  a option to post from.
+	 * 
+	 * @param website
+	 *            the URL to save as a option to post from.
 	 */
 	protected void saveWebsiteAsOption(String website) {
 		try {

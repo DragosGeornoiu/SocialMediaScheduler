@@ -3,6 +3,7 @@ package ro.project.parser;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 
 import org.jsoup.Jsoup;
@@ -21,10 +22,10 @@ import ro.project.scheduler.Quote;
 public class PersdevParser extends Parser {
 
 	@Override
-	protected List<Quote> getQuotesFromPage(String url) {
+	protected Hashtable<String, Quote> getQuotesFromPage(String url) {
 		Document document = null;
 		Elements elements = null;
-		List<Quote> quotesPageList = new ArrayList<Quote>();
+		Hashtable<String, Quote> quotesPageList = new Hashtable<String, Quote>();
 
 		try {
 			document = Jsoup.connect(url)
@@ -43,8 +44,8 @@ public class PersdevParser extends Parser {
 	}
 
 	@Override
-	protected List<Quote> getQuotesAsList(Elements elements) {
-		List<Quote> tempList = new ArrayList<Quote>();
+	protected Hashtable<String, Quote> getQuotesAsList(Elements elements) {
+		Hashtable<String, Quote> tempList = new Hashtable<String, Quote>();
 		for (Element element : elements) {
 
 			String quote = element.select("p").toString();
@@ -52,7 +53,8 @@ public class PersdevParser extends Parser {
 					.replace("</em>", "").replace("<strong>", "").replace("</strong>", "").replace("</p>", "")
 					.replace("<br />", "- ");
 
-			tempList.add(new Quote(quote.split(" - ")[0], quote.split(" - ")[1]));
+			Quote q = new Quote(quote.split(" - ")[0], quote.split(" - ")[1]);
+			tempList.put(q.getMD5(), q);
 		}
 		return tempList;
 

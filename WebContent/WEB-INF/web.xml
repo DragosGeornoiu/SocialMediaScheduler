@@ -59,8 +59,14 @@
 		<servlet-name>DeletePending</servlet-name>
 		<url-pattern>/DeletePending</url-pattern>
 	</servlet-mapping>
-	
-<!--  	<welcome-file-list>
-		<welcome-file>Post</welcome-file>
-	</welcome-file-list> 
- --></web-app>
+	<servlet>
+		<servlet-name>PaginationServlet</servlet-name>
+		<servlet-class>ro.project.servlet.PaginationServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>PaginationServlet</servlet-name>
+		<url-pattern>/history</url-pattern>
+	</servlet-mapping>
+
+	<!-- <welcome-file-list> <welcome-file>Post</welcome-file> </welcome-file-list> -->
+</web-app>

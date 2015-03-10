@@ -139,7 +139,7 @@ public class QuoteHistoryServlet extends HttpServlet {
 				 * out.print("<BR>");
 				 */
 				Calendar c = Calendar.getInstance();
-				c.setTimeInMillis(new Long(((int) update.get("due_at"))) * 1000);
+				c.setTimeInMillis(new Long(((int) update.getInt("due_at"))) * 1000);
 				int mYear = c.get(Calendar.YEAR);
 				out.print("Due at: " + update.get("due_time") + "; " + update.get("day") + "; " + mYear + "<BR>");
 				out.print("Service: " + update.get("profile_service") + "<BR>");
@@ -175,7 +175,7 @@ public class QuoteHistoryServlet extends HttpServlet {
 				out.print("<BR>");*/
 
 				Calendar c = Calendar.getInstance();
-				c.setTimeInMillis(new Long(((int) update.get("due_at"))) * 1000);
+				c.setTimeInMillis(new Long(((int) update.getInt("due_at"))) * 1000);
 				int mYear = c.get(Calendar.YEAR);
 				out.print("Due at: " + update.get("due_time") + "; " + update.get("day") + "; " + mYear + "<BR>");
 				out.print("Service: " + update.get("profile_service") + "<BR>");

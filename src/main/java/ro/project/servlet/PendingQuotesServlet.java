@@ -58,7 +58,7 @@ public class PendingQuotesServlet extends HttpServlet {
 				out.print("Day: " + update.get("day") + "<BR>");
 				out.print("Due_time: " + update.get("due_time") + "<BR>");
 				Calendar c = Calendar.getInstance();
-				c.setTimeInMillis(new Long(((int)update.get("due_at")))*1000);
+				c.setTimeInMillis(new Long(((int)update.getInt("due_at")))*1000);
 				int mYear = c.get(Calendar.YEAR);
 				out.print("Year: " + mYear + "<BR>");
 				out.print("Service: " + update.get("profile_service") + "<BR>");
@@ -90,7 +90,7 @@ public class PendingQuotesServlet extends HttpServlet {
 				out.print("Day: " + update.get("day") + "<BR>");
 				out.print("Due_time: " + update.get("due_time") + "<BR>");
 				Calendar c = Calendar.getInstance();
-				c.setTimeInMillis(new Long(((int)update.get("due_at")))*1000);
+				c.setTimeInMillis(new Long(((int)update.getInt("due_at")))*1000);
 				int mYear = c.get(Calendar.YEAR);
 				out.print("Year: " + mYear + "<BR>");
 				out.print("Service: " + update.get("profile_service") + "<BR>");

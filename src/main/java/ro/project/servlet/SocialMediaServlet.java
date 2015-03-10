@@ -45,8 +45,8 @@ public class SocialMediaServlet extends HttpServlet {
 			for (int i = 0; i < where.length; i++) {
 				if (where[i].equals("Twitter")) {
 					scheduler.setUserId("54f4480b76a9a2b75cb71256");
-					String quote = quoteManager.getRandomQuoteForTwitter();
-					if (quote.trim().isEmpty()) {
+					String quote = quoteManager.getRandomQuoteForTwitter().toString();
+					if ((quote==null) || (quote.trim().isEmpty())) {
 						out.print("Found nothing to print");
 					} else {
 						if (scheduler.sendMessage(quote, date) == 200) {
@@ -58,8 +58,8 @@ public class SocialMediaServlet extends HttpServlet {
 					}
 				} else if (where[i].equals("Facebook")) {
 					scheduler.setUserId("54f5cffee090e41029541d73");
-					String quote = quoteManager.getRandomQuoteForFacebook();
-					if (quote.trim().isEmpty()) {
+					String quote = quoteManager.getRandomQuoteForFacebook().toString();
+					if ((quote==null) || (quote.trim().isEmpty())) {
 						out.print("Found nothing to print");
 					} else {
 						if (scheduler.sendMessage(quote, date) == 200) {
