@@ -50,10 +50,13 @@ public class ParseWebsiteServlet extends HttpServlet {
 		out.println("<body>");
 		if (selectionCorect) {
 
-			parser.updateQuotes(website);
+			if(parser.updateQuotes(website)) {
 			fileManager.createFileInPath("facebookquotes.txt");
 			fileManager.createFileInPath("twitterquotes.txt");
 			out.println("The quotes from the given website were retrieved... <br> What do you want to do next? <br>");
+			} else {
+				out.println("The website was already parsed... <br>");
+			}
 		} else {
 			out.println("Something went wrong, you can try again...<br>");
 

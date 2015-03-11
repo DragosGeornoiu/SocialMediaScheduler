@@ -7,6 +7,10 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Employees</title>
+<a href="http://localhost:8080/SocialMediaScheduler/parse">Parse</a>
+<br> <a href="http://localhost:8080/SocialMediaScheduler/Post">Schedule Quote</a>
+<br> <a href="http://localhost:8080/SocialMediaScheduler/QuoteHistory">Quote QuoteHistory</a>
+<br> <a href="http://localhost:8080/SocialMediaScheduler/PendingQuotes">Pending Quotes</a><br><br>
 </head>
 <body>
 	<c:forEach var="quote" items="${quotesList}">
@@ -16,7 +20,7 @@
 
 	<%--For displaying Previous link except for the 1st page --%>
 	<c:if test="${currentPage != 1}">
-		<td><a href="history?page=${currentPage - 1}">Previous</a></td>
+		<td><a href="QuoteHistory?page=${currentPage - 1}">Previous</a></td>
 	</c:if>
 
 	<%--For displaying Page numbers. 
@@ -29,7 +33,7 @@
 						<td>${i}</td>
 					</c:when>
 					<c:otherwise>
-						<td><a href="history?page=${i}">${i}</a></td>
+						<td><a href="QuoteHistory?page=${i}">${i}</a></td>
 					</c:otherwise>
 				</c:choose>
 			</c:forEach>
@@ -38,7 +42,7 @@
 
 	<%--For displaying Next link --%>
 	<c:if test="${currentPage lt noOfPages}">
-		<td><a href="history?page=${currentPage + 1}">Next</a></td>
+		<td><a href="QuoteHistory?page=${currentPage + 1}">Next</a></td>
 	</c:if>
 
 </body>

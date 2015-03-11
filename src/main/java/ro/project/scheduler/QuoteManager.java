@@ -32,6 +32,9 @@ public class QuoteManager {
 	 */
 	public Quote getRandomQuoteForTwitter() {
 		Quote quote = getRandomQuote(FILE_TWITTER);
+		
+		if(quote==null)
+			return null;
 		while (quote.getQuote().length() > 140) {
 			quote = getRandomQuote(FILE_TWITTER);
 		}
@@ -60,65 +63,58 @@ public class QuoteManager {
 	public Quote getRandomQuote(String fileName) {
 		Quote quote = null;
 
-		/*List<Quote> quotesList = new ArrayList<Quote>();
-		BufferedReader br = null;
-		try {
-			br = new BufferedReader(new FileReader(quotesFile));
-			String line;
-			while ((line = br.readLine()) != null) {
-				quotesList.add(new Quote(line.split(" - ")[0], line.split(" - ")[1]));
-			}
-			br.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}*/
+		/*
+		 * List<Quote> quotesList = new ArrayList<Quote>(); BufferedReader br =
+		 * null; try { br = new BufferedReader(new FileReader(quotesFile));
+		 * String line; while ((line = br.readLine()) != null) {
+		 * quotesList.add(new Quote(line.split(" - ")[0],
+		 * line.split(" - ")[1])); } br.close(); } catch (Exception e) {
+		 * e.printStackTrace(); }
+		 */
 
-		
-		
-		 Hashtable<String, Quote> quotesList = new Hashtable<String, Quote>();
-		    try {
-		        ObjectInputStream in = new ObjectInputStream(new FileInputStream(quotesFile));
-		        quotesList.putAll(( Hashtable<String, Quote>) in.readObject()); 
-		        in.close();
-		    }
-		    catch(Exception e) {}
-		
-		
+		Hashtable<String, Quote> quotesList = new Hashtable<String, Quote>();
+		try {
+			ObjectInputStream in = new ObjectInputStream(new FileInputStream(quotesFile));
+			quotesList.putAll((Hashtable<String, Quote>) in.readObject());
+			in.close();
+		} catch (Exception e) {
+		}
+
+		int size = quotesList.size();
+		int j = 0; // for not entering a never ending loop
+		boolean endCondition = false;
 		do {
 			if ((quotesList == null) || (quotesList.size() == 0)) {
-				System.out.println("It returned an empty list");
 				return null;
 			}
-		/*	Random rand = new Random();
-			int randomNum = rand.nextInt(quotesList.size());
-			quote = quotesList.get(randomNum);
-			quotesList.remove(randomNum);*/
-			
-			
-			//The random is really not good
-			int size = quotesList.size();
+			/*
+			 * Random rand = new Random(); int randomNum =
+			 * rand.nextInt(quotesList.size()); quote =
+			 * quotesList.get(randomNum); quotesList.remove(randomNum);
+			 */
+
+			// The random is really not good
+
+			j++;
 			int item = new Random().nextInt(size);
 			int i = 0;
-			Set<Map.Entry<String,Quote>> entrySet = quotesList.entrySet();
-			for(Map.Entry<String,Quote> obj : entrySet)
-			{
-			    if (i == item)
-			    	quote = obj.getValue();
-			    i = i + 1;
+			Set<Map.Entry<String, Quote>> entrySet = quotesList.entrySet();
+			for (Map.Entry<String, Quote> obj : entrySet) {
+				if (i == item)
+					quote = obj.getValue();
+				i = i + 1;
 			}
-			
-			
 
-		} while((checkIfQuotePostedBefore(quote, fileName)));
+			quotesList.remove(quote.getMD5());
+		} while ((endCondition = checkIfQuotePostedBefore(quote, fileName, j)));
 
-		saveQuoteHashing(quotesList, fileName);
-
-		if (quote.getQuote().trim().isEmpty()) {
+		if ((endCondition) || (quote.getQuote().trim().isEmpty())) {
 			return null;
 		} else {
 			quote.setQuote(quote.getQuote().replaceAll(" ", "+").replaceAll("’", "'"));
 			return quote;
-			// REMEMBER: return (quote.split(" - ")[0] + " - " + quote.split(" - ")[1]).replaceAll(" ", "+").replaceAll("’", "'");
+			// REMEMBER: return (quote.split(" - ")[0] + " - " +
+			// quote.split(" - ")[1]).replaceAll(" ", "+").replaceAll("’", "'");
 		}
 	}
 
@@ -132,7 +128,7 @@ public class QuoteManager {
 	 *            String representing the location where previously posted
 	 *            quotes on a specific social network were posted.
 	 */
-	private void saveQuoteHashing(Hashtable<String, Quote> quotesList, String fileName) {
+	private void saveQuote(Hashtable<String, Quote> quotesList, String fileName) {
 		try {
 			FileOutputStream fileOut = new FileOutputStream(fileName);
 			ObjectOutputStream out = new ObjectOutputStream(fileOut);
@@ -155,41 +151,33 @@ public class QuoteManager {
 	 *            quotes on the specific social network were posted.
 	 * @return true if it was posted previously, false if not.
 	 */
-	private boolean checkIfQuotePostedBefore(Quote quote, String fileName) {
+	private boolean checkIfQuotePostedBefore(Quote quote, String fileName, int j) {
 		Hashtable<String, Quote> quotes = new Hashtable<String, Quote>();
-	    try {
-	        ObjectInputStream in = new ObjectInputStream(new FileInputStream(fileName));
-	        quotes = (Hashtable<String, Quote>) in.readObject(); 
-	        in.close();
-	    }
-	    catch(Exception e) {}
-
-	    if(quotes.contains(quote))
-	    	return true;
-	    else 
-	    	return false;
-	    
-		
-		/*BufferedReader br = null;
 		try {
-			br = new BufferedReader(new FileReader(fileName));
-			String line;
-			while ((line = br.readLine()) != null) {
-				if (line.equals(quote.getMD5())) {
-					return true;
-				}
-			}
-			br.close();
+			ObjectInputStream in = new ObjectInputStream(new FileInputStream(fileName));
+			quotes = (Hashtable<String, Quote>) in.readObject();
+			in.close();
 		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				br.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
 		}
-		return false;*/
+
+		if (quotes.containsKey(quote.getMD5())) {
+			System.out.println(quote + "already is");
+			return true;
+		} else {
+			System.out.println(quote + "is now saved");
+			quotes.put(quote.getMD5(), quote);
+			saveQuote(quotes, fileName);
+			return false;
+		}
+
+		/*
+		 * BufferedReader br = null; try { br = new BufferedReader(new
+		 * FileReader(fileName)); String line; while ((line = br.readLine()) !=
+		 * null) { if (line.equals(quote.getMD5())) { return true; } }
+		 * br.close(); } catch (Exception e) { e.printStackTrace(); } finally {
+		 * try { br.close(); } catch (IOException e) { e.printStackTrace(); } }
+		 * return false;
+		 */
 	}
 
 }

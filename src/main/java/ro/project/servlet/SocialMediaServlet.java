@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import ro.project.parser.FileManager;
+import ro.project.scheduler.Quote;
 import ro.project.scheduler.QuoteManager;
 import ro.project.scheduler.Scheduler;
 
@@ -45,12 +46,12 @@ public class SocialMediaServlet extends HttpServlet {
 			for (int i = 0; i < where.length; i++) {
 				if (where[i].equals("Twitter")) {
 					scheduler.setUserId("54f4480b76a9a2b75cb71256");
-					String quote = quoteManager.getRandomQuoteForTwitter().toString();
-					if ((quote==null) || (quote.trim().isEmpty())) {
-						out.print("Found nothing to print");
+					Quote quote = quoteManager.getRandomQuoteForTwitter();
+					if ((quote==null) || (quote.getQuote().trim().isEmpty())) {
+						out.print("<br> Found nothing to print on Twitter");
 					} else {
-						if (scheduler.sendMessage(quote, date) == 200) {
-							out.println("Quote \"" + quote.replaceAll("\\+", " ") + "\" was schedulet to be posted on "
+						if (scheduler.sendMessage(quote.toString(), date) == 200) {
+							out.println("Quote \"" + quote.toString().replaceAll("\\+", " ") + "\" was schedulet to be posted on "
 									+ date + " on " + where[i] + "<BR>");
 						} else {
 							out.println("<br>Something went wrong when trying to post on Twitter" + "<BR>");
@@ -58,12 +59,12 @@ public class SocialMediaServlet extends HttpServlet {
 					}
 				} else if (where[i].equals("Facebook")) {
 					scheduler.setUserId("54f5cffee090e41029541d73");
-					String quote = quoteManager.getRandomQuoteForFacebook().toString();
-					if ((quote==null) || (quote.trim().isEmpty())) {
-						out.print("Found nothing to print");
+					Quote quote = quoteManager.getRandomQuoteForFacebook();
+					if ((quote==null) || (quote.getQuote().trim().isEmpty())) {
+						out.print("<br> Found nothing to print on Facebook");
 					} else {
-						if (scheduler.sendMessage(quote, date) == 200) {
-							out.println("Quote \"" + quote.replaceAll("\\+", " ") + "\" was schedulet to be posted on "
+						if (scheduler.sendMessage(quote.toString(), date) == 200) {
+							out.println("Quote \"" + quote.toString().replaceAll("\\+", " ") + "\" was schedulet to be posted on "
 									+ date + " on " + where[i] + "<BR>");
 						} else {
 							out.println("<br>Something went wrong when trying to post on Facebook" + "<BR>");

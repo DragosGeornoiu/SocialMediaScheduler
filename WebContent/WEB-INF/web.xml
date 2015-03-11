@@ -12,14 +12,6 @@
 		<url-pattern>/HelloServlet</url-pattern>
 	</servlet-mapping>
 	<servlet>
-		<servlet-name>History</servlet-name>
-		<servlet-class>ro.project.servlet.QuoteHistoryServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>History</servlet-name>
-		<url-pattern>/QuoteHistory</url-pattern>
-	</servlet-mapping>
-	<servlet>
 		<servlet-name>Pending</servlet-name>
 		<servlet-class>ro.project.servlet.PendingQuotesServlet</servlet-class>
 	</servlet>
@@ -65,6 +57,14 @@
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>PaginationServlet</servlet-name>
+		<url-pattern>/QuoteHistory</url-pattern>
+	</servlet-mapping>
+		<servlet>
+		<servlet-name>History</servlet-name>
+		<servlet-class>ro.project.servlet.QuoteHistoryServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>History</servlet-name>
 		<url-pattern>/history</url-pattern>
 	</servlet-mapping>
 

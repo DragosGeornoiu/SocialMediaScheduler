@@ -36,11 +36,14 @@ public abstract class Parser {
 	 * @return path created from the PATH variable and the name of the text file
 	 *         formed from the web site name.
 	 */
-	public String updateQuotes(String website) {
+	public boolean updateQuotes(String website) {
 		fileManager = new FileManager();
 		String fileName = fileManager.createFileNameFromUrl(website);
 
 		path = fileManager.createFileInPath(fileName + ".ser");
+		if (path.trim().isEmpty()) {
+			return false;
+		}
 		Hashtable<String, Quote> newQuotes = new Hashtable<String, Quote>();
 		Hashtable<String, Quote> tempQuotes = new Hashtable<String, Quote>();
 
@@ -51,40 +54,37 @@ public abstract class Parser {
 			saveWebsiteAsOption(website);
 			saveQuotesFromWebsite(website);
 		} else {
-/*			String quote = newQuotes.get(0).getQuote();
-*/
+			/*
+			 * String quote = newQuotes.get(0).getQuote();
+			 */
 			boolean endCondition = false;
 			while (!endCondition) {
 
 				Hashtable<String, Quote> pageQuotes = getQuotesFromPage(url);
 				url = getPreviousPageLink(url);
 
-				
-				Set<Map.Entry<String,Quote>> entrySet = pageQuotes.entrySet();
+				Set<Map.Entry<String, Quote>> entrySet = pageQuotes.entrySet();
 				Iterator it = entrySet.iterator();
 				while (it.hasNext()) {
-				//	System.out.println(((Map.Entry<String,Quote>)it.next()).getKey());
-					Map.Entry<String,Quote> entry = (Map.Entry<String,Quote>)it.next();
-					if(newQuotes.contains(entry.getValue())) {
+					// System.out.println(((Map.Entry<String,Quote>)it.next()).getKey());
+					Map.Entry<String, Quote> entry = (Map.Entry<String, Quote>) it.next();
+					if (newQuotes.contains(entry.getValue())) {
 						endCondition = true;
 						break;
 					} else {
 						tempQuotes.put(entry.getValue().getMD5(), entry.getValue());
-				}
-			}
-				
-				/*Set entrySet = pageQuotes.entrySet();
-				Iterator it = entrySet.iterator();
-				while (it.hasNext()) {
-					if (quote.equals(((Quote)it.next()
-							;pageQuotes.get(i).getQuote())) {
-						endCondition = true;
-						break;
-					} else {
-						tempQuotes.add(pageQuotes.get(i));
 					}
+				}
 
-				}*/
+				/*
+				 * Set entrySet = pageQuotes.entrySet(); Iterator it =
+				 * entrySet.iterator(); while (it.hasNext()) { if
+				 * (quote.equals(((Quote)it.next()
+				 * ;pageQuotes.get(i).getQuote())) { endCondition = true; break;
+				 * } else { tempQuotes.add(pageQuotes.get(i)); }
+				 * 
+				 * }
+				 */
 
 				/*
 				 * for (int i = 0; i < pageQuotes.size(); i++) { if
@@ -96,7 +96,7 @@ public abstract class Parser {
 			newQuotes.putAll(tempQuotes);
 			saveQuotesToFile(newQuotes);
 		}
-		return path;
+		return true;
 	}
 
 	/**
@@ -152,31 +152,26 @@ public abstract class Parser {
 	 * @return List<String> representing all the quotes from the file.
 	 */
 	protected Hashtable<String, Quote> getQuotesFromFile(String fileName) {
-		//System.out.println("FILENAME: " + fileName);
-		/*Hashtable<String, Quote> quotesList = new Hashtable<String, Quote>();
-		BufferedReader br = null;
-		try {
-			br = new BufferedReader(new FileReader(fileName));
-			String line;
-			while ((line = br.readLine()) != null) {
-				Quote q = new Quote(line.split(" - ")[0], line.split(" - ")[1]);
-				quotesList.put(q.getMD5(), q);
-			}
-			br.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		// System.out.println("FILENAME: " + fileName);
+		/*
+		 * Hashtable<String, Quote> quotesList = new Hashtable<String, Quote>();
+		 * BufferedReader br = null; try { br = new BufferedReader(new
+		 * FileReader(fileName)); String line; while ((line = br.readLine()) !=
+		 * null) { Quote q = new Quote(line.split(" - ")[0],
+		 * line.split(" - ")[1]); quotesList.put(q.getMD5(), q); } br.close(); }
+		 * catch (Exception e) { e.printStackTrace(); }
+		 * 
+		 * return quotesList;
+		 */
 
-		return quotesList;*/
-		
 		Hashtable<String, Quote> quotes = new Hashtable<String, Quote>();
-		    try {
-		        ObjectInputStream in = new ObjectInputStream(new FileInputStream(fileName));
-		        quotes = (Hashtable<String, Quote>) in.readObject(); 
-		        in.close();
-		    }
-		    catch(Exception e) {}
-		    return quotes;
+		try {
+			ObjectInputStream in = new ObjectInputStream(new FileInputStream(fileName));
+			quotes = (Hashtable<String, Quote>) in.readObject();
+			in.close();
+		} catch (Exception e) {
+		}
+		return quotes;
 	}
 
 	/**

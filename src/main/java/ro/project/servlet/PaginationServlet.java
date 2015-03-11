@@ -33,7 +33,7 @@ public class PaginationServlet extends HttpServlet {
     	
     	PrintWriter out = response.getWriter();
 		
-		Dao dao = new Dao();
+		PostedQuotesDao dao = new PostedQuotesDao();
 		
 		
         int page = 1;

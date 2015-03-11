@@ -88,6 +88,9 @@ public class FileManager {
 	 */
 	public String createFileInPath(String fileName) {
 		File file = new File(PATH + "\\\\" + fileName);
+		if(file.exists() && !file.isDirectory()) {
+			return "";
+		} 
 		file.getParentFile().mkdirs();
 		try {
 			file.createNewFile();
