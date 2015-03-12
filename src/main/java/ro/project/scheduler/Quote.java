@@ -5,6 +5,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class Quote implements Serializable {
+	private static final long serialVersionUID = 1L;
 	private String quote;
 	private String author;
 	private String MD5;

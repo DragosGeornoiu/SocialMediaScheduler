@@ -1,7 +1,6 @@
 package ro.project.servlet;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -16,7 +15,6 @@ public class DeletePendingQuoteServlet extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		PrintWriter out = response.getWriter();
 		scheduler = new Scheduler();
 		
 		scheduler.deleteUpdate(request.getParameter("url"));

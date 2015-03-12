@@ -1,17 +1,11 @@
 package ro.project.scheduler;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.PrintWriter;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
@@ -35,7 +29,7 @@ public class QuoteManager {
 		
 		if(quote==null)
 			return null;
-		while (quote.getQuote().length() > 140) {
+		while (quote.toString().length() > 140) {
 			quote = getRandomQuote(FILE_TWITTER);
 		}
 		return quote;
@@ -158,13 +152,12 @@ public class QuoteManager {
 			quotes = (Hashtable<String, Quote>) in.readObject();
 			in.close();
 		} catch (Exception e) {
+			e.printStackTrace();
 		}
 
 		if (quotes.containsKey(quote.getMD5())) {
-			System.out.println(quote + "already is");
 			return true;
 		} else {
-			System.out.println(quote + "is now saved");
 			quotes.put(quote.getMD5(), quote);
 			saveQuote(quotes, fileName);
 			return false;

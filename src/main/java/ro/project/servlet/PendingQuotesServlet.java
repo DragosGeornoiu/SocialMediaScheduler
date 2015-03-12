@@ -40,7 +40,6 @@ public class PendingQuotesServlet extends HttpServlet {
 		try {
 			j = 1;
 			String jString = scheduler.getFacebookPendingUpdates(j);
-			out.print("<font color=\"red\">FACEBOOK</font>" + "<BR>");
 			JSONObject jsonObject = new JSONObject(jString);
 			int total = jsonObject.getInt("total");
 			JSONArray updates = jsonObject.getJSONArray("updates");
@@ -72,7 +71,6 @@ public class PendingQuotesServlet extends HttpServlet {
 
 			j = 1;
 			jString = scheduler.getTwitterPendingUpdates(j);
-			out.print("<font color=\"red\">TWITTER</font>" + "<BR>");
 			jsonObject = new JSONObject(jString);
 			total = jsonObject.getInt("total");
 			updates = jsonObject.getJSONArray("updates");
@@ -85,14 +83,10 @@ public class PendingQuotesServlet extends HttpServlet {
 				}
 				JSONObject update = updates.getJSONObject(i % 20);
 				out.print("<BR>");
-				out.print("Count: " + (i + 1) + "<BR>");
-				out.print("Id: " + update.get("_id") + "<BR>");
-				out.print("Day: " + update.get("day") + "<BR>");
-				out.print("Due_time: " + update.get("due_time") + "<BR>");
 				Calendar c = Calendar.getInstance();
 				c.setTimeInMillis(new Long(((int)update.getInt("due_at")))*1000);
 				int mYear = c.get(Calendar.YEAR);
-				out.print("Year: " + mYear + "<BR>");
+				out.print("Due at:: " + update.get("due_time") + "; " + update.get("day") + "; " + mYear + " <BR> ");
 				out.print("Service: " + update.get("profile_service") + "<BR>");
 				out.print("Text: " + update.get("text") + "<BR>");
 				out.println("<form ACTION=\"DeletePending\">");

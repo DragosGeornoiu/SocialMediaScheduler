@@ -14,7 +14,7 @@ import com.sun.org.apache.bcel.internal.generic.NEWARRAY;
 
 import ro.project.scheduler.Scheduler;
 
-public class PostedQuotesDao {
+public class PostedQuotesRetriever {
 	private Scheduler scheduler;
 	private int j = 0;
 	private String jString;

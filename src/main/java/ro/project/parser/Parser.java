@@ -1,20 +1,17 @@
 package ro.project.parser;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.jsoup.select.Elements;
@@ -64,7 +61,7 @@ public abstract class Parser {
 				url = getPreviousPageLink(url);
 
 				Set<Map.Entry<String, Quote>> entrySet = pageQuotes.entrySet();
-				Iterator it = entrySet.iterator();
+				Iterator<Entry<String, Quote>> it = entrySet.iterator();
 				while (it.hasNext()) {
 					// System.out.println(((Map.Entry<String,Quote>)it.next()).getKey());
 					Map.Entry<String, Quote> entry = (Map.Entry<String, Quote>) it.next();

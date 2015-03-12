@@ -31,10 +31,7 @@ public class PaginationServlet extends HttpServlet {
             HttpServletResponse response) 
             throws ServletException, IOException {
     	
-    	PrintWriter out = response.getWriter();
-		
-		PostedQuotesDao dao = new PostedQuotesDao();
-		
+		PostedQuotesRetriever dao = new PostedQuotesRetriever();
 		
         int page = 1;
         int recordsPerPage = 10;
