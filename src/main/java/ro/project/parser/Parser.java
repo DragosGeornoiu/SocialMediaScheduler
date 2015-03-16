@@ -68,9 +68,8 @@ public abstract class Parser {
 					if (newQuotes.contains(entry.getValue())) {
 						endCondition = true;
 						break;
-					} else {
-						tempQuotes.put(entry.getValue().getMD5(), entry.getValue());
-					}
+					} 
+					tempQuotes.put(entry.getValue().getMD5(), entry.getValue());					
 				}
 
 				/*

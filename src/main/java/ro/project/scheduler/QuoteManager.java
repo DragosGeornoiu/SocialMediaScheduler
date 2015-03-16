@@ -5,7 +5,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
@@ -26,12 +28,14 @@ public class QuoteManager {
 	 */
 	public Quote getRandomQuoteForTwitter() {
 		Quote quote = getRandomQuote(FILE_TWITTER);
-		
-		if(quote==null)
-			return null;
-		while (quote.toString().length() > 140) {
+		do {
 			quote = getRandomQuote(FILE_TWITTER);
-		}
+
+			if (quote == null) {
+				return null;
+			}
+		} while (quote.toString().length() > 140);
+
 		return quote;
 	}
 
@@ -73,34 +77,31 @@ public class QuoteManager {
 			in.close();
 		} catch (Exception e) {
 		}
+		List<Quote> randomQuotesList = new ArrayList<Quote>(quotesList.values());
 
-		int size = quotesList.size();
-		int j = 0; // for not entering a never ending loop
 		boolean endCondition = false;
 		do {
-			if ((quotesList == null) || (quotesList.size() == 0)) {
+			if ((randomQuotesList == null) || (randomQuotesList.size() == 0)) {
 				return null;
 			}
-			/*
-			 * Random rand = new Random(); int randomNum =
-			 * rand.nextInt(quotesList.size()); quote =
-			 * quotesList.get(randomNum); quotesList.remove(randomNum);
-			 */
+
+			Random rand = new Random();
+			int randomNum = rand.nextInt(randomQuotesList.size());
+			quote = randomQuotesList.get(randomNum);
+			randomQuotesList.remove(randomNum);
 
 			// The random is really not good
 
-			j++;
-			int item = new Random().nextInt(size);
-			int i = 0;
-			Set<Map.Entry<String, Quote>> entrySet = quotesList.entrySet();
-			for (Map.Entry<String, Quote> obj : entrySet) {
-				if (i == item)
-					quote = obj.getValue();
-				i = i + 1;
-			}
+			/*
+			 * int size = quotesList.size(); int item = new
+			 * Random().nextInt(size); int i = 0; Set<Map.Entry<String, Quote>>
+			 * entrySet = quotesList.entrySet(); for (Map.Entry<String, Quote>
+			 * obj : entrySet) { if (i == item) quote = obj.getValue(); i = i +
+			 * 1; }
+			 */
 
-			quotesList.remove(quote.getMD5());
-		} while ((endCondition = checkIfQuotePostedBefore(quote, fileName, j)));
+			randomQuotesList.remove(quote.getMD5());
+		} while ((endCondition = checkIfQuotePostedBefore(quote, fileName)));
 
 		if ((endCondition) || (quote.getQuote().trim().isEmpty())) {
 			return null;
@@ -145,7 +146,7 @@ public class QuoteManager {
 	 *            quotes on the specific social network were posted.
 	 * @return true if it was posted previously, false if not.
 	 */
-	private boolean checkIfQuotePostedBefore(Quote quote, String fileName, int j) {
+	private boolean checkIfQuotePostedBefore(Quote quote, String fileName) {
 		Hashtable<String, Quote> quotes = new Hashtable<String, Quote>();
 		try {
 			ObjectInputStream in = new ObjectInputStream(new FileInputStream(fileName));

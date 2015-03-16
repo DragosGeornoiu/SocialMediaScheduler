@@ -12,10 +12,18 @@ import java.util.Date;
 
 import javax.net.ssl.HttpsURLConnection;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class Scheduler {
-	private String userId = "54f4480b76a9a2b75cb71256";
-	private final String ACCESS_TOKEN = "1/8793662c87b64d9d96d519cb84227de0";
+	private String userId;
+	private String accessToken;
 	private final String USER_AGENT = "Mozilla/5.0";
+
+	public Scheduler(String accessToken) {
+		this.accessToken = accessToken;
+	}
 
 	/**
 	 * Posts the specified message at the timeToPost date.
@@ -40,7 +48,7 @@ public class Scheduler {
 			long time = date.getTime();
 			String sheduletAt = new Timestamp(time).toString();
 
-			url = "https://api.bufferapp.com/1/updates/create.json?access_token=" + ACCESS_TOKEN;
+			url = "https://api.bufferapp.com/1/updates/create.json?access_token=" + accessToken;
 			URL obj = new URL(url);
 			HttpsURLConnection con = (HttpsURLConnection) obj.openConnection();
 
@@ -68,6 +76,7 @@ public class Scheduler {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+
 		return responseCode;
 
 	}
@@ -81,8 +90,8 @@ public class Scheduler {
 	 * 
 	 * @return String representing the Twitter updates.
 	 */
-	public String getTwitterUpdates(int page) {
-		userId = "54f4480b76a9a2b75cb71256";
+	public String getTwitterUpdates(int page, String userId) {
+		this.userId = userId;
 		return getUpdates(page);
 	}
 
@@ -95,8 +104,8 @@ public class Scheduler {
 	 * 
 	 * @return String representing the Facebook updates.
 	 */
-	public String getFacebookUpdates(int page) {
-		userId = "54f5cffee090e41029541d73";
+	public String getFacebookUpdates(int page, String userId) {
+		this.userId = userId;
 		return getUpdates(page);
 	}
 
@@ -112,7 +121,7 @@ public class Scheduler {
 	public String getUpdates(int page) {
 
 		String url = "https://api.bufferapp.com/1/profiles/" + userId + "/updates/sent.json?" + "page=" + page
-				+ "&access_token=" + ACCESS_TOKEN;
+				+ "&access_token=" + accessToken;
 
 		StringBuffer response = null;
 		try {
@@ -132,7 +141,12 @@ public class Scheduler {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return response.toString();
+
+		if (response == null) {
+			return "";
+		} else {
+			return response.toString();
+		}
 
 	}
 
@@ -146,8 +160,9 @@ public class Scheduler {
 	 * 
 	 * @return String representing the pending Twitter updates.
 	 */
-	public String getTwitterPendingUpdates(int page) {
-		userId = "54f4480b76a9a2b75cb71256";
+	public String getTwitterPendingUpdates(int page, String userId) {
+		//userId = "54f4480b76a9a2b75cb71256";
+		this.userId = userId;
 		return getPendingUpdates(page);
 	}
 
@@ -161,8 +176,9 @@ public class Scheduler {
 	 * 
 	 * @return String representing the pending facebook updates.
 	 */
-	public String getFacebookPendingUpdates(int page) {
-		userId = "54f5cffee090e41029541d73";
+	public String getFacebookPendingUpdates(int page, String userid) {
+		/*userId = "54f5cffee090e41029541d73";*/
+		this.userId = userid;
 		return getPendingUpdates(page);
 	}
 
@@ -177,7 +193,7 @@ public class Scheduler {
 	 */
 	public String getPendingUpdates(int page) {
 		String url = "https://api.bufferapp.com/1/profiles/" + userId + "/updates/pending.json?" + "page=" + page
-				+ "&access_token=" + ACCESS_TOKEN;
+				+ "&access_token=" + accessToken;
 		StringBuffer response = null;
 		try {
 			URL obj = new URL(url);
@@ -199,8 +215,11 @@ public class Scheduler {
 			e.printStackTrace();
 		}
 
-		return response.toString();
-
+		if (response == null) {
+			return "";
+		} else {
+			return response.toString();
+		}
 	}
 
 	public String getUserId() {
@@ -215,7 +234,7 @@ public class Scheduler {
 		int responseCode = 0;
 		try {
 
-			String url = "https://api.bufferapp.com/1/updates/" + id + "/destroy.json?access_token=" + ACCESS_TOKEN;
+			String url = "https://api.bufferapp.com/1/updates/" + id + "/destroy.json?access_token=" + accessToken;
 			URL obj = new URL(url);
 			HttpsURLConnection con = (HttpsURLConnection) obj.openConnection();
 
@@ -244,10 +263,89 @@ public class Scheduler {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		return responseCode;
 	}
 
+	public String authenticate(String clientId, String redirectUri) {
+		String url = "https://bufferapp.com/oauth2/authorize?client_id=" + clientId + "&redirect=" + redirectUri
+				+ "&response_type=code";
+		StringBuffer response = null;
+		try {
+			URL obj = new URL(url);
+			HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+			con.setRequestMethod("GET");
+			con.setRequestProperty("User-Agent", USER_AGENT);
+
+			BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+			String inputLine;
+			response = new StringBuffer();
+
+			while ((inputLine = in.readLine()) != null) {
+				response.append(inputLine);
+			}
+			in.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return response.toString();
+
+	}
+
+	public String getProfileId(String service) {
+		String url = "https://api.bufferapp.com/1/profiles.json" + "?access_token=" + accessToken;
+		StringBuffer response = null;
+		try {
+			URL obj = new URL(url);
+			HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+			con.setRequestMethod("GET");
+			con.setRequestProperty("User-Agent", USER_AGENT);
+			// responseCode = con.getResponseCode();
+
+			BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+			String inputLine;
+			response = new StringBuffer();
+
+			while ((inputLine = in.readLine()) != null) {
+				response.append(inputLine);
+			}
+			in.close();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		/*
+		 * if (response == null) { return ""; } else { return
+		 * response.toString(); }
+		 */
+
+
+		String jsonResponse = "";
+		if (response == null) {
+			return "";
+		} else {
+			jsonResponse = response.toString();
+		}
+
+		JSONObject jsonObject;
+		try {
+			//jsonObject = new JSONObject(jsonResponse);
+			JSONArray updates = new JSONArray(jsonResponse); 
+				//	jsonObject.getJSONArray("");
+			for (int i = 0; i < updates.length(); i++) {
+				JSONObject update = updates.getJSONObject(i);
+				System.out.println("service: " + update.get("service"));
+				System.out.println("id: " + update.get("id"));
+				if (update.get("service").equals(service))
+					return (String) update.get("id");
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return "";
+
+	}
 	/*
 	 * public void sendMessageNow(String message) { try {
 	 * 
@@ -295,19 +393,7 @@ public class Scheduler {
 	 * 
 	 * }
 	 * 
-	 * public void authenticate() { String url =
-	 * "https://api.bufferapp.com/1/profiles.json?access_token=" + ACCESS_TOKEN;
 	 * 
-	 * try { URL obj = new URL(url); HttpURLConnection con = (HttpURLConnection)
-	 * obj.openConnection(); con.setRequestMethod("GET");
-	 * con.setRequestProperty("User-Agent", USER_AGENT); BufferedReader in = new
-	 * BufferedReader(new InputStreamReader(con.getInputStream())); String
-	 * inputLine; StringBuffer response = new StringBuffer();
-	 * 
-	 * while ((inputLine = in.readLine()) != null) { response.append(inputLine);
-	 * } in.close(); } catch (Exception e) { e.printStackTrace(); }
-	 * 
-	 * }
 	 * 
 	 * public void deleteUpdate(String id) { try {
 	 * 

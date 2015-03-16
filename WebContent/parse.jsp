@@ -6,10 +6,24 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Parse</title>
-		<a href="http://localhost:8080/SocialMediaScheduler/parse">Parse</a>
-		<br> <a href="http://localhost:8080/SocialMediaScheduler/Post">Schedule Quote</a>
-		<br> <a href="http://localhost:8080/SocialMediaScheduler/QuoteHistory">Quote History</a>
-		<br> <a href="http://localhost:8080/SocialMediaScheduler/PendingQuotes">Pending Quotes</a><br><br>
+<br>
+<a href="http://localhost:8080/SocialMediaScheduler\">Home</a>
+<br>
+<a href="http://localhost:8080/SocialMediaScheduler/parse+ "\">Parse</a>
+<br>
+<a
+	href="http://localhost:8080/SocialMediaScheduler/Post?accessToken=<%=request.getParameter("accessToken")%> + "\">Schedule
+	Quote</a>
+<br>
+<a
+	href="http://localhost:8080/SocialMediaScheduler/QuoteHistory?accessToken=<%=request.getParameter("accessToken")%> + "\">Quote
+	History</a>
+<br>
+<a
+	href="http://localhost:8080/SocialMediaScheduler/PendingQuotes?accessToken=<%=request.getParameter("accessToken")%> + "\">Pending
+	Quotes</a>
+<br>
+<br>
 </head>
 <body>
 	<form ACTION="ParseWebsite">
@@ -19,6 +33,7 @@
 			<br>
 			<INPUT TYPE="radio" NAME="radios" VALUE="http://www.brainyquote.com/"> http://www.brainyquote.com/;
 			<br>
+			<INPUT TYPE="hidden" NAME="accessToken" VALUE=<%=request.getParameter("accessToken")%>>
 			 <input type="submit"
 			value="Submit"> <br> <br>
 	</form>

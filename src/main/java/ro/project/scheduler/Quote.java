@@ -14,7 +14,7 @@ public class Quote implements Serializable {
 		super();
 		this.quote = quote;
 		this.author = author;
-		MD5 = hashToMd5(quote);
+		MD5 = hashToMd5(toString());
 	}
 
 	public String getQuote() {
@@ -23,7 +23,6 @@ public class Quote implements Serializable {
 
 	public void setQuote(String quote) {
 		this.quote = quote;
-		hashToMd5(quote);
 	}
 
 	public String getAuthor() {
@@ -66,7 +65,6 @@ public class Quote implements Serializable {
 		for (int i = 0; i < byteData.length; i++) {
 			sb.append(Integer.toString((byteData[i] & 0xff) + 0x100, 16).substring(1));
 		}
-
 		return sb.toString();
 	}
 

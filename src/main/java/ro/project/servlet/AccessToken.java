@@ -12,13 +12,11 @@ import ro.project.parser.BrainyQuoteParser;
 import ro.project.parser.FileManager;
 import ro.project.parser.Parser;
 import ro.project.parser.PersdevParser;
+import ro.project.scheduler.Scheduler;
 
-/**
- * Gives the URL of the website to be parsed.
- *
- */
-public class ParseWebsiteServlet extends HttpServlet {
+public class AccessToken extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	private Scheduler scheduler;
 	Parser parser;
 	FileManager fileManager;
 
@@ -26,8 +24,21 @@ public class ParseWebsiteServlet extends HttpServlet {
 
 		PrintWriter out = response.getWriter();
 		boolean selectionCorect = true;
-		String get = request.getParameter("accessToken");
 
+		
+		
+		if (request.getParameter("accessToken") == null) {
+			print("", out);
+			out.println("<BR> You didn't tell us your access token... <br> ");
+		} else {
+			print(request.getParameter("accessToken"), out);
+			out.println("Your access token is: " + request.getParameter("accessToken"));
+		}
+		
+		out.print("</body>\n</html>");
+	}
+	
+	private void print(String get, PrintWriter out) {
 		out.println("<html>");
 		out.println("<head>");
 		out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler\">Home</a>");
@@ -37,42 +48,5 @@ public class ParseWebsiteServlet extends HttpServlet {
 		out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/PendingQuotes?accessToken=" + get + "\">Pending Quotes</a><br><br>");
 		out.print("</head>");
 		out.println("<body>");
-
-		if ((request.getParameter("radios") == null) || (request.getParameter("website") == null)) {
-			out.println("<BR> You didn't select a parser... <br> ");
-		} else {
-			String link = request.getParameter("radios");
-			fileManager = new FileManager();
-			String website = request.getParameter("website");
-			if ((link.equals("http://persdev-q.com/")) && (website.startsWith("http://persdev-q.com/"))) {
-				parser = new PersdevParser();
-			} else if ((link.equals("http://www.brainyquote.com/"))
-					&& (website.startsWith("http://www.brainyquote.com/"))) {
-				parser = new BrainyQuoteParser();
-			} else {
-				selectionCorect = false;
-			}
-
-			/* String path = parser.updateQuotes(website); */
-
-			if (selectionCorect) {
-
-				if (parser.updateQuotes(website)) {
-					fileManager.createFileInPath("facebookquotes.txt");
-					fileManager.createFileInPath("twitterquotes.txt");
-					out.println("The quotes from the given website were retrieved... <br> What do you want to do next? <br>");
-				} else {
-					out.println("The website was already parsed... <br>");
-				}
-			} else {
-				out.println("Something went wrong, you can try again...<br>");
-
-			}
-			
-		}
-		
-		out.print("</body>\n</html>");
 	}
-	
-
 }

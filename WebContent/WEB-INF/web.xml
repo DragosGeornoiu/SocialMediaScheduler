@@ -59,7 +59,7 @@
 		<servlet-name>PaginationServlet</servlet-name>
 		<url-pattern>/QuoteHistory</url-pattern>
 	</servlet-mapping>
-		<servlet>
+	<servlet>
 		<servlet-name>History</servlet-name>
 		<servlet-class>ro.project.servlet.QuoteHistoryServlet</servlet-class>
 	</servlet>
@@ -68,5 +68,16 @@
 		<url-pattern>/history</url-pattern>
 	</servlet-mapping>
 
-	<!-- <welcome-file-list> <welcome-file>Post</welcome-file> </welcome-file-list> -->
+	<servlet>
+		<servlet-name>AccessToken</servlet-name>
+		<servlet-class>ro.project.servlet.AccessToken</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>AccessToken</servlet-name>
+		<url-pattern>/AccessToken</url-pattern>
+	</servlet-mapping>
+
+	<welcome-file-list>
+		<welcome-file>Home.jsp</welcome-file>
+	</welcome-file-list>
 </web-app>

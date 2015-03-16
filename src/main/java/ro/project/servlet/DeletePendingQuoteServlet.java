@@ -15,10 +15,10 @@ public class DeletePendingQuoteServlet extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		scheduler = new Scheduler();
-		
+		scheduler = new Scheduler(request.getParameter("accessToken"));
 		scheduler.deleteUpdate(request.getParameter("url"));
-		response.sendRedirect("PendingQuotes");
+		response.sendRedirect("http://localhost:8080/SocialMediaScheduler/PendingQuotes?accessToken="
+				+ request.getParameter("accessToken"));
 
 	}
 }

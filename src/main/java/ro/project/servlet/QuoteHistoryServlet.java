@@ -33,21 +33,24 @@ public class QuoteHistoryServlet extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		out = response.getWriter();
-		scheduler = new Scheduler();
+		
+		String accessToken = request.getParameter("accessToken");
+		scheduler = new Scheduler(accessToken);
 		int j;
 
 		out.println("<html>\n <body>");
 		out.println("<head>");
-		out.print("<a href=\"http://localhost:8080/SocialMediaScheduler/parse\">Parse</a>");
-		out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/Post\">Schedule Quote</a>");
-		out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/QuoteHistory\">Quote History</a>");
-		out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/PendingQuotes\">Pending Quotes</a><br><br>");
+		out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler\">Home</a>");
+		out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/parse\">Parse</a>");
+		out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/Post?accessToken=" + accessToken + "\">Schedule Quote</a>");
+		out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/QuoteHistory?accessToken=" + accessToken + "\">Quote History</a>");
+		out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/PendingQuotes?accessToken=" + accessToken + "\">Pending Quotes</a><br><br>");
 		out.print("</head>");
 
 		try {
-			jString = scheduler.getFacebookUpdates(1);
+			jString = scheduler.getFacebookUpdates(1, scheduler.getProfileId("facebook"));
 			parseJString(jString, "Facebook");
-			jString = scheduler.getTwitterUpdates(1);
+			jString = scheduler.getTwitterUpdates(1, scheduler.getProfileId("facebook"));
 			parseJString(jString, "Twitter");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -64,7 +67,7 @@ public class QuoteHistoryServlet extends HttpServlet {
 		for (int i = 0; i < total; i++) {
 			if ((i % 20 == 0) && (i != 0)) {
 				j++;
-				jString = scheduler.getTwitterUpdates(j);
+				jString = scheduler.getTwitterUpdates(j, scheduler.getProfileId("twitter"));
 				jsonObject = new JSONObject(jString);
 				updates = jsonObject.getJSONArray("updates");
 			}
