@@ -141,7 +141,7 @@ public class Scheduler {
 			}
 			in.close();
 		} catch (Exception e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 
 		if (response == null) {
@@ -163,7 +163,7 @@ public class Scheduler {
 	 * @return String representing the pending Twitter updates.
 	 */
 	public String getTwitterPendingUpdates(int page, String userId) {
-		//userId = "54f4480b76a9a2b75cb71256";
+		// userId = "54f4480b76a9a2b75cb71256";
 		this.userId = userId;
 		return getPendingUpdates(page);
 	}
@@ -179,7 +179,7 @@ public class Scheduler {
 	 * @return String representing the pending facebook updates.
 	 */
 	public String getFacebookPendingUpdates(int page, String userid) {
-		/*userId = "54f5cffee090e41029541d73";*/
+		/* userId = "54f5cffee090e41029541d73"; */
 		this.userId = userid;
 		return getPendingUpdates(page);
 	}
@@ -214,7 +214,7 @@ public class Scheduler {
 			in.close();
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 
 		if (response == null) {
@@ -314,14 +314,13 @@ public class Scheduler {
 			in.close();
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 
 		/*
 		 * if (response == null) { return ""; } else { return
 		 * response.toString(); }
 		 */
-
 
 		String jsonResponse = "";
 		if (response == null) {
@@ -332,14 +331,14 @@ public class Scheduler {
 
 		JSONObject jsonObject;
 		try {
-			//jsonObject = new JSONObject(jsonResponse);
-			JSONArray updates = new JSONArray(jsonResponse); 
-				//	jsonObject.getJSONArray("");
+			// jsonObject = new JSONObject(jsonResponse);
+			JSONArray updates = new JSONArray(jsonResponse);
+			// jsonObject.getJSONArray("");
 			for (int i = 0; i < updates.length(); i++) {
 				JSONObject update = updates.getJSONObject(i);
-				System.out.println("service: " + update.get("service"));
-				System.out.println("id: " + update.get("id"));
-				if (update.get("service").equals(service))
+				/*System.out.println("service: " + update.get("service"));
+				System.out.println("id: " + update.get("id"));*/
+				if (((String) update.get("formatted_service")).equalsIgnoreCase(service))
 					return (String) update.get("id");
 			}
 		} catch (JSONException e) {
@@ -348,10 +347,10 @@ public class Scheduler {
 		return "";
 
 	}
-	
+
 	public List<String> getAllProfiles() {
-		List<String> allProfilesList =  new ArrayList<String>();
-		
+		List<String> allProfilesList = new ArrayList<String>();
+
 		String url = "https://api.bufferapp.com/1/profiles.json" + "?access_token=" + accessToken;
 		StringBuffer response = null;
 		try {
@@ -371,23 +370,23 @@ public class Scheduler {
 			in.close();
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 
 		String jsonResponse = "";
 		if (response == null) {
-			return null;
+			return allProfilesList;
 		} else {
 			jsonResponse = response.toString();
 		}
+		
 		JSONObject jsonObject;
 		try {
-			//jsonObject = new JSONObject(jsonResponse);
-			JSONArray updates = new JSONArray(jsonResponse); 
-				//	jsonObject.getJSONArray("");
+			// jsonObject = new JSONObject(jsonResponse);
+			JSONArray updates = new JSONArray(jsonResponse);
+			// jsonObject.getJSONArray("");
 			for (int i = 0; i < updates.length(); i++) {
 				JSONObject update = updates.getJSONObject(i);
-			
 				allProfilesList.add((String) update.get("formatted_service"));
 			}
 		} catch (JSONException e) {
@@ -395,6 +394,21 @@ public class Scheduler {
 		}
 		return allProfilesList;
 	}
+	
+
+	public int getMaxCharacters(String service) {
+		if(service.equalsIgnoreCase("twitter")) {
+			return 140;
+		} 
+		
+		if(service.equalsIgnoreCase("facebook")) {
+			return 500;
+		}
+		
+		return 0;
+	}
+	
+	
 	/*
 	 * public void sendMessageNow(String message) { try {
 	 * 
@@ -467,4 +481,5 @@ public class Scheduler {
 	 * while ((inputLine = in.readLine()) != null) { response.append(inputLine);
 	 * } in.close(); } catch (Exception e) { e.printStackTrace(); } }
 	 */
+
 }

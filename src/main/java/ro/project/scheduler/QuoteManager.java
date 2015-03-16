@@ -8,56 +8,29 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
-import java.util.Set;
 
 public class QuoteManager {
-	private final String FILE_TWITTER = "D:/workspace/SocialMediaScheduler/src/main/resources/quotes/twitterQuotes.txt";
-	private final String FILE_FACEBOOK = "D:/workspace/SocialMediaScheduler/src/main/resources/quotes/facebookQuotes.txt";
+	private final String FILE = "D:/workspace/SocialMediaScheduler/src/main/resources/quotes/";
 	private String quotesFile;
 
 	public QuoteManager(String quotesFile) {
 		this.quotesFile = "D:/workspace/SocialMediaScheduler/src/main/resources/quotes/" + quotesFile;
 	}
 
-	/**
-	 * Returns a random quote to be posted on Twitter.
-	 * 
-	 * @return String representing a quote under 140 characters.
-	 */
-	public Quote getRandomQuoteForTwitter() {
-		Quote quote = getRandomQuote(FILE_TWITTER);
+	public Quote getRandomQuoteFor(String where, int max) {
+		Quote quote;
 		do {
-			quote = getRandomQuote(FILE_TWITTER);
+			quote = getRandomQuote(FILE + where.toLowerCase() + "quotes.txt");
 
 			if (quote == null) {
 				return null;
 			}
-		} while (quote.toString().length() > 140);
+		} while (quote.toString().length() > max);
 
 		return quote;
 	}
 
-	/**
-	 * Returns a random quote to be posted on Facebook.
-	 * 
-	 * @return String representing a quote.
-	 */
-	public Quote getRandomQuoteForFacebook() {
-		return getRandomQuote(FILE_FACEBOOK);
-	}
-
-	/**
-	 * Returns a random quote which has not been posted to the social network
-	 * provided by fileName.
-	 * 
-	 * @param fileName
-	 *            the location of the text file where the previous quotes on
-	 *            that specific social network were stored.
-	 * 
-	 * @return String representing a random quote.
-	 */
 	public Quote getRandomQuote(String fileName) {
 		Quote quote = null;
 
@@ -88,6 +61,7 @@ public class QuoteManager {
 			Random rand = new Random();
 			int randomNum = rand.nextInt(randomQuotesList.size());
 			quote = randomQuotesList.get(randomNum);
+			System.out.println(quote);
 			randomQuotesList.remove(randomNum);
 
 			// The random is really not good
@@ -108,7 +82,7 @@ public class QuoteManager {
 		} else {
 			quote.setQuote(quote.getQuote().replaceAll(" ", "+").replaceAll("’", "'"));
 			return quote;
-			// REMEMBER: return (quote.split(" - ")[0] + " - " +
+			// return (quote.split(" - ")[0] + " - " +
 			// quote.split(" - ")[1]).replaceAll(" ", "+").replaceAll("’", "'");
 		}
 	}
@@ -153,7 +127,7 @@ public class QuoteManager {
 			quotes = (Hashtable<String, Quote>) in.readObject();
 			in.close();
 		} catch (Exception e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 
 		if (quotes.containsKey(quote.getMD5())) {
@@ -163,15 +137,6 @@ public class QuoteManager {
 			saveQuote(quotes, fileName);
 			return false;
 		}
-
-		/*
-		 * BufferedReader br = null; try { br = new BufferedReader(new
-		 * FileReader(fileName)); String line; while ((line = br.readLine()) !=
-		 * null) { if (line.equals(quote.getMD5())) { return true; } }
-		 * br.close(); } catch (Exception e) { e.printStackTrace(); } finally {
-		 * try { br.close(); } catch (IOException e) { e.printStackTrace(); } }
-		 * return false;
-		 */
 	}
 
 }

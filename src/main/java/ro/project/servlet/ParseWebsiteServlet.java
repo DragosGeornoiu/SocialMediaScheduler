@@ -27,8 +27,8 @@ public class ParseWebsiteServlet extends HttpServlet {
 		PrintWriter out = response.getWriter();
 		boolean selectionCorect = true;
 		String get = request.getParameter("accessToken");
-
-		out.println("<html>");
+		
+		out.println("<html>\n <body>");
 		out.println("<head>");
 		out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler\">Home</a>");
 		out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/parse?accessToken=" + get + "\">Parse</a>");
@@ -36,7 +36,6 @@ public class ParseWebsiteServlet extends HttpServlet {
 		out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/QuoteHistory?accessToken=" + get + "\">Quote History</a>");
 		out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/PendingQuotes?accessToken=" + get + "\">Pending Quotes</a><br><br>");
 		out.print("</head>");
-		out.println("<body>");
 
 		if ((request.getParameter("radios") == null) || (request.getParameter("website") == null)) {
 			out.println("<BR> You didn't select a parser... <br> ");

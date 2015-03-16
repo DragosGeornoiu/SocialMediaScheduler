@@ -10,7 +10,7 @@
 <br>
 <a href="http://localhost:8080/SocialMediaScheduler\">Home</a>
 <br>
-<a href="http://localhost:8080/SocialMediaScheduler/parse+ "\">Parse</a>
+<a href="http://localhost:8080/SocialMediaScheduler/parse?accessToken=<%=request.getParameter("accessToken")%> + "\">Parse</a>
 <br>
 <a
 	href="http://localhost:8080/SocialMediaScheduler/Post?accessToken=<%=request.getParameter("accessToken")%> + "\">Schedule

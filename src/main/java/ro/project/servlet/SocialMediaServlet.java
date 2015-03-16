@@ -26,7 +26,7 @@ public class SocialMediaServlet extends HttpServlet {
 		out.println("<html>\n <body>");
 		out.println("<head>");
 		out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler\">Home</a>");
-		out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/parse\">Parse</a>");
+		out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/parse?accessToken=" + accessToken + "\">Parse</a>");
 		out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/Post?accessToken=" + accessToken + "\">Schedule Quote</a>");
 		out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/QuoteHistory?accessToken=" + accessToken + "\">Quote History</a>");
 		out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/PendingQuotes?accessToken=" + accessToken + "\">Pending Quotes</a><br><br>");
@@ -37,6 +37,7 @@ public class SocialMediaServlet extends HttpServlet {
 			out.print("<br> A problem occured. <br> This could happen if: <br>"
 					+ "- you did not parse a website before trying to schedule a quote to be poste <br>"
 					+ "- you did notselect a website to get the quotes from <br>"
+					+ "- you did not select a social network to post to <br>"
 					+ "");
 			out.print("</html>\n</body>");
 		} else if( (Integer.parseInt(request.getParameter("yeardropdown")) < 2015) || (Integer.parseInt(request.getParameter("yeardropdown")) > 2034) 
@@ -60,7 +61,30 @@ public class SocialMediaServlet extends HttpServlet {
 
 			String[] where = request.getParameterValues("where");
 
-			if (where != null) {
+			
+			if(where != null) {
+				for(int i=0; i<where.length; i++) {
+					scheduler.setUserId(scheduler.getProfileId(where[i]));
+					int max = scheduler.getMaxCharacters(where[i]);
+					Quote quote = quoteManager.getRandomQuoteFor(where[i], max);	
+					if ((quote == null) || (quote.getQuote().trim().isEmpty())) {
+						out.print("<br> Found nothing to print on " + where[i] + " <br>");
+					} else {
+						int code = scheduler.sendMessage(quote.toString(), date);
+						if (code == 200) {
+							out.println("Quote \"" + quote.toString().replaceAll("\\+", " ")
+									+ "\" was schedulet to be posted on " + date + " on " + where[i] + "<BR>");
+						} else if(code == 0){ 
+							out.println("<br>Something went wrong. Probably the access token is not good..." + "<BR>");
+						} else {
+							out.println("<br> Something went wrong when trying to post on " + where[i] + " <BR>");
+						}
+					}
+							
+				}
+			}
+			
+			/*if (where != null) {
 				for (int i = 0; i < where.length; i++) {
 					if (where[i].equals("Twitter")) {
 						scheduler.setUserId(scheduler.getProfileId("twitter"));
@@ -96,7 +120,7 @@ public class SocialMediaServlet extends HttpServlet {
 						}
 					}
 				}
-			}
+			}*/
 
 			out.print("</html>\n</body>");
 		}
