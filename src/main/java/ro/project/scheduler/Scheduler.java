@@ -329,7 +329,7 @@ public class Scheduler {
 			jsonResponse = response.toString();
 		}
 
-		JSONObject jsonObject;
+/*		JSONObject jsonObject;*/
 		try {
 			// jsonObject = new JSONObject(jsonResponse);
 			JSONArray updates = new JSONArray(jsonResponse);
@@ -380,7 +380,7 @@ public class Scheduler {
 			jsonResponse = response.toString();
 		}
 		
-		JSONObject jsonObject;
+		/*JSONObject jsonObject;*/
 		try {
 			// jsonObject = new JSONObject(jsonResponse);
 			JSONArray updates = new JSONArray(jsonResponse);

@@ -61,7 +61,6 @@ public class QuoteManager {
 			Random rand = new Random();
 			int randomNum = rand.nextInt(randomQuotesList.size());
 			quote = randomQuotesList.get(randomNum);
-			System.out.println(quote);
 			randomQuotesList.remove(randomNum);
 
 			// The random is really not good

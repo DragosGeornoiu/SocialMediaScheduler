@@ -1,6 +1,5 @@
 package ro.project.servlet;
 
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -14,10 +13,10 @@ import ro.project.scheduler.Scheduler;
 
 public class PostedQuotesRetriever {
 	private Scheduler scheduler;
-	private int j = 0;
+	//private int j = 0;
 	// private String jString;
 	private JSONObject jsonObject;
-	private int total;
+	//private int total;
 	private JSONArray updates;
 
 	// private JSONObject update;
@@ -71,7 +70,7 @@ public class PostedQuotesRetriever {
 			jString = scheduler.getTwitterUpdates(1, scheduler.getProfileId("twitter"));
 			jsonObject = new JSONObject(jString);
 			int totalTwitter = jsonObject.getInt("total");
-			total = totalFacebook + totalTwitter;
+			//total = totalFacebook + totalTwitter;
 
 			// total/10 + 1 -> numarul de pagini
 			// totalFacebook / 10 -> numarul de pagini complete de facebook
@@ -270,7 +269,7 @@ public class PostedQuotesRetriever {
 	private Collection<? extends String> parseJStringFromStartToEnd(String jString, int start, int end)
 			throws JSONException {
 		List<String> quoteList = new ArrayList<String>();
-		j = 1;
+	//	j = 1;
 		jsonObject = new JSONObject(jString);
 		updates = jsonObject.getJSONArray("updates");
 

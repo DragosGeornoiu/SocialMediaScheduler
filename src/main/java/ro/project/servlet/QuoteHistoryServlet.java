@@ -28,7 +28,7 @@ public class QuoteHistoryServlet extends HttpServlet {
 	private JSONObject jsonObject;
 	private int total;
 	private JSONArray updates;
-	private JSONObject update;
+	//private JSONObject update;
 	private PrintWriter out;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -36,7 +36,7 @@ public class QuoteHistoryServlet extends HttpServlet {
 		
 		String accessToken = request.getParameter("accessToken");
 		scheduler = new Scheduler(accessToken);
-		int j;
+		//int j;
 
 		out.println("<html>\n <body>");
 		out.println("<head>");

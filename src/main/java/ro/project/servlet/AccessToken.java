@@ -8,24 +8,17 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import ro.project.parser.BrainyQuoteParser;
 import ro.project.parser.FileManager;
 import ro.project.parser.Parser;
-import ro.project.parser.PersdevParser;
-import ro.project.scheduler.Scheduler;
 
 public class AccessToken extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private Scheduler scheduler;
 	Parser parser;
 	FileManager fileManager;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		PrintWriter out = response.getWriter();
-		boolean selectionCorect = true;
-
-		
 		
 		if (request.getParameter("accessToken") == null) {
 			print("", out);
@@ -34,13 +27,13 @@ public class AccessToken extends HttpServlet {
 			print(request.getParameter("accessToken"), out);
 			out.println("Your access token is: " + request.getParameter("accessToken"));
 		}
-		
 		out.print("</body>\n</html>");
 	}
 	
 	private void print(String get, PrintWriter out) {
 		out.println("<html>");
 		out.println("<head>");
+		out.println("<title> Access Token </title>");
 		out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler\">Home</a>");
 		out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/parse?accessToken=" + get + "\">Parse</a>");
 		out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/Post?accessToken=" + get + "\">Schedule Quote</a>");

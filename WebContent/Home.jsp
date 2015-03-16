@@ -1,9 +1,9 @@
 <html>
 <head>
-<title>Login Page</title>
+<title>Welcome Page</title>
 </head>
 
-<h2>Hello, please log in:</h2>
+<h2>Hello:</h2>
 <br>
 <br>
 <form ACTION="AccessToken">
