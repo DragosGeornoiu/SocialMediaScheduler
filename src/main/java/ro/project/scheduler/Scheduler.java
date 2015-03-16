@@ -8,7 +8,9 @@ import java.net.URL;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -345,6 +347,53 @@ public class Scheduler {
 		}
 		return "";
 
+	}
+	
+	public List<String> getAllProfiles() {
+		List<String> allProfilesList =  new ArrayList<String>();
+		
+		String url = "https://api.bufferapp.com/1/profiles.json" + "?access_token=" + accessToken;
+		StringBuffer response = null;
+		try {
+			URL obj = new URL(url);
+			HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+			con.setRequestMethod("GET");
+			con.setRequestProperty("User-Agent", USER_AGENT);
+			// responseCode = con.getResponseCode();
+
+			BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+			String inputLine;
+			response = new StringBuffer();
+
+			while ((inputLine = in.readLine()) != null) {
+				response.append(inputLine);
+			}
+			in.close();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		String jsonResponse = "";
+		if (response == null) {
+			return null;
+		} else {
+			jsonResponse = response.toString();
+		}
+		JSONObject jsonObject;
+		try {
+			//jsonObject = new JSONObject(jsonResponse);
+			JSONArray updates = new JSONArray(jsonResponse); 
+				//	jsonObject.getJSONArray("");
+			for (int i = 0; i < updates.length(); i++) {
+				JSONObject update = updates.getJSONObject(i);
+			
+				allProfilesList.add((String) update.get("formatted_service"));
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return allProfilesList;
 	}
 	/*
 	 * public void sendMessageNow(String message) { try {

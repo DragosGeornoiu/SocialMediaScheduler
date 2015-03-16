@@ -92,8 +92,12 @@ public class PostToSocialMediaServlet extends HttpServlet {
 		// print only connected profiles
 //		scheduler.
 		out.println();
-		out.println("<input type=\"checkbox\" name=\"where\" value=\"Twitter\"> Twitter<BR>");
-		out.println("<input type=\"checkbox\" name=\"where\" value=\"Facebook\"> Facebook<BR>");
+		out.println("Where to post: <br>");
+		List<String> allProfiles = scheduler.getAllProfiles();
+		for(int i=0; i<allProfiles.size(); i++) {
+			out.println("<input type=\"checkbox\" name=\"where\" value=\"" + allProfiles.get(i) + "\">" + allProfiles.get(i) +"<BR>");
+		}
+		
 		out.println("<input type=\"hidden\" name=\"accessToken\" value=\"" + accessToken + "\"> ");
 		out.println("<br> <br>");
 		out.println("&nbsp;&nbsp;&nbsp;Year&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Month&nbsp;&nbsp;&nbsp;&nbsp;");
