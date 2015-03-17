@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -21,6 +22,7 @@ import ro.project.scheduler.Scheduler;
  *
  */
 public class PendingQuotesServlet extends HttpServlet {
+	final static Logger logger = Logger.getLogger(PendingQuotesServlet.class);
 	private static final long serialVersionUID = 1L;
 	private Scheduler scheduler;
 
@@ -57,20 +59,6 @@ public class PendingQuotesServlet extends HttpServlet {
 				jsonObject = new JSONObject(jString);
 				int totalTwitter = jsonObject.getInt("total");
 				out.println("<html>\n <body>");
-
-				/*
-				 * out.println("<br><br>");
-				 * out.println("<form action=\"SearchServlet\">");
-				 * out.println("Search"); out.println(
-				 * "<input type=\"radio\" name=\"type\" value=\"id\">id<BR>");
-				 * out.println(
-				 * "<input type=\"radio\" name=\"type\" value=\"text\">text<BR>"
-				 * ); out.println("<br> <br>");
-				 * out.println("<input type=\"text\" name=\"value\" size=\"20px\">"
-				 * );
-				 * out.println("<input type=\"submit\" value=\"Submit\"> <br> <br>"
-				 * ); out.println("</form>");
-				 */
 
 				if ((totalFacebook == 0) && (totalTwitter == 0)) {
 					out.print("<BR> There are no pending quotes...");
@@ -114,7 +102,7 @@ public class PendingQuotesServlet extends HttpServlet {
 				out.print("</html>\n</body>");
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Problem retrieving scheduled updates", e);
 		}
 	}
 

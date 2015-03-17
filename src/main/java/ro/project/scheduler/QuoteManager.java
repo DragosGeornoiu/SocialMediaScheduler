@@ -10,7 +10,12 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Random;
 
+import org.apache.log4j.Logger;
+
+import ro.project.parser.PersdevParser;
+
 public class QuoteManager {
+	final static Logger logger = Logger.getLogger(QuoteManager.class);
 	private final String FILE = "D:/workspace/SocialMediaScheduler/src/main/resources/quotes/";
 	private String quotesFile;
 
@@ -18,10 +23,10 @@ public class QuoteManager {
 		this.quotesFile = "D:/workspace/SocialMediaScheduler/src/main/resources/quotes/" + quotesFile;
 	}
 
-	public Quote getRandomQuoteFor(String where, int max) {
+	public Quote getRandomQuote(String where, int max) {
 		Quote quote;
 		do {
-			quote = getRandomQuote(FILE + where.toLowerCase() + "quotes.txt");
+			quote = getRandomQuoteForSocialMedia(FILE + where.toLowerCase() + "quotes.txt");
 
 			if (quote == null) {
 				return null;
@@ -31,17 +36,8 @@ public class QuoteManager {
 		return quote;
 	}
 
-	public Quote getRandomQuote(String fileName) {
+	private Quote getRandomQuoteForSocialMedia(String fileName) {
 		Quote quote = null;
-
-		/*
-		 * List<Quote> quotesList = new ArrayList<Quote>(); BufferedReader br =
-		 * null; try { br = new BufferedReader(new FileReader(quotesFile));
-		 * String line; while ((line = br.readLine()) != null) {
-		 * quotesList.add(new Quote(line.split(" - ")[0],
-		 * line.split(" - ")[1])); } br.close(); } catch (Exception e) {
-		 * e.printStackTrace(); }
-		 */
 
 		Hashtable<String, Quote> quotesList = new Hashtable<String, Quote>();
 		try {
@@ -49,6 +45,7 @@ public class QuoteManager {
 			quotesList.putAll((Hashtable<String, Quote>) in.readObject());
 			in.close();
 		} catch (Exception e) {
+			logger.error("Deserialisation of quotes hashtable unsuccesfull", e);
 		}
 		List<Quote> randomQuotesList = new ArrayList<Quote>(quotesList.values());
 
@@ -62,16 +59,6 @@ public class QuoteManager {
 			int randomNum = rand.nextInt(randomQuotesList.size());
 			quote = randomQuotesList.get(randomNum);
 			randomQuotesList.remove(randomNum);
-
-			// The random is really not good
-
-			/*
-			 * int size = quotesList.size(); int item = new
-			 * Random().nextInt(size); int i = 0; Set<Map.Entry<String, Quote>>
-			 * entrySet = quotesList.entrySet(); for (Map.Entry<String, Quote>
-			 * obj : entrySet) { if (i == item) quote = obj.getValue(); i = i +
-			 * 1; }
-			 */
 
 			randomQuotesList.remove(quote.getMD5());
 		} while ((endCondition = checkIfQuotePostedBefore(quote, fileName)));
@@ -103,8 +90,9 @@ public class QuoteManager {
 			out.writeObject(quotesList);
 			out.close();
 			fileOut.close();
-		} catch (IOException ex) {
-			ex.printStackTrace();
+		} catch (IOException e) {
+			//ex.printStackTrace();
+			logger.error("Serialisation of hashtable of quotes unsuccesfull", e);
 		}
 	}
 
@@ -127,6 +115,7 @@ public class QuoteManager {
 			in.close();
 		} catch (Exception e) {
 			//e.printStackTrace();
+			logger.error("Deserialisation of already posted quotes unsuccesfull.", e);
 		}
 
 		if (quotes.containsKey(quote.getMD5())) {

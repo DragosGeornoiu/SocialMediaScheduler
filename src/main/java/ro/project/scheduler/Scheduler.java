@@ -14,11 +14,14 @@ import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
 
+import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Scheduler {
+	final static Logger logger = Logger.getLogger(Scheduler.class);
+	
 	private String userId;
 	private String accessToken;
 	private final String USER_AGENT = "Mozilla/5.0";
@@ -76,7 +79,8 @@ public class Scheduler {
 			}
 			in.close();
 		} catch (Exception e) {
-			e.printStackTrace();
+			//e.printStackTrace();
+			logger.error("Something went wrong trying to schedule a message!", e);
 		}
 
 		return responseCode;
@@ -138,6 +142,7 @@ public class Scheduler {
 			in.close();
 		} catch (Exception e) {
 			//e.printStackTrace();
+			logger.error("Something went wrong when trying to get the updates!", e);
 		}
 
 		if (response == null) {
@@ -211,6 +216,7 @@ public class Scheduler {
 
 		} catch (Exception e) {
 			//e.printStackTrace();
+			logger.error("Something went wrong when trying to get the pending updates!", e);
 		}
 
 		if (response == null) {
@@ -259,7 +265,7 @@ public class Scheduler {
 			}
 			in.close();
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Something went wrong when trying to delete the update", e);
 		}
 
 		return responseCode;
@@ -284,7 +290,7 @@ public class Scheduler {
 			}
 			in.close();
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Something went wrong when trying to authenticate", e);
 		}
 		return response.toString();
 
@@ -311,6 +317,7 @@ public class Scheduler {
 
 		} catch (Exception e) {
 			//e.printStackTrace();
+			logger.error("Something went wrong then trying to get the profiles for user!", e);
 		}
 
 		/*
@@ -338,7 +345,8 @@ public class Scheduler {
 					return (String) update.get("id");
 			}
 		} catch (JSONException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
+			logger.error("Something went wrong when trying to parse Json for id!", e);
 		}
 		return "";
 
@@ -367,6 +375,7 @@ public class Scheduler {
 
 		} catch (Exception e) {
 			//e.printStackTrace();
+			logger.error("Something went wrong when trying to get all the profiles of the user", e);
 		}
 
 		String jsonResponse = "";
@@ -386,7 +395,8 @@ public class Scheduler {
 				allProfilesList.add((String) update.get("formatted_service"));
 			}
 		} catch (JSONException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
+			logger.error("Something went wrong when trying to parse the name of the user's profiles", e);
 		}
 		return allProfilesList;
 	}

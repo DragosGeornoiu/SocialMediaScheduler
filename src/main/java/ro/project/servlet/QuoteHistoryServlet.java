@@ -9,10 +9,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import ro.project.scheduler.QuoteManager;
 import ro.project.scheduler.Scheduler;
 
 /**
@@ -21,6 +23,7 @@ import ro.project.scheduler.Scheduler;
  *
  */
 public class QuoteHistoryServlet extends HttpServlet {
+	final static Logger logger = Logger.getLogger(QuoteHistoryServlet.class);
 	private static final long serialVersionUID = 1L;
 	private Scheduler scheduler;
 	private int j = 0;
@@ -58,7 +61,7 @@ public class QuoteHistoryServlet extends HttpServlet {
 			jString = scheduler.getUpdatesFor(1, scheduler.getProfileId("twitter"));
 			parseJString(jString, "Twitter");
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Problem retrieving all the posted updates", e);
 		}
 
 		out.print("</html>\n</body>");

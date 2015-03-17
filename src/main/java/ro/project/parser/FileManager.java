@@ -6,7 +6,12 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
+import ro.project.scheduler.Scheduler;
+
 public class FileManager {
+	final static Logger logger = Logger.getLogger(FileManager.class);
 	private final String PATH = "D:\\\\workspace\\\\SocialMediaScheduler\\\\src\\\\main\\\\resources\\\\quotes";
 
 	/**
@@ -95,7 +100,8 @@ public class FileManager {
 		try {
 			file.createNewFile();
 		} catch (IOException e) {
-			e.printStackTrace();
+			// e.printStackTrace();
+			logger.error("Problem creating file in path", e);
 		}
 		return PATH + "\\\\" + fileName ;
 	}

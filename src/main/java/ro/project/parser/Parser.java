@@ -14,11 +14,13 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.jsoup.select.Elements;
 
 import ro.project.scheduler.Quote;
 
 public abstract class Parser {
+	final static Logger logger = Logger.getLogger(Parser.class);
 	protected FileManager fileManager;
 	protected String path;
 	protected final String PATH = "D:\\\\workspace\\\\SocialMediaScheduler\\\\src\\\\main\\\\resources\\\\quotes";
@@ -68,8 +70,8 @@ public abstract class Parser {
 					if (newQuotes.contains(entry.getValue())) {
 						endCondition = true;
 						break;
-					} 
-					tempQuotes.put(entry.getValue().getMD5(), entry.getValue());					
+					}
+					tempQuotes.put(entry.getValue().getMD5(), entry.getValue());
 				}
 
 				/*
@@ -148,24 +150,13 @@ public abstract class Parser {
 	 * @return List<String> representing all the quotes from the file.
 	 */
 	protected Hashtable<String, Quote> getQuotesFromFile(String fileName) {
-		// System.out.println("FILENAME: " + fileName);
-		/*
-		 * Hashtable<String, Quote> quotesList = new Hashtable<String, Quote>();
-		 * BufferedReader br = null; try { br = new BufferedReader(new
-		 * FileReader(fileName)); String line; while ((line = br.readLine()) !=
-		 * null) { Quote q = new Quote(line.split(" - ")[0],
-		 * line.split(" - ")[1]); quotesList.put(q.getMD5(), q); } br.close(); }
-		 * catch (Exception e) { e.printStackTrace(); }
-		 * 
-		 * return quotesList;
-		 */
-
 		Hashtable<String, Quote> quotes = new Hashtable<String, Quote>();
 		try {
 			ObjectInputStream in = new ObjectInputStream(new FileInputStream(fileName));
 			quotes = (Hashtable<String, Quote>) in.readObject();
 			in.close();
 		} catch (Exception e) {
+			logger.error("Deserialisation of quotes hashtable unsuccesfull.", e);
 		}
 		return quotes;
 	}
@@ -177,22 +168,14 @@ public abstract class Parser {
 	 *            the list of quotes.
 	 */
 	protected void saveQuotesToFile(Hashtable<String, Quote> quotesList) {
-		/*
-		 * BufferedWriter writer = null; try { writer = new BufferedWriter(new
-		 * FileWriter(path)); for (int i = 0; i < quotesList.size(); i++) {
-		 * writer.write(quotesList.get(i) + "\n"); } } catch (IOException e) {
-		 * e.printStackTrace(); } finally { try { if (writer != null)
-		 * writer.close(); } catch (IOException e) { e.printStackTrace(); } }
-		 */
-
 		try {
 			FileOutputStream fileOut = new FileOutputStream(path);
 			ObjectOutputStream out = new ObjectOutputStream(fileOut);
 			out.writeObject(quotesList);
 			out.close();
 			fileOut.close();
-		} catch (IOException ex) {
-			ex.printStackTrace();
+		} catch (IOException e) {
+			logger.error("Problem in serialising the quotes hashtable", e);
 		}
 	}
 
@@ -208,7 +191,8 @@ public abstract class Parser {
 			out.println(website);
 			out.close();
 		} catch (IOException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
+			logger.error("Problem in saving parsed website as option for quote retrieving", e);
 		}
 	}
 

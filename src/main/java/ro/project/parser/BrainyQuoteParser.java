@@ -4,19 +4,22 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.Hashtable;
 
+import org.apache.log4j.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import ro.project.scheduler.Quote;
+import ro.project.scheduler.Scheduler;
 
 /**
  * 
  * Parser for http://www.brainyquote.com/.
  *
  */
-public class BrainyQuoteParser extends Parser{
+public class BrainyQuoteParser extends Parser {
+	final static Logger logger = Logger.getLogger(BrainyQuoteParser.class);
 
 	@Override
 	protected Hashtable<String, Quote> getQuotesFromPage(String url) {
@@ -33,9 +36,11 @@ public class BrainyQuoteParser extends Parser{
 			quotesPageList = getQuotesAsList(elements);
 
 		} catch (MalformedURLException e) {
-			e.printStackTrace();
+			// e.printStackTrace();
+			logger.error("Url not formated correctly", e);
 		} catch (IOException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
+			logger.error("Problem reading the quotes from given page", e);
 		}
 
 		return quotesPageList;
@@ -71,9 +76,11 @@ public class BrainyQuoteParser extends Parser{
 				}
 			}
 		} catch (MalformedURLException e) {
-			e.printStackTrace();
+			// e.printStackTrace();
+			logger.error("Url not formated correctly", e);
 		} catch (IOException e) {
-			e.printStackTrace();
+			// e.printStackTrace();
+			logger.error("Problem retrieving previous page link", e);
 		}
 		return "";
 	}

@@ -74,7 +74,7 @@ public class SocialMediaServlet extends HttpServlet {
 				for (int i = 0; i < where.length; i++) {
 					scheduler.setUserId(scheduler.getProfileId(where[i]));
 					int max = scheduler.getMaxCharacters(where[i]);
-					Quote quote = quoteManager.getRandomQuoteFor(where[i], max);
+					Quote quote = quoteManager.getRandomQuote(where[i], max);
 					if ((quote == null) || (quote.getQuote().trim().isEmpty())) {
 						out.print("<br> Found nothing to print on " + where[i] + " <br>");
 					} else {
@@ -91,38 +91,6 @@ public class SocialMediaServlet extends HttpServlet {
 
 				}
 			}
-
-			/*
-			 * if (where != null) { for (int i = 0; i < where.length; i++) { if
-			 * (where[i].equals("Twitter")) {
-			 * scheduler.setUserId(scheduler.getProfileId("twitter")); Quote
-			 * quote = quoteManager.getRandomQuoteForTwitter(); if ((quote ==
-			 * null) || (quote.getQuote().trim().isEmpty())) {
-			 * out.print("<br> Found nothing to print on Twitter <br>"); } else
-			 * { int code = scheduler.sendMessage(quote.toString(), date); if
-			 * (code == 200) { out.println("Quote \"" +
-			 * quote.toString().replaceAll("\\+", " ") +
-			 * "\" was schedulet to be posted on " + date + " on " + where[i] +
-			 * "<BR>"); } else if(code == 0){ out.println(
-			 * "<br>Something went wrong. Probably the access token is not good..."
-			 * + "<BR>"); } else { out.println(
-			 * "<br> Something went wrong when trying to post on Twitter" +
-			 * "<BR>"); } } } else if (where[i].equals("Facebook")) {
-			 * scheduler.setUserId(scheduler.getProfileId("facebook")); Quote
-			 * quote = quoteManager.getRandomQuoteForFacebook(); if ((quote ==
-			 * null) || (quote.getQuote().trim().isEmpty())) {
-			 * out.print("<br> Found nothing to print on Facebook <br> "); }
-			 * else { int code = scheduler.sendMessage(quote.toString(), date);
-			 * if (code == 200) { out.println("Quote \"" +
-			 * quote.toString().replaceAll("\\+", " ") +
-			 * "\" was schedulet to be posted on " + date + " on " + where[i] +
-			 * "<BR>"); } else if(code == 0){ out.println(
-			 * "<br>Something went wrong. Probably the access token is not good..."
-			 * + "<BR>"); } else { out.println(
-			 * "<br>Something went wrong when trying to post on Facebook" +
-			 * "<BR>"); } } } } }
-			 */
-
 			out.print("</html>\n</body>");
 		}
 	}

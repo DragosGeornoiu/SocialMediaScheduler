@@ -12,6 +12,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
+
+import ro.project.scheduler.QuoteManager;
 import ro.project.scheduler.Scheduler;
 
 /**
@@ -20,6 +23,7 @@ import ro.project.scheduler.Scheduler;
  *
  */
 public class PostToSocialMediaServlet extends HttpServlet {
+	final static Logger logger = Logger.getLogger(PostToSocialMediaServlet.class);
 	private static final long serialVersionUID = 1L;
 	private final String path = "D:\\\\workspace\\\\SocialMediaScheduler\\\\src\\\\main\\\\resources\\\\quotes";
 	private Scheduler scheduler;
@@ -168,7 +172,7 @@ public class PostToSocialMediaServlet extends HttpServlet {
 			}
 			br.close();
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Problem retrieving options of parsed websites", e);
 		}
 
 		return optionList;

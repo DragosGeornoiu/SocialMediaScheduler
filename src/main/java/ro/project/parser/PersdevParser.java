@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.Hashtable;
 
+import org.apache.log4j.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -18,7 +19,8 @@ import ro.project.scheduler.Quote;
  *
  */
 public class PersdevParser extends Parser {
-
+	final static Logger logger = Logger.getLogger(PersdevParser.class);
+	
 	@Override
 	protected Hashtable<String, Quote> getQuotesFromPage(String url) {
 		Document document = null;
@@ -33,9 +35,9 @@ public class PersdevParser extends Parser {
 			quotesPageList = getQuotesAsList(elements);
 
 		} catch (MalformedURLException e) {
-			e.printStackTrace();
+			logger.error("Url not formated correctly", e);
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error("Problem reading the quotes from given page", e);
 		}
 
 		return quotesPageList;
@@ -73,9 +75,9 @@ public class PersdevParser extends Parser {
 				}
 			}
 		} catch (MalformedURLException e) {
-			e.printStackTrace();
+			logger.error("Url not formated correctly", e);
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error("Problem retrieving previous page link", e);
 		}
 		return "";
 	}

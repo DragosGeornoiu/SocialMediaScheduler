@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -16,6 +17,7 @@ import org.json.JSONObject;
 import ro.project.scheduler.Scheduler;
 
 public class SearchServlet extends HttpServlet {
+	final static Logger logger = Logger.getLogger(SearchServlet.class);
 	private static final long serialVersionUID = 1L;
 	private Scheduler scheduler;
 	private int j = 0;
@@ -72,7 +74,8 @@ public class SearchServlet extends HttpServlet {
 				jString = scheduler.getUpdatesFor(1, scheduler.getProfileId("twitter"));
 				out.println(parseJString(jString, "Twitter"));
 			} catch (JSONException e) {
-				e.printStackTrace();
+				//e.printStackTrace();
+				logger.error("Problem retrieving all the posted updates", e);
 			}
 		}
 		
@@ -100,6 +103,7 @@ public class SearchServlet extends HttpServlet {
 				temp =((String) update.get("text")).split(" - ")[1];
 			} catch (Exception e) {
 				//e.printStackTrace();
+				logger.error("Problem splitting the text.", e);
 			}
 			if(temp.equals(author)) {
 				quotesByAuthor += " <br> ";

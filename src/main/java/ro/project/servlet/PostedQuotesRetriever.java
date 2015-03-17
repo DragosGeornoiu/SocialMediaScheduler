@@ -5,13 +5,17 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import ro.project.scheduler.QuoteManager;
 import ro.project.scheduler.Scheduler;
 
 public class PostedQuotesRetriever {
+	final static Logger logger = Logger.getLogger(PostedQuotesRetriever.class);
+
 	private Scheduler scheduler;
 	private JSONObject jsonObject;
 	private JSONArray updates;
@@ -31,7 +35,7 @@ public class PostedQuotesRetriever {
 				return quotesToBeDisplayed;
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Problem retrieving posted quotes", e);
 		}
 		return quotesToBeDisplayed;
 	}
@@ -94,12 +98,6 @@ public class PostedQuotesRetriever {
 				int usedFromLastJson = beforeTweets % 20;
 				int remainingFromLastJson = 20 - usedFromLastJson;
 
-				System.out.println();
-				System.out.println();
-				System.out.println(jsonPage);
-				System.out.println(beforeTweets);
-				System.out.println(usedFromLastJson);
-				System.out.println(remainingFromLastJson);
 				if ((remainingFromLastJson > twitterMessagesOnLastPage) || (remainingFromLastJson < 10)) {
 					jString = scheduler.getUpdatesFor(jsonPage, scheduler.getProfileId("twitter"));
 					quotes.addAll(parseJStringFromStartToEnd(jString, usedFromLastJson, usedFromLastJson
@@ -128,14 +126,6 @@ public class PostedQuotesRetriever {
 				}
 
 			}
-
-			System.out.println("completedFacebookPages: " + completedFacebookPages);
-			System.out.println("facebookRemaining: " + facebookMessagesRemaining);
-			System.out.println("twitterToComplete: " + twitterToComplete);
-			System.out.println("remainingTwitterMessage: " + remainingTwitterMessage);
-			System.out.println("completeTwitterPages: " + completeTwitterPages);
-			System.out.println("twitterMessagesOnLastPage: " + twitterMessagesOnLastPage);
-
 			return quotes;
 		}
 
@@ -179,7 +169,7 @@ public class PostedQuotesRetriever {
 				total = totalFacebook + totalTwitter;
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Problem retieving the number of total updates posted", e);
 		}
 		return total;
 	}
