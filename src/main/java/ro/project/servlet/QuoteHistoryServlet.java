@@ -28,29 +28,34 @@ public class QuoteHistoryServlet extends HttpServlet {
 	private JSONObject jsonObject;
 	private int total;
 	private JSONArray updates;
-	//private JSONObject update;
+	// private JSONObject update;
 	private PrintWriter out;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		out = response.getWriter();
-		
+
 		String accessToken = request.getParameter("accessToken");
 		scheduler = new Scheduler(accessToken);
-		//int j;
+		// int j;
 
 		out.println("<html>\n <body>");
 		out.println("<head>");
 		out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler\">Home</a>");
 		out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/parse\">Parse</a>");
-		out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/Post?accessToken=" + accessToken + "\">Schedule Quote</a>");
-		out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/QuoteHistory?accessToken=" + accessToken + "\">Quote History</a>");
-		out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/PendingQuotes?accessToken=" + accessToken + "\">Pending Quotes</a><br><br>");
+		out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/Post?accessToken=" + accessToken
+				+ "\">Schedule Quote</a>");
+		out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/QuoteHistory?accessToken=" + accessToken
+				+ "\">Quote History</a>");
+		out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/PendingQuotes?accessToken=" + accessToken
+				+ "\">Pending Quotes</a>");
+		out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/search?accessToken=" + accessToken
+				+ "\">Search</a><br><br>");
 		out.print("</head>");
 
 		try {
-			jString = scheduler.getFacebookUpdates(1, scheduler.getProfileId("facebook"));
+			jString = scheduler.getUpdatesFor(1, scheduler.getProfileId("facebook"));
 			parseJString(jString, "Facebook");
-			jString = scheduler.getTwitterUpdates(1, scheduler.getProfileId("facebook"));
+			jString = scheduler.getUpdatesFor(1, scheduler.getProfileId("twitter"));
 			parseJString(jString, "Twitter");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -67,7 +72,7 @@ public class QuoteHistoryServlet extends HttpServlet {
 		for (int i = 0; i < total; i++) {
 			if ((i % 20 == 0) && (i != 0)) {
 				j++;
-				jString = scheduler.getTwitterUpdates(j, scheduler.getProfileId("twitter"));
+				jString = scheduler.getUpdatesFor(j, scheduler.getProfileId(socialNetwork));
 				jsonObject = new JSONObject(jString);
 				updates = jsonObject.getJSONArray("updates");
 			}

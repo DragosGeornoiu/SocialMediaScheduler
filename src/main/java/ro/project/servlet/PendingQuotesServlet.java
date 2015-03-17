@@ -39,7 +39,9 @@ public class PendingQuotesServlet extends HttpServlet {
 		out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/QuoteHistory?accessToken=" + accessToken
 				+ "\">Quote History</a>");
 		out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/PendingQuotes?accessToken=" + accessToken
-				+ "\">Pending Quotes</a><br><br>");
+				+ "\">Pending Quotes</a>");
+		out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/search?accessToken=" + accessToken
+				+ "\">Search</a><br><br>");
 
 		try {
 			if ((scheduler.getFacebookPendingUpdates(1, scheduler.getProfileId("facebook")) == null)

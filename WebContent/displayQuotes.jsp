@@ -23,6 +23,9 @@
 <a
 	href="http://localhost:8080/SocialMediaScheduler/PendingQuotes?accessToken=<%=request.getParameter("accessToken")%> + "\">Pending
 	Quotes</a>
+<br> 
+<a href="http://localhost:8080/SocialMediaScheduler/search?accessToken=<%=request.getParameter("accessToken")%> + "\">Search
+</a>
 <br>
 <br>
 </head>

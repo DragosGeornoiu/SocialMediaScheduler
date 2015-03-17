@@ -36,10 +36,16 @@ public class PostToSocialMediaServlet extends HttpServlet {
 			out.println("<html>");
 			out.println("<head>");
 			out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler\">Home</a>");
-			out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/parse?accessToken=" + accessToken + "\">Parse</a>");
-			out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/Post?accessToken=" + accessToken + "\">Schedule Quote</a>");
-			out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/QuoteHistory?accessToken=" + accessToken + "\">Quote History</a>");
-			out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/PendingQuotes?accessToken=" + accessToken + "\">Pending Quotes</a><br><br>");
+			out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/parse?accessToken=" + accessToken
+					+ "\">Parse</a>");
+			out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/Post?accessToken=" + accessToken
+					+ "\">Schedule Quote</a>");
+			out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/QuoteHistory?accessToken="
+					+ accessToken + "\">Quote History</a>");
+			out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/PendingQuotes?accessToken="
+					+ accessToken + "\">Pending Quotes</a>");
+			out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/search?accessToken=" + accessToken
+					+ "\">Search</a><br><br>");
 			out.print("</head>");
 			out.println("<body>");
 			out.println("The access token is probably not correct, please insert it again...");
@@ -101,7 +107,9 @@ public class PostToSocialMediaServlet extends HttpServlet {
 			out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/QuoteHistory?accessToken="
 					+ accessToken + "\">Quote History</a>");
 			out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/PendingQuotes?accessToken="
-					+ accessToken + "\">Pending Quotes</a><br><br>");
+					+ accessToken + "\">Pending Quotes</a>");
+			out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/search?accessToken=" + accessToken
+					+ "\">Search</a><br><br>");
 			out.print("</head>");
 			out.println("</head>");
 			out.println("<body>");

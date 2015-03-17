@@ -34,7 +34,9 @@ public class ParseWebsiteServlet extends HttpServlet {
 		out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/parse?accessToken=" + get + "\">Parse</a>");
 		out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/Post?accessToken=" + get + "\">Schedule Quote</a>");
 		out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/QuoteHistory?accessToken=" + get + "\">Quote History</a>");
-		out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/PendingQuotes?accessToken=" + get + "\">Pending Quotes</a><br><br>");
+		out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/PendingQuotes?accessToken=" + get + "\">Pending Quotes</a>");
+		out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/search?accessToken=" + get
+				+ "\">Search</a><br><br>");
 		out.print("</head>");
 
 		if ((request.getParameter("radios") == null) || (request.getParameter("website") == null)) {

@@ -92,7 +92,7 @@ public class Scheduler {
 	 * 
 	 * @return String representing the Twitter updates.
 	 */
-	public String getTwitterUpdates(int page, String userId) {
+	public String getUpdatesFor(int page, String userId) {
 		this.userId = userId;
 		return getUpdates(page);
 	}
@@ -106,10 +106,6 @@ public class Scheduler {
 	 * 
 	 * @return String representing the Facebook updates.
 	 */
-	public String getFacebookUpdates(int page, String userId) {
-		this.userId = userId;
-		return getUpdates(page);
-	}
 
 	/**
 	 * Returns the updates posted with Buffer API..

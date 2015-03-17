@@ -9,7 +9,8 @@
 <br>
 <a href="http://localhost:8080/SocialMediaScheduler\">Home</a>
 <br>
-<a href="http://localhost:8080/SocialMediaScheduler/parse?accessToken=<%=request.getParameter("accessToken")%> + "\">Parse</a>
+<a
+	href="http://localhost:8080/SocialMediaScheduler/parse?accessToken=<%=request.getParameter("accessToken")%> + "\">Parse</a>
 <br>
 <a
 	href="http://localhost:8080/SocialMediaScheduler/Post?accessToken=<%=request.getParameter("accessToken")%> + "\">Schedule
@@ -23,19 +24,21 @@
 	href="http://localhost:8080/SocialMediaScheduler/PendingQuotes?accessToken=<%=request.getParameter("accessToken")%> + "\">Pending
 	Quotes</a>
 <br>
+<a
+	href="http://localhost:8080/SocialMediaScheduler/search?accessToken=<%=request.getParameter("accessToken")%> + "\">Search
+</a>
+<br>
 <br>
 </head>
 <body>
 	<form ACTION="ParseWebsite">
-		Please enter a website: <br> <input
-			type="text" name="website" size="20px"> <br>
-			<INPUT TYPE="radio" NAME="radios" VALUE="http://persdev-q.com/"> http://persdev-q.com/;
-			<br>
-			<INPUT TYPE="radio" NAME="radios" VALUE="http://www.brainyquote.com/"> http://www.brainyquote.com/;
-			<br>
-			<INPUT TYPE="hidden" NAME="accessToken" VALUE=<%=request.getParameter("accessToken")%>>
-			 <input type="submit"
-			value="Submit"> <br> <br>
+		Please enter a website: <br> <input type="text" name="website"
+			size="20px"> <br> <INPUT TYPE="radio" NAME="radios"
+			VALUE="http://persdev-q.com/"> http://persdev-q.com/; <br>
+		<INPUT TYPE="radio" NAME="radios" VALUE="http://www.brainyquote.com/">
+		http://www.brainyquote.com/; <br> <INPUT TYPE="hidden"
+			NAME="accessToken" VALUE=<%=request.getParameter("accessToken")%>>
+		<input type="submit" value="Submit"> <br> <br>
 	</form>
 
 </body>
