@@ -3,6 +3,8 @@ package ro.project.servlet;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -10,6 +12,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import ro.project.scheduler.Quote;
 import ro.project.scheduler.QuoteManager;
 import ro.project.scheduler.Scheduler;
 
@@ -20,135 +23,180 @@ public class PostedQuotesRetriever {
 	private JSONObject jsonObject;
 	private JSONArray updates;
 
-	public List<String> getPostedQuotes(int from, int indexesPerPage, String accessToken) {
+	public List<String> getPostedQuotes(int from, int indexesPerPage, String accessToken, String sortedBy,
+			boolean ascending) {
 
 		scheduler = new Scheduler(accessToken);
 		List<String> quotesToBeDisplayed = new ArrayList<String>();
+		List<OrderObject> temp = null;
 
 		try {
+			temp = parse(accessToken);
 
-			List<String> temp = parse(from, indexesPerPage, accessToken);
 			if (temp == null) {
 				return null;
 			} else {
-				quotesToBeDisplayed.addAll(temp);
-				return quotesToBeDisplayed;
+
+				if (sortedBy.equals("byDate") && ascending == true) {
+					// sort list by calendar, ascending
+					Collections.sort(temp, new Comparator<OrderObject>() {
+						public int compare(OrderObject one, OrderObject two) {
+							return one.getCalendar().compareTo(two.getCalendar());
+						}
+					});
+
+				} else if (sortedBy.equals("byDate") && ascending == false) {
+					// sort list by calendar, descending
+					Collections.sort(temp, new Comparator<OrderObject>() {
+						public int compare(OrderObject one, OrderObject two) {
+							return -one.getCalendar().compareTo(two.getCalendar());
+						}
+					});
+				} else if (sortedBy.equals("byAuthor") && ascending == true) {
+					// sort list by author, ascending
+					Collections.sort(temp, new Comparator<OrderObject>() {
+						public int compare(OrderObject one, OrderObject two) {
+							return one.getQuote().getAuthor().compareToIgnoreCase(two.getQuote().getAuthor());
+						}
+					});
+
+				} else if (sortedBy.equals("byAuthor") && ascending == false) {
+					// sort list by author, descending
+					Collections.sort(temp, new Comparator<OrderObject>() {
+						public int compare(OrderObject one, OrderObject two) {
+							return -one.getQuote().getAuthor().compareToIgnoreCase(two.getQuote().getAuthor());
+						}
+					});
+				} else if (sortedBy.equals("byQuote") && ascending == true) {
+					// sort list by quote, ascending
+					Collections.sort(temp, new Comparator<OrderObject>() {
+						public int compare(OrderObject one, OrderObject two) {
+							return one.getQuote().getQuote().compareToIgnoreCase(two.getQuote().getQuote());
+						}
+					});
+				} else if (sortedBy.equals("byQuote") && ascending == false) {
+					// sort list by quote, descending
+					Collections.sort(temp, new Comparator<OrderObject>() {
+						public int compare(OrderObject one, OrderObject two) {
+							return -one.getQuote().getQuote().compareToIgnoreCase(two.getQuote().getQuote());
+						}
+					});
+				}
+
 			}
 		} catch (Exception e) {
 			logger.error("Problem retrieving posted quotes", e);
 		}
+
+		int end;
+		if (from + indexesPerPage < temp.size()) {
+			end = from + indexesPerPage;
+		} else {
+			end = temp.size();
+		}
+		for (int i = from; i < end; i++) {
+			quotesToBeDisplayed.add(temp.get(i).toString());
+		}
+
 		return quotesToBeDisplayed;
 	}
 
-	private List<String> parse(int from, int indexPerPage, String accessToken) throws JSONException {
+	private List<OrderObject> parse(String accessToken) throws JSONException {
 
 		scheduler = new Scheduler(accessToken);
-		List<String> quotes = new ArrayList<String>();
-		// List<String> quotesToBeDisplayed = new ArrayList<String>();
+		List<OrderObject> quotes = new ArrayList<OrderObject>();
 
+		// alea patru cazuri sa nu le uiti, dar momentan sunt neglijate,
+		// totalTwitter
+		// si totalFacebook sunt ambele sub 500
 		String jString = scheduler.getUpdatesFor(1, scheduler.getProfileId("facebook"));
 		if ((jString == null) || jString.trim().isEmpty()) {
 			return null;
-		} else {
-			JSONObject jsonObject = new JSONObject(jString);
-			int totalFacebook = jsonObject.getInt("total");
-			jString = scheduler.getUpdatesFor(1, scheduler.getProfileId("twitter"));
-			jsonObject = new JSONObject(jString);
-			int totalTwitter = jsonObject.getInt("total");
-			int completedFacebookPages = totalFacebook / 10;
-			int facebookMessagesRemaining = totalFacebook % 10;
-			int twitterToComplete = 10 - facebookMessagesRemaining;
-			int remainingTwitterMessage = totalTwitter - twitterToComplete;
-			int completeTwitterPages = remainingTwitterMessage / 10;
-			int twitterMessagesOnLastPage = remainingTwitterMessage % 10;
+		}
+		JSONObject jsonObject = new JSONObject(jString);
+		int totalFacebook = jsonObject.getInt("total");
 
-			// can only be 0 or 1
-			int numberOfSharedPages = 0;
-			if (facebookMessagesRemaining != 0)
-				numberOfSharedPages = 1;
+		jString = scheduler.getUpdatesFor(1, scheduler.getProfileId("twitter"));
+		if ((jString == null) || jString.trim().isEmpty()) {
+			return null;
+		}
+		jsonObject = new JSONObject(jString);
+		int totalTwitter = jsonObject.getInt("total");
 
-			int currentPage = from / 10 + 1;
-			if (currentPage < completedFacebookPages) {
-				int jsonPage;
-				int start, end;
-				if (currentPage % 2 == 0) {
-					jsonPage = currentPage / 2 + 1;
-					start = 10;
-					end = 20;
-				} else {
-					jsonPage = currentPage / 2;
-					start = 0;
-					end = 10;
-				}
-
-				jString = scheduler.getUpdatesFor(jsonPage, scheduler.getProfileId("facebook"));
-				quotes.addAll(parseJStringFromStartToEnd(jString, start, end));
-
-			} else if ((currentPage == completedFacebookPages + 1) && (facebookMessagesRemaining != 0)) {
-				int facebookPage = completedFacebookPages / 2 + 1;
-
-				jString = scheduler.getUpdatesFor(facebookPage, scheduler.getProfileId("facebook"));
-				quotes.addAll(parseJStringFromStartToEnd(jString, 0, facebookMessagesRemaining));
-
-				jString = scheduler.getUpdatesFor(1, scheduler.getProfileId("twitter"));
-				quotes.addAll(parseJStringFromStartToEnd(jString, 0, twitterToComplete));
-			} else if (currentPage > completedFacebookPages + completeTwitterPages + numberOfSharedPages) {
-				int beforeTweets = totalTwitter - twitterMessagesOnLastPage;
-				int jsonPage = beforeTweets / 20 + 1;
-				int usedFromLastJson = beforeTweets % 20;
-				int remainingFromLastJson = 20 - usedFromLastJson;
-
-				if ((remainingFromLastJson > twitterMessagesOnLastPage) || (remainingFromLastJson < 10)) {
-					jString = scheduler.getUpdatesFor(jsonPage, scheduler.getProfileId("twitter"));
-					quotes.addAll(parseJStringFromStartToEnd(jString, usedFromLastJson, usedFromLastJson
-							+ twitterMessagesOnLastPage));
-				} else {
-					jString = scheduler.getUpdatesFor(jsonPage, scheduler.getProfileId("twitter"));
-					quotes.addAll(parseJStringFromStartToEnd(jString, usedFromLastJson, 20));
-
-					jString = scheduler.getUpdatesFor(jsonPage + 1, scheduler.getProfileId("twitter"));
-					quotes.addAll(parseJStringFromStartToEnd(jString, 0, 10 - (20 - usedFromLastJson)));
-				}
+		
+		int endTwitter = 0;
+		int endFacebook =0;
+		if (totalFacebook < 500 && totalTwitter < 500) {
+			endTwitter = totalTwitter;
+			endFacebook = totalFacebook;
+		} else if (totalFacebook > 500 && totalTwitter > 500) {
+			endTwitter = 500;
+			endFacebook = 500;
+		} else if (totalFacebook > 500 && totalTwitter < 500) {
+			// 750 si 450
+			endTwitter = totalTwitter;
+			if(totalFacebook + totalTwitter < 1000) {
+				endFacebook = totalFacebook;
 			} else {
-				int twitterPage = currentPage - completedFacebookPages - numberOfSharedPages;
-				int scenario = twitterPage % 2;
-				int jsonPage;
-				if (scenario == 1) {
-					jsonPage = twitterPage / 2 + 1;
-					jString = scheduler.getUpdatesFor(jsonPage, scheduler.getProfileId("twitter"));
-
-				} else {
-					jsonPage = twitterPage / 2;
-					jString = scheduler.getUpdatesFor(jsonPage, scheduler.getProfileId("twitter"));
-					quotes.addAll(parseJStringFromStartToEnd(jString, 10 + twitterToComplete, 20));
-					jString = scheduler.getUpdatesFor(jsonPage + 1, scheduler.getProfileId("twitter"));
-					quotes.addAll(parseJStringFromStartToEnd(jString, 0, 10 - facebookMessagesRemaining));
-				}
-
+				endFacebook = 500 + (500 - totalTwitter);
 			}
-			return quotes;
+
+		} else if (totalFacebook < 500 && totalTwitter > 500) {
+			endFacebook = totalFacebook;
+			if(totalFacebook + totalTwitter < 1000) {
+				endTwitter = totalTwitter;
+			} else {
+				endTwitter = 500 + (500 - totalFacebook);
+			}
+
+		}
+	
+		
+		for (int i = 1; i <= (endTwitter / 20 + 1); i++) {
+			jString = scheduler.getUpdatesFor(i, scheduler.getProfileId("twitter"));
+
+			if (endTwitter - (i * 20) > 0) {
+				quotes.addAll(parseJStringFromStartToEnd(jString, 0, 19));
+			} else {
+				quotes.addAll(parseJStringFromStartToEnd(jString, 0, totalTwitter % 20));
+			}
+
 		}
 
+		for (int i = 1; i <= (endFacebook / 20 + 1); i++) {
+			jString = scheduler.getUpdatesFor(i, scheduler.getProfileId("facebook"));
+
+			if (endFacebook - (i * 20) > 0) {
+				quotes.addAll(parseJStringFromStartToEnd(jString, 0, 19));
+			} else {
+				quotes.addAll(parseJStringFromStartToEnd(jString, 0, totalFacebook % 20));
+			}
+
+		}
+		return quotes;
 	}
 
-	private Collection<? extends String> parseJStringFromStartToEnd(String jString, int start, int end)
-			throws JSONException {
-		List<String> quoteList = new ArrayList<String>();
+	private List<OrderObject> parseJStringFromStartToEnd(String jString, int start, int end) throws JSONException {
+		List<OrderObject> quoteList = new ArrayList<OrderObject>();
 		jsonObject = new JSONObject(jString);
 		updates = jsonObject.getJSONArray("updates");
 
 		for (int i = start; i < end; i++) {
-			String result = "";
+			String quote = "";
+			String author = "";
 			JSONObject update = updates.getJSONObject(i);
-			result += " <BR> ";
 			Calendar c = Calendar.getInstance();
 			c.setTimeInMillis(new Long(((int) update.getInt("due_at"))) * 1000);
-			int mYear = c.get(Calendar.YEAR);
-			result += " Due at: " + update.get("due_time") + "; " + update.get("day") + "; " + mYear + " <BR> ";
-			result += " Service: " + update.get("profile_service") + " <BR> ";
-			result += " Text: " + update.get("text") + "<BR>";
-			result += " <BR> ";
-			quoteList.add(result);
+			try {
+				quote = ((String) update.get("text")).split(" - ")[0];
+				author = ((String) update.get("text")).split(" - ")[1];
+			} catch (Exception e) {
+				logger.error("Problem prasing quote", e);
+			}
+
+			OrderObject ord = new OrderObject(c, new Quote(quote, author), (String) update.get("profile_service"));
+			/* System.out.println(ord); */
+			quoteList.add(ord);
 
 		}
 		return quoteList;

@@ -124,6 +124,7 @@ public class Scheduler {
 
 		String url = "https://api.bufferapp.com/1/profiles/" + userId + "/updates/sent.json?" + "page=" + page
 				+ "&access_token=" + accessToken;
+		System.out.println(url);
 
 		StringBuffer response = null;
 		try {
