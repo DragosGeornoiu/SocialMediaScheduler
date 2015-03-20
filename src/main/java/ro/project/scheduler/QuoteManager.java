@@ -16,11 +16,12 @@ import ro.project.parser.PersdevParser;
 
 public class QuoteManager {
 	final static Logger logger = Logger.getLogger(QuoteManager.class);
-	private final String FILE = "D:/workspace/SocialMediaScheduler/src/main/resources/quotes/";
+	private String FILE;
 	private String quotesFile;
 
-	public QuoteManager(String quotesFile) {
-		this.quotesFile = "D:/workspace/SocialMediaScheduler/src/main/resources/quotes/" + quotesFile;
+	public QuoteManager(String quotesFile, String FILE) {
+		this.FILE = FILE;
+		this.quotesFile = FILE + quotesFile;
 	}
 
 	public Quote getRandomQuote(String where, int max) {

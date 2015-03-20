@@ -23,7 +23,7 @@ public abstract class Parser {
 	final static Logger logger = Logger.getLogger(Parser.class);
 	protected FileManager fileManager;
 	protected String path;
-	protected final String PATH = "D:\\\\workspace\\\\SocialMediaScheduler\\\\src\\\\main\\\\resources\\\\quotes";
+	protected String PATH;
 
 	/**
 	 * Gets all quotes from a given link, if the web site was already parsed, it
@@ -35,7 +35,8 @@ public abstract class Parser {
 	 * @return path created from the PATH variable and the name of the text file
 	 *         formed from the web site name.
 	 */
-	public boolean updateQuotes(String website) {
+	public boolean updateQuotes(String website, String PATH) {
+		this.PATH = PATH;
 		fileManager = new FileManager();
 		String fileName = fileManager.createFileNameFromUrl(website);
 

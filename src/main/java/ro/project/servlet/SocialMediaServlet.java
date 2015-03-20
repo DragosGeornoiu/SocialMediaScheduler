@@ -60,7 +60,9 @@ public class SocialMediaServlet extends HttpServlet {
 			String fileName = fileManager.createFileNameFromUrl(request.getParameter("radios"));
 			// fileName += ".txt";
 			fileName += ".ser";
-			quoteManager = new QuoteManager(fileName);
+			quoteManager = new QuoteManager(fileName, getServletContext().getInitParameter("path2"));
+			System.out.println("SocialMediaServlet: " + getServletContext().getInitParameter("path2"));
+			// quoteManager = new QuoteManager(fileName, "D:/workspace/SocialMediaScheduler/src/main/resources/quotes/");
 			scheduler = new Scheduler(accessToken);
 
 			String date = request.getParameter("yeardropdown") + "-" + request.getParameter("monthdropdown") + "-"

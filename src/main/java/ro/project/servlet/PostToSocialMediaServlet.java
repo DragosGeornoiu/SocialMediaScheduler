@@ -25,10 +25,13 @@ import ro.project.scheduler.Scheduler;
 public class PostToSocialMediaServlet extends HttpServlet {
 	final static Logger logger = Logger.getLogger(PostToSocialMediaServlet.class);
 	private static final long serialVersionUID = 1L;
-	private final String path = "D:\\\\workspace\\\\SocialMediaScheduler\\\\src\\\\main\\\\resources\\\\quotes";
+	private String path;
 	private Scheduler scheduler;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		path = getServletContext().getInitParameter("path");
+		System.out.println("PostToSocialMediaServlet: " + path);
+		//path = "D:\\\\workspace\\\\SocialMediaScheduler\\\\src\\\\main\\\\resources\\\\quotes";
 		PrintWriter out = response.getWriter();
 		List<String> optionsList = new ArrayList<String>();
 		optionsList = getOptionsList();

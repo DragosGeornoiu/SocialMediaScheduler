@@ -58,7 +58,9 @@ public class ParseWebsiteServlet extends HttpServlet {
 
 			if (selectionCorect) {
 
-				if (parser.updateQuotes(website)) {
+				if (parser.updateQuotes(website, getServletContext().getInitParameter("path"))) {
+					System.out.println("ParseWebsiteServlet: " + getServletContext().getInitParameter("path"));
+				//if (parser.updateQuotes(website, "D:\\\\workspace\\\\SocialMediaScheduler\\\\src\\\\main\\\\resources\\\\quotes")) {
 					fileManager.createFileInPath("facebookquotes.txt");
 					fileManager.createFileInPath("twitterquotes.txt");
 					out.println("The quotes from the given website were retrieved... <br> What do you want to do next? <br>");
