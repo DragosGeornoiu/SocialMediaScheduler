@@ -59,6 +59,14 @@ public class PendingQuotesServlet extends HttpServlet {
 				jsonObject = new JSONObject(jString);
 				int totalTwitter = jsonObject.getInt("total");
 				out.println("<html>\n <body>");
+				out.println("<table border=\"1\" style=\"width:100%;\" cellpadding=\"5\" cellspacing=\"5\">");
+				out.println("<tr bgcolor=\"#d3d3d3\">");
+				out.println("<td>Due at</td>");
+				out.println("<td>Service</td>");
+				out.println("<td>Text</td>");
+				out.println("<td>Delete</td>");
+				out.println("</tr>");
+				
 
 				if ((totalFacebook == 0) && (totalTwitter == 0)) {
 					out.print("<BR> There are no pending quotes...");
@@ -99,6 +107,7 @@ public class PendingQuotesServlet extends HttpServlet {
 
 				}
 
+				out.print("</table>");
 				out.print("</html>\n</body>");
 			}
 		} catch (Exception e) {
@@ -111,7 +120,17 @@ public class PendingQuotesServlet extends HttpServlet {
 		Calendar c = Calendar.getInstance();
 		c.setTimeInMillis(new Long(((int) update.getInt("due_at"))) * 1000);
 		int mYear = c.get(Calendar.YEAR);
-		out.print("Due at:: " + update.get("due_time") + "; " + update.get("day") + "; " + mYear + " <BR> ");
+		out.print("<tr>");
+		out.print("<td>" + update.get("due_time") + "; " + update.get("day") + "; " + mYear + "</td>");
+		out.print("<td>" + update.get("profile_service") + "</td>");
+		out.print("<td>" + update.get("text") + "</td>");
+		out.print("<td>" + "<form ACTION=\"DeletePending\">");
+		out.print("<INPUT TYPE=\"hidden\" name=\"accessToken\" value=" + accessToken + ">");
+		out.print("<INPUT TYPE=\"hidden\" name=\"url\" value=" + update.get("_id") + ">");
+		out.print("<input type=\"submit\" value=\"Delete\">");
+		out.print("</form>" +  "</td>");
+		out.print("</tr>");
+		/*out.print("Due at:: " + update.get("due_time") + "; " + update.get("day") + "; " + mYear + " <BR> ");
 		out.print("Service: " + update.get("profile_service") + "<BR>");
 		out.print("Text: " + update.get("text") + "<BR>");
 		out.println("<form ACTION=\"DeletePending\">");
@@ -119,6 +138,6 @@ public class PendingQuotesServlet extends HttpServlet {
 		out.println("<INPUT TYPE=\"hidden\" name=\"url\" value=" + update.get("_id") + ">");
 		out.println("<input type=\"submit\" value=\"Delete\">");
 		out.println("</form>");
-		out.print("<BR>");
+		out.print("<BR>");*/
 	}
 }

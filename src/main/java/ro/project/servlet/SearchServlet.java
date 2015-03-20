@@ -74,11 +74,17 @@ public class SearchServlet extends HttpServlet {
 			author = request.getParameter("author");
 			String jString;
 			try {
-				out.println("<br> <br> Author: " + author +" <br> <br>");
+				out.println("<br> <br> Author: " + author);
+				out.println("<table border=\"1\" style=\"width:100%;\" cellpadding=\"5\" cellspacing=\"5\">");
+				out.println("<tr bgcolor=\"#d3d3d3\">");
+				out.println("<td>Due at</td>");
+				out.println("<td>Service</td>");
+				out.println("<td>Text</td>");
+				out.println("</tr>");
 				jString = scheduler.getUpdatesFor(1, scheduler.getProfileId("facebook"));
-				out.println(parseJString(jString, "Facebook"));
+				out.print(parseJString(jString, "Facebook"));
 				jString = scheduler.getUpdatesFor(1, scheduler.getProfileId("twitter"));
-				out.println(parseJString(jString, "Twitter"));
+				out.print(parseJString(jString, "Twitter"));
 			} catch (JSONException e) {
 				//e.printStackTrace();
 				logger.error("Problem retrieving all the posted updates", e);
@@ -116,10 +122,10 @@ public class SearchServlet extends HttpServlet {
 				Calendar c = Calendar.getInstance();
 				c.setTimeInMillis(new Long(((int) update.getInt("due_at"))) * 1000);
 				int mYear = c.get(Calendar.YEAR);
-				quotesByAuthor += "Due at: " + update.get("due_time") + "; " + update.get("day") + "; " + mYear + "<BR>";
-				quotesByAuthor += "Service: " + update.get("profile_service") + "<BR>";
-				quotesByAuthor += "Text: " + update.get("text") + "<BR>";
-				quotesByAuthor += " <br> ";
+				quotesByAuthor += "<tr><td>" + update.get("due_time") + "; " + update.get("day") + "; " + mYear + "</td>";
+				quotesByAuthor += "<td>" + update.get("profile_service") + "</td>";
+				quotesByAuthor += "<td>" + update.get("text") + "</td>";
+				quotesByAuthor += "</tr> ";
 			}
 		}
 		return quotesByAuthor;
