@@ -14,7 +14,10 @@ import ro.project.parser.Parser;
 import ro.project.parser.PersdevParser;
 
 /**
- * Gives the URL of the website to be parsed.
+ * @author Caphyon1
+ * 
+ *         The user inserts the url and selects a coresponging parser to parse
+ *         the url.
  *
  */
 public class ParseWebsiteServlet extends HttpServlet {
@@ -27,14 +30,17 @@ public class ParseWebsiteServlet extends HttpServlet {
 		PrintWriter out = response.getWriter();
 		boolean selectionCorect = true;
 		String get = request.getParameter("accessToken");
-		
+
 		out.println("<html>\n <body>");
 		out.println("<head>");
 		out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler\">Home</a>");
 		out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/parse?accessToken=" + get + "\">Parse</a>");
-		out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/Post?accessToken=" + get + "\">Schedule Quote</a>");
-		out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/QuoteHistory?accessToken=" + get + "\">Quote History</a>");
-		out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/PendingQuotes?accessToken=" + get + "\">Pending Quotes</a>");
+		out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/Post?accessToken=" + get
+				+ "\">Schedule Quote</a>");
+		out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/QuoteHistory?accessToken=" + get
+				+ "\">Quote History</a>");
+		out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/PendingQuotes?accessToken=" + get
+				+ "\">Pending Quotes</a>");
 		out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/search?accessToken=" + get
 				+ "\">Search</a><br><br>");
 		out.print("</head>");
@@ -43,7 +49,7 @@ public class ParseWebsiteServlet extends HttpServlet {
 			out.println("<BR> You didn't select a parser... <br> ");
 		} else {
 			String link = request.getParameter("radios");
-			fileManager = new FileManager();
+			fileManager = new FileManager(getServletContext().getInitParameter("path"));
 			String website = request.getParameter("website");
 			if ((link.equals("http://persdev-q.com/")) && (website.startsWith("http://persdev-q.com/"))) {
 				parser = new PersdevParser();
@@ -54,13 +60,9 @@ public class ParseWebsiteServlet extends HttpServlet {
 				selectionCorect = false;
 			}
 
-			/* String path = parser.updateQuotes(website); */
-
 			if (selectionCorect) {
 
-				if (parser.updateQuotes(website, getServletContext().getInitParameter("path"))) {
-					System.out.println("ParseWebsiteServlet: " + getServletContext().getInitParameter("path"));
-				//if (parser.updateQuotes(website, "D:\\\\workspace\\\\SocialMediaScheduler\\\\src\\\\main\\\\resources\\\\quotes")) {
+				if (parser.parseWebsite(website, getServletContext().getInitParameter("path"))) {
 					fileManager.createFileInPath("facebookquotes.txt");
 					fileManager.createFileInPath("twitterquotes.txt");
 					out.println("The quotes from the given website were retrieved... <br> What do you want to do next? <br>");
@@ -69,13 +71,10 @@ public class ParseWebsiteServlet extends HttpServlet {
 				}
 			} else {
 				out.println("Something went wrong, you can try again...<br>");
-
 			}
-			
+
 		}
-		
 		out.print("</body>\n</html>");
 	}
-	
 
 }

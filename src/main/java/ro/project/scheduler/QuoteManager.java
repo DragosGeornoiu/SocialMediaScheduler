@@ -12,22 +12,42 @@ import java.util.Random;
 
 import org.apache.log4j.Logger;
 
-import ro.project.parser.PersdevParser;
-
+/**
+ * 
+ * @author Caphyon1
+ *
+ *         QuoteManager is used for retrieving a random quote from a specific
+ *         web site.
+ */
 public class QuoteManager {
 	final static Logger logger = Logger.getLogger(QuoteManager.class);
-	private String FILE;
+
+	/** the file where the posted quotes are stored. */
+	private String file;
+	/** the file where the quotes from a specific web site are stored. */
 	private String quotesFile;
 
-	public QuoteManager(String quotesFile, String FILE) {
-		this.FILE = FILE;
-		this.quotesFile = FILE + quotesFile;
+	public QuoteManager(String quotesFile, String file) {
+		this.file = file + "quotes\\\\";
+		this.quotesFile = this.file + quotesFile;
 	}
 
+	/**
+	 * Return a random quote to be posted.
+	 * 
+	 * @param where
+	 *            represents the social network for which the quote is
+	 *            requested.
+	 * @param max
+	 *            represents the maximum number of characters accepted on that
+	 *            specific social network.
+	 * @return the Quote to be posted on the social network.
+	 */
 	public Quote getRandomQuote(String where, int max) {
+		logger.info("Retrieving a random quote for " + where);
 		Quote quote;
 		do {
-			quote = getRandomQuoteForSocialMedia(FILE + where.toLowerCase() + "quotes.txt");
+			quote = getRandomQuoteForSocialMedia(file + where.toLowerCase() + "quotes.txt");
 
 			if (quote == null) {
 				return null;
@@ -37,6 +57,11 @@ public class QuoteManager {
 		return quote;
 	}
 
+	/**
+	 * Returns a random quote from the given fileName.
+	 * @param fileName the name of the file from which the quote is retrieved.
+	 * @return the Quote to be posted on the social network.
+	 */
 	private Quote getRandomQuoteForSocialMedia(String fileName) {
 		Quote quote = null;
 
@@ -69,19 +94,16 @@ public class QuoteManager {
 		} else {
 			quote.setQuote(quote.getQuote().replaceAll(" ", "+").replaceAll("’", "'"));
 			return quote;
-			// return (quote.split(" - ")[0] + " - " +
-			// quote.split(" - ")[1]).replaceAll(" ", "+").replaceAll("’", "'");
 		}
 	}
 
 	/**
 	 * Saves the quote so that in the future the same quote won't be posted on
-	 * the same social network in was previously posted.
+	 * the same social network where it was previously posted.
 	 * 
-	 * @param quote
-	 *            String representing the actual quote.
-	 * @param fileName
-	 *            String representing the location where previously posted
+	 * @param quotesList is all the quotes posted before on a specific social network.
+	 * 
+	 * @param fileName  String representing the location where previously posted
 	 *            quotes on a specific social network were posted.
 	 */
 	private void saveQuote(Hashtable<String, Quote> quotesList, String fileName) {
@@ -92,7 +114,6 @@ public class QuoteManager {
 			out.close();
 			fileOut.close();
 		} catch (IOException e) {
-			//ex.printStackTrace();
 			logger.error("Serialisation of hashtable of quotes unsuccesfull", e);
 		}
 	}
@@ -102,7 +123,7 @@ public class QuoteManager {
 	 * network.
 	 * 
 	 * @param quote
-	 *            String representing the actual quote.
+	 *            represents the actual quote as a Quote object.
 	 * @param fileName
 	 *            String representing the location where previously posted
 	 *            quotes on the specific social network were posted.
@@ -115,7 +136,7 @@ public class QuoteManager {
 			quotes = (Hashtable<String, Quote>) in.readObject();
 			in.close();
 		} catch (Exception e) {
-			//e.printStackTrace();
+			// e.printStackTrace();
 			logger.error("Deserialisation of already posted quotes unsuccesfull.", e);
 		}
 

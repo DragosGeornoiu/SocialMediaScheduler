@@ -11,6 +11,12 @@ import javax.servlet.http.HttpServletResponse;
 import ro.project.parser.FileManager;
 import ro.project.parser.Parser;
 
+/**
+ * 
+ * @author Caphyon1
+ *	
+ *	Used for retrieving the access token and passing it to the other servlets.
+ */
 public class AccessToken extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	Parser parser;

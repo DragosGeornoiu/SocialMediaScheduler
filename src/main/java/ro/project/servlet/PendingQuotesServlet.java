@@ -18,7 +18,7 @@ import ro.project.scheduler.Scheduler;
 
 /**
  * 
- * The pending updates on twitter and facebook are shown using this servlet.
+ * PendingQuotesServlet returns the pending updates.
  *
  */
 public class PendingQuotesServlet extends HttpServlet {
@@ -46,16 +46,16 @@ public class PendingQuotesServlet extends HttpServlet {
 				+ "\">Search</a><br><br>");
 
 		try {
-			if ((scheduler.getFacebookPendingUpdates(1, scheduler.getProfileId("facebook")) == null)
-					|| (scheduler.getFacebookPendingUpdates(1, scheduler.getProfileId("facebook")).trim().isEmpty())) {
+			if ((scheduler.getPendingUpdates(1, scheduler.getProfileId("facebook")) == null)
+					|| (scheduler.getPendingUpdates(1, scheduler.getProfileId("facebook")).trim().isEmpty())) {
 
 				out.println("Something went wrong. The access token might be the problem...");
 			} else {
-				String jString = scheduler.getFacebookPendingUpdates(1, scheduler.getProfileId("facebook"));
+				String jString = scheduler.getPendingUpdates(1, scheduler.getProfileId("facebook"));
 				JSONObject jsonObject = new JSONObject(jString);
 				int totalFacebook = jsonObject.getInt("total");
 
-				jString = scheduler.getTwitterPendingUpdates(1, scheduler.getProfileId("twitter"));
+				jString = scheduler.getPendingUpdates(1, scheduler.getProfileId("twitter"));
 				jsonObject = new JSONObject(jString);
 				int totalTwitter = jsonObject.getInt("total");
 				out.println("<html>\n <body>");
@@ -65,14 +65,14 @@ public class PendingQuotesServlet extends HttpServlet {
 				} else {
 
 					j = 1;
-					jString = scheduler.getFacebookPendingUpdates(j, scheduler.getProfileId("facebook"));
+					jString = scheduler.getPendingUpdates(j, scheduler.getProfileId("facebook"));
 					jsonObject = new JSONObject(jString);
 					int total = jsonObject.getInt("total");
 					JSONArray updates = jsonObject.getJSONArray("updates");
 					for (int i = 0; i < total; i++) {
 						if ((i % 20 == 0) && (i != 0)) {
 							j++;
-							jString = scheduler.getFacebookPendingUpdates(j, scheduler.getProfileId("facebook"));
+							jString = scheduler.getPendingUpdates(j, scheduler.getProfileId("facebook"));
 							jsonObject = new JSONObject(jString);
 							updates = jsonObject.getJSONArray("updates");
 						}
@@ -81,14 +81,14 @@ public class PendingQuotesServlet extends HttpServlet {
 					}
 
 					j = 1;
-					jString = scheduler.getTwitterPendingUpdates(j, scheduler.getProfileId("twitter"));
+					jString = scheduler.getPendingUpdates(j, scheduler.getProfileId("twitter"));
 					jsonObject = new JSONObject(jString);
 					total = jsonObject.getInt("total");
 					updates = jsonObject.getJSONArray("updates");
 					for (int i = 0; i < total; i++) {
 						if ((i % 20 == 0) && (i != 0)) {
 							j++;
-							jString = scheduler.getTwitterPendingUpdates(j, scheduler.getProfileId("twitter"));
+							jString = scheduler.getPendingUpdates(j, scheduler.getProfileId("twitter"));
 							jsonObject = new JSONObject(jString);
 							updates = jsonObject.getJSONArray("updates");
 						}

@@ -9,6 +9,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import ro.project.scheduler.Scheduler;
 
+/**
+ * @author Caphyon1
+ * 
+ * Used for deleting a pending update.
+ *
+ */
 public class DeletePendingQuoteServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private Scheduler scheduler;

@@ -19,10 +19,19 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * 
+ * @author Caphyon1
+ * 
+ *         Used for making requests to the Buffer API.
+ *
+ */
 public class Scheduler {
 	final static Logger logger = Logger.getLogger(Scheduler.class);
-	
+
+	/** the userId for the BufferApi */
 	private String userId;
+	/** the access token of the registered appplication */
 	private String accessToken;
 	private final String USER_AGENT = "Mozilla/5.0";
 
@@ -42,6 +51,7 @@ public class Scheduler {
 	 *            int representing the response code of the Post request.
 	 */
 	public int sendMessage(String message, String timeToPost) {
+		logger.info("Sending \""  + message + "\" at " + timeToPost);
 		StringBuffer response = null;
 		String url = "";
 		String urlParameters = "";
@@ -79,7 +89,6 @@ public class Scheduler {
 			}
 			in.close();
 		} catch (Exception e) {
-			//e.printStackTrace();
 			logger.error("Something went wrong trying to schedule a message!", e);
 		}
 
@@ -88,28 +97,19 @@ public class Scheduler {
 	}
 
 	/**
-	 * Returns the twitter updates.
+	 * Returns the updates for the social network given by userId.
 	 * 
 	 * @param page
-	 *            The number of the page to be returned. If there are more than
-	 *            20 twitter updates, they won't be returned in a single JSON.
+	 *            represents what page of already posted updates you want to be
+	 *            returned (20 updates per page).
 	 * 
 	 * @return String representing the Twitter updates.
 	 */
 	public String getUpdatesFor(int page, String userId) {
+		logger.info("Retrieving updates for userId: " + userId + " at page " + page);
 		this.userId = userId;
 		return getUpdates(page);
 	}
-
-	/**
-	 * Returns the facebook updates.
-	 * 
-	 * @param page
-	 *            The number of the page to be returned. If there are more than
-	 *            20 facebook updates, they won't be returned in a single JSON.
-	 * 
-	 * @return String representing the Facebook updates.
-	 */
 
 	/**
 	 * Returns the updates posted with Buffer API..
@@ -121,7 +121,6 @@ public class Scheduler {
 	 * @return String representing the updates.
 	 */
 	public String getUpdates(int page) {
-
 		String url = "https://api.bufferapp.com/1/profiles/" + userId + "/updates/sent.json?" + "page=" + page
 				+ "&access_token=" + accessToken;
 		System.out.println(url);
@@ -142,7 +141,6 @@ public class Scheduler {
 			}
 			in.close();
 		} catch (Exception e) {
-			//e.printStackTrace();
 			logger.error("Something went wrong when trying to get the updates!", e);
 		}
 
@@ -155,7 +153,7 @@ public class Scheduler {
 	}
 
 	/**
-	 * Returns the pending twitter updates.
+	 * Returns the pending updates from the social network specified by userId.
 	 * 
 	 * @param page
 	 *            The number of the page to be returned. If there are more than
@@ -164,26 +162,10 @@ public class Scheduler {
 	 * 
 	 * @return String representing the pending Twitter updates.
 	 */
-	public String getTwitterPendingUpdates(int page, String userId) {
-		// userId = "54f4480b76a9a2b75cb71256";
+	public String getPendingUpdates(int page, String userId) {
+		logger.info("Retrieving pending updates for userId: " + userId + " at page " + page);
 		this.userId = userId;
-		return getPendingUpdates(page);
-	}
-
-	/**
-	 * Returns the pending facebook updates.
-	 * 
-	 * @param page
-	 *            The number of the page to be returned. If there are more than
-	 *            20 pending facebook updates, they won't be returned in a
-	 *            single JSON.
-	 * 
-	 * @return String representing the pending facebook updates.
-	 */
-	public String getFacebookPendingUpdates(int page, String userid) {
-		/* userId = "54f5cffee090e41029541d73"; */
-		this.userId = userid;
-		return getPendingUpdates(page);
+		return getPendingUpdatesAt(page);
 	}
 
 	/**
@@ -195,7 +177,7 @@ public class Scheduler {
 	 * 
 	 * @return String representing the pending updates.
 	 */
-	public String getPendingUpdates(int page) {
+	public String getPendingUpdatesAt(int page) {
 		String url = "https://api.bufferapp.com/1/profiles/" + userId + "/updates/pending.json?" + "page=" + page
 				+ "&access_token=" + accessToken;
 		StringBuffer response = null;
@@ -204,7 +186,6 @@ public class Scheduler {
 			HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 			con.setRequestMethod("GET");
 			con.setRequestProperty("User-Agent", USER_AGENT);
-			// responseCode = con.getResponseCode();
 
 			BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
 			String inputLine;
@@ -216,7 +197,6 @@ public class Scheduler {
 			in.close();
 
 		} catch (Exception e) {
-			//e.printStackTrace();
 			logger.error("Something went wrong when trying to get the pending updates!", e);
 		}
 
@@ -227,15 +207,15 @@ public class Scheduler {
 		}
 	}
 
-	public String getUserId() {
-		return userId;
-	}
-
-	public void setUserId(String userId) {
-		this.userId = userId;
-	}
-
+	/**
+	 * Deletes a pending update specified by the given id.
+	 * 
+	 * @param id used for determinating what update is going to be deleted.
+	 * 
+	 * @return int representing the response code of request.
+	 */
 	public int deleteUpdate(String id) {
+		logger.info("Deleting update " + id);
 		int responseCode = 0;
 		try {
 
@@ -243,13 +223,11 @@ public class Scheduler {
 			URL obj = new URL(url);
 			HttpsURLConnection con = (HttpsURLConnection) obj.openConnection();
 
-			// add reuqest header con.setRequestMethod("POST");
 			con.setRequestProperty("User-Agent", USER_AGENT);
 			con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
 
 			String urlParameters = "profile_ids[]=" + userId;
 
-			// Send post request
 			con.setDoOutput(true);
 			DataOutputStream wr = new DataOutputStream(con.getOutputStream());
 			wr.writeBytes(urlParameters);
@@ -272,31 +250,13 @@ public class Scheduler {
 		return responseCode;
 	}
 
-	public String authenticate(String clientId, String redirectUri) {
-		String url = "https://bufferapp.com/oauth2/authorize?client_id=" + clientId + "&redirect=" + redirectUri
-				+ "&response_type=code";
-		StringBuffer response = null;
-		try {
-			URL obj = new URL(url);
-			HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-			con.setRequestMethod("GET");
-			con.setRequestProperty("User-Agent", USER_AGENT);
-
-			BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-			String inputLine;
-			response = new StringBuffer();
-
-			while ((inputLine = in.readLine()) != null) {
-				response.append(inputLine);
-			}
-			in.close();
-		} catch (Exception e) {
-			logger.error("Something went wrong when trying to authenticate", e);
-		}
-		return response.toString();
-
-	}
-
+	/**
+	 * Returns the id of the profile specified by the service parameter.
+	 * 
+	 * @param service the name of the social network.
+	 * 
+	 * @return the id of the profile.
+	 */
 	public String getProfileId(String service) {
 		String url = "https://api.bufferapp.com/1/profiles.json" + "?access_token=" + accessToken;
 		StringBuffer response = null;
@@ -305,7 +265,6 @@ public class Scheduler {
 			HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 			con.setRequestMethod("GET");
 			con.setRequestProperty("User-Agent", USER_AGENT);
-			// responseCode = con.getResponseCode();
 
 			BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
 			String inputLine;
@@ -317,14 +276,8 @@ public class Scheduler {
 			in.close();
 
 		} catch (Exception e) {
-			//e.printStackTrace();
 			logger.error("Something went wrong then trying to get the profiles for user!", e);
 		}
-
-		/*
-		 * if (response == null) { return ""; } else { return
-		 * response.toString(); }
-		 */
 
 		String jsonResponse = "";
 		if (response == null) {
@@ -333,26 +286,25 @@ public class Scheduler {
 			jsonResponse = response.toString();
 		}
 
-/*		JSONObject jsonObject;*/
 		try {
-			// jsonObject = new JSONObject(jsonResponse);
 			JSONArray updates = new JSONArray(jsonResponse);
-			// jsonObject.getJSONArray("");
 			for (int i = 0; i < updates.length(); i++) {
 				JSONObject update = updates.getJSONObject(i);
-				/*System.out.println("service: " + update.get("service"));
-				System.out.println("id: " + update.get("id"));*/
 				if (((String) update.get("formatted_service")).equalsIgnoreCase(service))
 					return (String) update.get("id");
 			}
 		} catch (JSONException e) {
-			//e.printStackTrace();
 			logger.error("Something went wrong when trying to parse Json for id!", e);
 		}
 		return "";
 
 	}
 
+	/**
+	 * Used for retrieving all the profiles of the user. 
+	 * 
+	 * @return a list where each member represents a profile of the user.
+	 */
 	public List<String> getAllProfiles() {
 		List<String> allProfilesList = new ArrayList<String>();
 
@@ -363,7 +315,6 @@ public class Scheduler {
 			HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 			con.setRequestMethod("GET");
 			con.setRequestProperty("User-Agent", USER_AGENT);
-			// responseCode = con.getResponseCode();
 
 			BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
 			String inputLine;
@@ -373,9 +324,7 @@ public class Scheduler {
 				response.append(inputLine);
 			}
 			in.close();
-
 		} catch (Exception e) {
-			//e.printStackTrace();
 			logger.error("Something went wrong when trying to get all the profiles of the user", e);
 		}
 
@@ -385,108 +334,43 @@ public class Scheduler {
 		} else {
 			jsonResponse = response.toString();
 		}
-		
-		/*JSONObject jsonObject;*/
+
 		try {
-			// jsonObject = new JSONObject(jsonResponse);
 			JSONArray updates = new JSONArray(jsonResponse);
-			// jsonObject.getJSONArray("");
 			for (int i = 0; i < updates.length(); i++) {
 				JSONObject update = updates.getJSONObject(i);
 				allProfilesList.add((String) update.get("formatted_service"));
 			}
 		} catch (JSONException e) {
-			//e.printStackTrace();
 			logger.error("Something went wrong when trying to parse the name of the user's profiles", e);
 		}
 		return allProfilesList;
 	}
-	
 
+	/**
+	 * Used for retrieving the maximum characters allowed on the specified social network.
+	 * 
+	 * @param service represents the social network's name.
+	 * @return the number of maximum characters allowed.
+	 */
 	public int getMaxCharacters(String service) {
-		if(service.equalsIgnoreCase("twitter")) {
+		if (service.equalsIgnoreCase("twitter")) {
 			return 140;
-		} 
-		
-		if(service.equalsIgnoreCase("facebook")) {
+		}
+
+		if (service.equalsIgnoreCase("facebook")) {
 			return 500;
 		}
-		
+
 		return 0;
 	}
 	
-	
-	/*
-	 * public void sendMessageNow(String message) { try {
-	 * 
-	 * String url =
-	 * "https://api.bufferapp.com/1/updates/create.json?access_token=" +
-	 * ACCESS_TOKEN; URL obj = new URL(url); HttpsURLConnection con =
-	 * (HttpsURLConnection) obj.openConnection();
-	 * 
-	 * // add reuqest header con.setRequestMethod("POST");
-	 * con.setRequestProperty("User-Agent", USER_AGENT);
-	 * con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
-	 * 
-	 * // String urlParameters = "text=" + message + "&profile_ids[]=" + //
-	 * USER_ID + "&now=true"; String urlParameters = "text=" + message +
-	 * "&profile_ids[]=" + "54f5cffee090e41029541d73" + "&now=true";
-	 * 
-	 * // Send post request con.setDoOutput(true); DataOutputStream wr = new
-	 * DataOutputStream(con.getOutputStream()); wr.writeBytes(urlParameters);
-	 * wr.flush(); wr.close();
-	 * 
-	 * int responseCode = con.getResponseCode(); BufferedReader in = new
-	 * BufferedReader(new InputStreamReader(con.getInputStream())); String
-	 * inputLine; StringBuffer response = new StringBuffer();
-	 * 
-	 * while ((inputLine = in.readLine()) != null) { response.append(inputLine);
-	 * } in.close();
-	 * 
-	 * } catch (Exception e) { e.printStackTrace(); } }
-	 * 
-	 * public void getSpecificUpdate(String updateId) {
-	 * 
-	 * String url = "https://api.bufferapp.com/1/updates/" + updateId +
-	 * ".json?access_token=" + ACCESS_TOKEN;
-	 * 
-	 * try { URL obj = new URL(url); HttpURLConnection con = (HttpURLConnection)
-	 * obj.openConnection(); con.setRequestMethod("GET");
-	 * con.setRequestProperty("User-Agent", USER_AGENT);
-	 * 
-	 * BufferedReader in = new BufferedReader(new
-	 * InputStreamReader(con.getInputStream())); String inputLine; StringBuffer
-	 * response = new StringBuffer();
-	 * 
-	 * while ((inputLine = in.readLine()) != null) { response.append(inputLine);
-	 * } in.close(); } catch (Exception e) { e.printStackTrace(); }
-	 * 
-	 * }
-	 * 
-	 * 
-	 * 
-	 * public void deleteUpdate(String id) { try {
-	 * 
-	 * String url = "https://api.bufferapp.com/1/updates/" + id +
-	 * "/destroy.json?access_token=" + ACCESS_TOKEN; URL obj = new URL(url);
-	 * HttpsURLConnection con = (HttpsURLConnection) obj.openConnection();
-	 * 
-	 * // add reuqest header con.setRequestMethod("POST");
-	 * con.setRequestProperty("User-Agent", USER_AGENT);
-	 * con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
-	 * 
-	 * String urlParameters = "profile_ids[]=" + userId;
-	 * 
-	 * // Send post request con.setDoOutput(true); DataOutputStream wr = new
-	 * DataOutputStream(con.getOutputStream()); wr.writeBytes(urlParameters);
-	 * wr.flush(); wr.close();
-	 * 
-	 * int responseCode = con.getResponseCode(); BufferedReader in = new
-	 * BufferedReader(new InputStreamReader(con.getInputStream())); String
-	 * inputLine; StringBuffer response = new StringBuffer();
-	 * 
-	 * while ((inputLine = in.readLine()) != null) { response.append(inputLine);
-	 * } in.close(); } catch (Exception e) { e.printStackTrace(); } }
-	 */
 
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
 }

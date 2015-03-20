@@ -16,6 +16,12 @@ import org.json.JSONObject;
 
 import ro.project.scheduler.Scheduler;
 
+/**
+ * @author Caphyon1
+ * 
+ * Used for searching for the quotes of a specific author.
+ *
+ */
 public class SearchServlet extends HttpServlet {
 	final static Logger logger = Logger.getLogger(SearchServlet.class);
 	private static final long serialVersionUID = 1L;

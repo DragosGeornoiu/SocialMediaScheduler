@@ -2,7 +2,6 @@ package ro.project.servlet;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -13,9 +12,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import ro.project.scheduler.Quote;
-import ro.project.scheduler.QuoteManager;
 import ro.project.scheduler.Scheduler;
 
+/**
+ * @author Caphyon1
+ * 
+ * Used for retrieving the posted updates.
+ *
+ */
 public class PostedQuotesRetriever {
 	final static Logger logger = Logger.getLogger(PostedQuotesRetriever.class);
 
@@ -38,7 +42,6 @@ public class PostedQuotesRetriever {
 			} else {
 
 				if (sortedBy.equals("byDate") && ascending == true) {
-					// sort list by calendar, ascending
 					Collections.sort(temp, new Comparator<OrderObject>() {
 						public int compare(OrderObject one, OrderObject two) {
 							return one.getCalendar().compareTo(two.getCalendar());
@@ -53,7 +56,6 @@ public class PostedQuotesRetriever {
 						}
 					});
 				} else if (sortedBy.equals("byAuthor") && ascending == true) {
-					// sort list by author, ascending
 					Collections.sort(temp, new Comparator<OrderObject>() {
 						public int compare(OrderObject one, OrderObject two) {
 							return one.getQuote().getAuthor().compareToIgnoreCase(two.getQuote().getAuthor());
@@ -61,21 +63,18 @@ public class PostedQuotesRetriever {
 					});
 
 				} else if (sortedBy.equals("byAuthor") && ascending == false) {
-					// sort list by author, descending
 					Collections.sort(temp, new Comparator<OrderObject>() {
 						public int compare(OrderObject one, OrderObject two) {
 							return -one.getQuote().getAuthor().compareToIgnoreCase(two.getQuote().getAuthor());
 						}
 					});
 				} else if (sortedBy.equals("byQuote") && ascending == true) {
-					// sort list by quote, ascending
 					Collections.sort(temp, new Comparator<OrderObject>() {
 						public int compare(OrderObject one, OrderObject two) {
 							return one.getQuote().getQuote().compareToIgnoreCase(two.getQuote().getQuote());
 						}
 					});
 				} else if (sortedBy.equals("byQuote") && ascending == false) {
-					// sort list by quote, descending
 					Collections.sort(temp, new Comparator<OrderObject>() {
 						public int compare(OrderObject one, OrderObject two) {
 							return -one.getQuote().getQuote().compareToIgnoreCase(two.getQuote().getQuote());
@@ -103,12 +102,9 @@ public class PostedQuotesRetriever {
 
 	private List<OrderObject> parse(String accessToken) throws JSONException {
 
-		scheduler = new Scheduler(accessToken);
+		//scheduler = new Scheduler(accessToken);
 		List<OrderObject> quotes = new ArrayList<OrderObject>();
 
-		// alea patru cazuri sa nu le uiti, dar momentan sunt neglijate,
-		// totalTwitter
-		// si totalFacebook sunt ambele sub 500
 		String jString = scheduler.getUpdatesFor(1, scheduler.getProfileId("facebook"));
 		if ((jString == null) || jString.trim().isEmpty()) {
 			return null;
@@ -154,13 +150,11 @@ public class PostedQuotesRetriever {
 		
 		for (int i = 1; i <= (endTwitter / 20 + 1); i++) {
 			jString = scheduler.getUpdatesFor(i, scheduler.getProfileId("twitter"));
-
 			if (endTwitter - (i * 20) > 0) {
 				quotes.addAll(parseJStringFromStartToEnd(jString, 0, 19));
 			} else {
 				quotes.addAll(parseJStringFromStartToEnd(jString, 0, totalTwitter % 20));
 			}
-
 		}
 
 		for (int i = 1; i <= (endFacebook / 20 + 1); i++) {
@@ -195,7 +189,6 @@ public class PostedQuotesRetriever {
 			}
 
 			OrderObject ord = new OrderObject(c, new Quote(quote, author), (String) update.get("profile_service"));
-			/* System.out.println(ord); */
 			quoteList.add(ord);
 
 		}
@@ -221,50 +214,4 @@ public class PostedQuotesRetriever {
 		}
 		return total;
 	}
-
-	/*
-	 * private List<String> parseJString(String jString, String socialNetwork)
-	 * throws JSONException { List<String> quoteList = new ArrayList<String>();
-	 * j = 1; jsonObject = new JSONObject(jString); total =
-	 * jsonObject.getInt("total"); updates = jsonObject.getJSONArray("updates");
-	 * for (int i = 0; i < total; i++) { if ((i % 20 == 0) && (i != 0)) { j++;
-	 * if(socialNetwork.equals("Twitter")) { jString =
-	 * scheduler.getTwitterUpdates(j); } else
-	 * if(socialNetwork.equals("Facebook")) { jString =
-	 * scheduler.getFacebookUpdates(j); } jsonObject = new JSONObject(jString);
-	 * updates = jsonObject.getJSONArray("updates"); } String result = "";
-	 * JSONObject update = updates.getJSONObject(i % 20); result += " <BR> ";
-	 * Calendar c = Calendar.getInstance(); c.setTimeInMillis(new Long(((int)
-	 * update.getInt("due_at"))) * 1000); int mYear = c.get(Calendar.YEAR);
-	 * result += " Due at: " + update.get("due_time") + "; " + update.get("day")
-	 * + "; " + mYear + " <BR> "; result += " Service: " +
-	 * update.get("profile_service") + " <BR> "; result += " Text: " +
-	 * update.get("text") + "<BR>"; result += " <BR> "; quoteList.add(result);
-	 * 
-	 * } return quoteList; }
-	 */
-
-	/*
-	 * private Collection<? extends String> parseJString(String jString, int
-	 * part, int remaining) throws JSONException { List<String> quoteList = new
-	 * ArrayList<String>(); j = 1; jsonObject = new JSONObject(jString); updates
-	 * = jsonObject.getJSONArray("updates");
-	 * 
-	 * int start, end;
-	 * 
-	 * if(part == 1) { start = 0; end = remaining;
-	 * 
-	 * } else { start = 10; end = 10 + remaining; } for (int i = start; i < end;
-	 * i++) { String result = ""; JSONObject update = updates.getJSONObject(i);
-	 * result += " <BR> "; Calendar c = Calendar.getInstance();
-	 * c.setTimeInMillis(new Long(((int) update.getInt("due_at"))) * 1000); int
-	 * mYear = c.get(Calendar.YEAR); result += " Due at: " +
-	 * update.get("due_time") + "; " + update.get("day") + "; " + mYear +
-	 * " <BR> "; result += " Service: " + update.get("profile_service") +
-	 * " <BR> "; result += " Text: " + update.get("text") + "<BR>"; result +=
-	 * " <BR> "; quoteList.add(result);
-	 * 
-	 * } return quoteList; }
-	 */
-
 }

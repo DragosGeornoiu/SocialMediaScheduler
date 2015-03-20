@@ -22,7 +22,7 @@ public class SocialMediaServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		PrintWriter out = response.getWriter();
 		String accessToken = request.getParameter("accessToken");
-		fileManager = new FileManager();
+		fileManager = new FileManager(getServletContext().getInitParameter("path"));
 		out.println("<html>\n <body>");
 		out.println("<head>");
 		out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler\">Home</a>");
@@ -58,11 +58,8 @@ public class SocialMediaServlet extends HttpServlet {
 			out.print("</html>\n</body>");
 		} else {
 			String fileName = fileManager.createFileNameFromUrl(request.getParameter("radios"));
-			// fileName += ".txt";
 			fileName += ".ser";
 			quoteManager = new QuoteManager(fileName, getServletContext().getInitParameter("path2"));
-			System.out.println("SocialMediaServlet: " + getServletContext().getInitParameter("path2"));
-			// quoteManager = new QuoteManager(fileName, "D:/workspace/SocialMediaScheduler/src/main/resources/quotes/");
 			scheduler = new Scheduler(accessToken);
 
 			String date = request.getParameter("yeardropdown") + "-" + request.getParameter("monthdropdown") + "-"

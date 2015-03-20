@@ -11,7 +11,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import ro.project.scheduler.Quote;
-import ro.project.scheduler.Scheduler;
 
 /**
  * 
@@ -21,6 +20,14 @@ import ro.project.scheduler.Scheduler;
 public class BrainyQuoteParser extends Parser {
 	final static Logger logger = Logger.getLogger(BrainyQuoteParser.class);
 
+	/**
+	 * Select all quotes from the given URL.
+	 * 
+	 * @param url
+	 *            the URL to the page where the quotes are located.
+	 * 
+	 * @return the quotes as a Hashtable of type <String, Quote>.
+	 */
 	@Override
 	protected Hashtable<String, Quote> getQuotesFromPage(String url) {
 		Document document = null;
@@ -33,24 +40,28 @@ public class BrainyQuoteParser extends Parser {
 					.ignoreHttpErrors(true).get();
 
 			elements = document.getElementsByClass("boxyPaddingBig");
-			quotesPageList = getQuotesAsList(elements);
+			quotesPageList = getQuotesAsHashtable(elements);
 
 		} catch (MalformedURLException e) {
-			// e.printStackTrace();
 			logger.error("Url not formated correctly", e);
 		} catch (IOException e) {
-			//e.printStackTrace();
 			logger.error("Problem reading the quotes from given page", e);
 		}
 
 		return quotesPageList;
 	}
 
+	/**
+	 * The quotes are returned in a Hashtable of type <String, Quote>.
+	 * 
+	 * @param elements represent the quotes as org.jsoup.select.Elements.
+	 * 
+	 * @return the quotes as a hashtable of type <String, Quote>.
+	 */
 	@Override
-	protected Hashtable<String, Quote> getQuotesAsList(Elements elements) {
+	protected Hashtable<String, Quote> getQuotesAsHashtable(Elements elements) {
 		Hashtable<String, Quote> tempList = new Hashtable<String, Quote>();
 		for (Element element : elements) {
-
 			String quote = element.getElementsByClass("bqQuoteLink").select("a").text().toString();
 			String auth = element.getElementsByClass("bq-aut").select("a").text().toString();
 
@@ -61,6 +72,13 @@ public class BrainyQuoteParser extends Parser {
 
 	}
 
+	/**
+	 * The quotes are returned in a Hashtable of type <String, Quote>.
+	 * 
+	 * @param elements represent the quotes as org.jsoup.select.Elements.
+	 * 
+	 * @return the quotes as a hashtable of type <String, Quote>.
+	 */
 	@Override
 	protected String getPreviousPageLink(String url) {
 		Document document = null;
@@ -76,10 +94,8 @@ public class BrainyQuoteParser extends Parser {
 				}
 			}
 		} catch (MalformedURLException e) {
-			// e.printStackTrace();
 			logger.error("Url not formated correctly", e);
 		} catch (IOException e) {
-			// e.printStackTrace();
 			logger.error("Problem retrieving previous page link", e);
 		}
 		return "";

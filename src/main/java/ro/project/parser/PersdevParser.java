@@ -21,6 +21,14 @@ import ro.project.scheduler.Quote;
 public class PersdevParser extends Parser {
 	final static Logger logger = Logger.getLogger(PersdevParser.class);
 	
+	/**
+	 * Select all quotes from the given URL.
+	 * 
+	 * @param url
+	 *            the URL to the page where the quotes are located.
+	 * 
+	 * @return the quotes as a Hashtable of type <String, Quote>.
+	 */
 	@Override
 	protected Hashtable<String, Quote> getQuotesFromPage(String url) {
 		Document document = null;
@@ -32,7 +40,7 @@ public class PersdevParser extends Parser {
 					.userAgent("Mozilla/5.0 (X11; Linux x86_64; rv:32.0) Gecko/20100101 Firefox/32.0")
 					.ignoreHttpErrors(true).get();
 			elements = document.getElementsByTag("article");
-			quotesPageList = getQuotesAsList(elements);
+			quotesPageList = getQuotesAsHashtable(elements);
 
 		} catch (MalformedURLException e) {
 			logger.error("Url not formated correctly", e);
@@ -43,8 +51,15 @@ public class PersdevParser extends Parser {
 		return quotesPageList;
 	}
 
+	/**
+	 * The quotes are returned in a Hashtable of type <String, Quote>.
+	 * 
+	 * @param elements represent the quotes as org.jsoup.select.Elements.
+	 * 
+	 * @return the quotes as a hashtable of type <String, Quote>.
+	 */
 	@Override
-	protected Hashtable<String, Quote> getQuotesAsList(Elements elements) {
+	protected Hashtable<String, Quote> getQuotesAsHashtable(Elements elements) {
 		Hashtable<String, Quote> tempList = new Hashtable<String, Quote>();
 		for (Element element : elements) {
 
@@ -60,6 +75,13 @@ public class PersdevParser extends Parser {
 
 	}
 
+	/**
+	 * The quotes are returned in a Hashtable of type <String, Quote>.
+	 * 
+	 * @param elements represent the quotes as org.jsoup.select.Elements.
+	 * 
+	 * @return the quotes as a hashtable of type <String, Quote>.
+	 */
 	@Override
 	protected String getPreviousPageLink(String url) {
 		Document document = null;

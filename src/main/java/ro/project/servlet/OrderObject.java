@@ -4,9 +4,20 @@ import java.util.Calendar;
 
 import ro.project.scheduler.Quote;
 
+/**
+ * @author Caphyon1
+ * 
+ *         Easier to sort through the posted quotes by saving the date it was
+ *         posted on as a Calendar, the quote as a quote and the social network
+ *         it was posted on as a String.
+ *
+ */
 public class OrderObject {
+	/** The date the quote was posted on	 */
 	private Calendar calendar;
+	/** The quote and author saved as a Quote type. */
 	private Quote quote;
+	/** service is a String representing the social network where the quote was posted */
 	private String service;
 
 	public OrderObject(Calendar calendar, Quote quote, String service) {

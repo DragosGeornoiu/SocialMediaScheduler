@@ -99,11 +99,11 @@
 		<param-value>D:/workspace/SocialMediaScheduler/src/main/resources/quotes/</param-value>
 	</context-param> -->
 	<context-param>
-		<param-name>path</param-name>
-		<param-value>C:\\\\Tomcat\\\\apache-tomcat-7.0.59\\\\webapps\\\\quotes</param-value>
-	</context-param>
-	<context-param>
 		<param-name>path2</param-name>
-		<param-value>C:/Tomcat/apache-tomcat-7.0.59/webapps/quotes/</param-value>
+		<param-value>C:/Tomcat/apache-tomcat-7.0.59/webapps/</param-value>
+	</context-param>
+	<context-param>	
+		<param-name>path</param-name>
+		<param-value>C:\\\\Tomcat\\\\apache-tomcat-7.0.59\\\\webapps\\\\</param-value>
 	</context-param>
 </web-app>

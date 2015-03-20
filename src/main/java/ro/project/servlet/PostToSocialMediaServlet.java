@@ -14,12 +14,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 
-import ro.project.scheduler.QuoteManager;
 import ro.project.scheduler.Scheduler;
 
 /**
+ * @author Caphyon1
  * 
- * An update is scheduled using this servlet.
+ * PostToSocialMediaServlet is used for scheduling a message on a selected social network.
  *
  */
 public class PostToSocialMediaServlet extends HttpServlet {
@@ -29,9 +29,7 @@ public class PostToSocialMediaServlet extends HttpServlet {
 	private Scheduler scheduler;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		path = getServletContext().getInitParameter("path");
-		System.out.println("PostToSocialMediaServlet: " + path);
-		//path = "D:\\\\workspace\\\\SocialMediaScheduler\\\\src\\\\main\\\\resources\\\\quotes";
+		path = getServletContext().getInitParameter("path") + "quotes/";
 		PrintWriter out = response.getWriter();
 		List<String> optionsList = new ArrayList<String>();
 		optionsList = getOptionsList();
@@ -78,10 +76,6 @@ public class PostToSocialMediaServlet extends HttpServlet {
 			out.println("monthfield.options[today.getMonth()] = new Option(monthtext[today.getMonth()], monthtext[today.getMonth()], true, true)");
 			out.println("");
 			out.println("for(var m = 0; m<27;m++)");
-			/*
-			 * out.println(
-			 * "gmtfield.options[m] = new Option(gmttext[m], gmttext[m])");
-			 */
 			out.println("gmtfield.options[m] = new Option(gmttext[m], gmttext[m+2])");
 			out.println("");
 			out.println("var thisyear = today.getFullYear()");

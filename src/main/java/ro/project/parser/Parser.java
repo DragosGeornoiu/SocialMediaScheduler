@@ -19,25 +19,45 @@ import org.jsoup.select.Elements;
 
 import ro.project.scheduler.Quote;
 
+/**
+ * 
+ * @author Caphyon1
+ *
+ *         Abstract class Parser defines the parsing logic for the application
+ *         and forces the subclasses to retrieve the quotes from the web site
+ *         and the URL for next/previous page.
+ * 
+ */
 public abstract class Parser {
 	final static Logger logger = Logger.getLogger(Parser.class);
+	/**
+	 * fileManager is used to create a unique name from the given URL for
+	 * storing the retrieved quotes.
+	 */
 	protected FileManager fileManager;
+	/** path represents where the quotes are saved. */
 	protected String path;
-	protected String PATH;
+	/**
+	 * optionPath is the path where the URL of the already parsed web sites are
+	 * stored.
+	 */
+	protected String optionPath;
 
 	/**
 	 * Gets all quotes from a given link, if the web site was already parsed, it
 	 * just updates with new added quotes, if they exist.
 	 * 
 	 * @param website
-	 *            String representing the website to be parsed
+	 *            String representing the web site to be parsed.
+	 * @param optionPath
+	 *            String representing the path where the URL of the already
+	 *            parsed web sites are stored.
 	 * 
-	 * @return path created from the PATH variable and the name of the text file
-	 *         formed from the web site name.
+	 * @return true if the URL can be parsed, false otherwise.
 	 */
-	public boolean updateQuotes(String website, String PATH) {
-		this.PATH = PATH;
-		fileManager = new FileManager();
+	public boolean parseWebsite(String website, String optionPath) {
+		this.optionPath = optionPath + "quotes/";
+		fileManager = new FileManager(optionPath);
 		String fileName = fileManager.createFileNameFromUrl(website);
 
 		path = fileManager.createFileInPath(fileName + ".ser");
@@ -50,13 +70,14 @@ public abstract class Parser {
 		String url = website;
 		newQuotes = getQuotesFromFile(path);
 
+		logger.info("Started the parsing proccess for " + website);
 		if (newQuotes.size() == 0) {
-			saveWebsiteAsOption(website);
+			
+			logger.info("Saving the quotes retrieved from " + website);
 			saveQuotesFromWebsite(website);
+			logger.info("Saving the website as parsed for future usage. " + website);
+			saveWebsiteAsOption(website);
 		} else {
-			/*
-			 * String quote = newQuotes.get(0).getQuote();
-			 */
 			boolean endCondition = false;
 			while (!endCondition) {
 
@@ -66,7 +87,6 @@ public abstract class Parser {
 				Set<Map.Entry<String, Quote>> entrySet = pageQuotes.entrySet();
 				Iterator<Entry<String, Quote>> it = entrySet.iterator();
 				while (it.hasNext()) {
-					// System.out.println(((Map.Entry<String,Quote>)it.next()).getKey());
 					Map.Entry<String, Quote> entry = (Map.Entry<String, Quote>) it.next();
 					if (newQuotes.contains(entry.getValue())) {
 						endCondition = true;
@@ -83,7 +103,7 @@ public abstract class Parser {
 	}
 
 	/**
-	 * Saves all quotes from a web site to a text file.
+	 * Retrieves the quotes from the given URL and saves them.
 	 * 
 	 * @param website
 	 *            String representing the name of the web site.
@@ -95,11 +115,11 @@ public abstract class Parser {
 	}
 
 	/**
-	 * Parse the URL and return all quotes from that page as Strings in a List.
+	 * Parses the given URL and returns all quotes from that page.
 	 * 
 	 * @param url
-	 *            the URl parsed.
-	 * @return the quotes as a List of type String.
+	 *            the URl to be parsed.
+	 * @return the quotes as a Hashtable of type <String,Quote>.
 	 */
 	protected Hashtable<String, Quote> parseWebsiteForQuotes(String url) {
 		Hashtable<String, Quote> allQuotesFromWebsite = new Hashtable<String, Quote>();
@@ -113,26 +133,40 @@ public abstract class Parser {
 	}
 
 	/**
-	 * Provided by each parser must be the method to select all quotes from a
+	 * Provided by each parser extending Parser class must be the method to select all quotes from a
 	 * page.
 	 * 
 	 * @param url
-	 *            the URL to get the quotes from.
+	 *            the URL to the page where the quotes are located.
 	 * 
-	 * @return the quotes as a List of type String.
+	 * @return the quotes as a Hashtable of type <String, Quote>.
 	 */
 	protected abstract Hashtable<String, Quote> getQuotesFromPage(String url);
 
-	protected abstract Hashtable<String, Quote> getQuotesAsList(Elements elements);
+	/**
+	 * The quotes are returned in a Hashtable of type <String, Quote>.
+	 * 
+	 * @param elements represent the quotes as org.jsoup.select.Elements.
+	 * 
+	 * @return the quotes as a hashtable of type <String, Quote>.
+	 */
+	protected abstract Hashtable<String, Quote> getQuotesAsHashtable(Elements elements);
 
+	/**
+	 * Returns the URL for next/previous page.
+	 * 
+	 * @param url of current page; 
+	 * 
+	 * @return url of next/previous page.
+	 */
 	protected abstract String getPreviousPageLink(String url);
 
 	/**
-	 * Returns all quotes stored in file as a List<String>.
+	 * Retrieves all quotes stored in file fileName.
 	 * 
 	 * @param fileName
 	 *            String representing the name of the file.
-	 * @return List<String> representing all the quotes from the file.
+	 * @return the quotes as a Hashtable of type <String, Quote>.
 	 */
 	protected Hashtable<String, Quote> getQuotesFromFile(String fileName) {
 		Hashtable<String, Quote> quotes = new Hashtable<String, Quote>();
@@ -147,10 +181,10 @@ public abstract class Parser {
 	}
 
 	/**
-	 * Saves all the quotes stored in the list in the quotes.txt file
+	 * Saves all the quotes from the Hashtable<String, Quote> to the fileOut file.
 	 * 
-	 * @param quotesList
-	 *            the list of quotes.
+	 * @param quotesList the Hashtable of type <String, Quote> representing the retrieved quotes.
+	 * 
 	 */
 	protected void saveQuotesToFile(Hashtable<String, Quote> quotesList) {
 		try {
@@ -165,18 +199,18 @@ public abstract class Parser {
 	}
 
 	/**
-	 * Saves the web site as a option.
+	 * Saves the web site to further know that it was already parsed.
 	 * 
 	 * @param website
 	 *            the URL to save as a option to post from.
 	 */
 	protected void saveWebsiteAsOption(String website) {
 		try {
-			PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(PATH + "\\\\" + "parser.txt", true)));
+			PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(optionPath + "\\\\" + "parser.txt",
+					true)));
 			out.println(website);
 			out.close();
 		} catch (IOException e) {
-			//e.printStackTrace();
 			logger.error("Problem in saving parsed website as option for quote retrieving", e);
 		}
 	}

@@ -8,12 +8,19 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import ro.project.scheduler.Scheduler;
-
+/**
+ * 
+ * @author Caphyon1
+ *
+ *	FileManager class is used for creating a file name from a given URl and for creating that file in path.
+ */
 public class FileManager {
 	final static Logger logger = Logger.getLogger(FileManager.class);
-	private final String PATH = "D:\\\\workspace\\\\SocialMediaScheduler\\\\src\\\\main\\\\resources\\\\quotes";
+	private String path;
 
+	public FileManager(String path) {
+		this.path = path + "quotes/";
+	}
 	/**
 	 * Given an URL it creates a file name from it.
 	 * 
@@ -92,7 +99,7 @@ public class FileManager {
 	 * @return the location where the text file name fileName will be located.
 	 */
 	public String createFileInPath(String fileName) {
-		File file = new File(PATH + "\\\\" + fileName);
+		File file = new File(path + "\\\\" + fileName);
 		if(file.exists() && !file.isDirectory()) {
 			return "";
 		} 
@@ -103,7 +110,7 @@ public class FileManager {
 			// e.printStackTrace();
 			logger.error("Problem creating file in path", e);
 		}
-		return PATH + "\\\\" + fileName ;
+		return path + "\\\\" + fileName ;
 	}
 
 }

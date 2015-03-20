@@ -14,12 +14,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import ro.project.scheduler.QuoteManager;
 import ro.project.scheduler.Scheduler;
 
+
 /**
+ * @author Caphyon1
  * 
- * The updates posted on twitter and facebook are shown using this servlet.
+ * 
  *
  */
 public class QuoteHistoryServlet extends HttpServlet {

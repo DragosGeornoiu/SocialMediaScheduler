@@ -4,10 +4,19 @@ import java.io.Serializable;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+/**
+ * @author Caphyon1
+ * 
+ * A serializable object representing the quotes.
+ *
+ */
 public class Quote implements Serializable {
 	private static final long serialVersionUID = 1L;
+	/** quote is a String representing the actual quote. */
 	private String quote;
+	/** author is a String representing the author of the quote.	 */
 	private String author;
+	/** MD5 represents the hashing by which we can determine if a quote was posted before or not */
 	private String MD5;
 
 	public Quote(String quote, String author) {
@@ -42,7 +51,7 @@ public class Quote implements Serializable {
 	}
 
 	/**
-	 * Converts the quote to MD5.
+	 * Hashes the quote and author to MD5.
 	 * 
 	 * @param quote
 	 *            String representing the actual quote.
