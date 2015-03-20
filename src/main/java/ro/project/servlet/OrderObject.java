@@ -58,9 +58,11 @@ public class OrderObject {
 		int mDay = calendar.get(Calendar.DAY_OF_MONTH);
 		int mHour = calendar.get(Calendar.HOUR_OF_DAY);
 		int mMinute = calendar.get(Calendar.MINUTE);
-		return " <BR> <BR> " + " Due at: " + mYear + "-" + (mMonth + 1) + "-" + mDay + " " + mHour + ":" + mMinute
-				+ " <BR >" + " Service: " + service + " <BR> " + " Text: " + quote.toString() + " <BR> ";
-
+		
+		return "<tr> <td>" + mYear + "-" + (mMonth + 1) + "-" + mDay + " " + mHour + ":" + mMinute
+				+ "</td>" + "<td>" + service + "</td><td>" + quote.toString() + "</td></tr> ";
+				
+		/*return " <BR> <BR> " + " Due at: " + mYear + "-" + (mMonth + 1) + "-" + mDay + " " + mHour + ":" + mMinute
+				+ " <BR >" + " Service: " + service + " <BR> " + " Text: " + quote.toString() + " <BR> ";<tr>*/
 	}
-
 }

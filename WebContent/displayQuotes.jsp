@@ -10,7 +10,8 @@
 <br>
 <a href="http://localhost:8080/SocialMediaScheduler\">Home</a>
 <br>
-<a href="http://localhost:8080/SocialMediaScheduler/parse?accessToken=<%=request.getParameter("accessToken")%> + "\">Parse</a>
+<a
+	href="http://localhost:8080/SocialMediaScheduler/parse?accessToken=<%=request.getParameter("accessToken")%> + "\">Parse</a>
 <br>
 <a
 	href="http://localhost:8080/SocialMediaScheduler/Post?accessToken=<%=request.getParameter("accessToken")%> + "\">Schedule
@@ -23,89 +24,99 @@
 <a
 	href="http://localhost:8080/SocialMediaScheduler/PendingQuotes?accessToken=<%=request.getParameter("accessToken")%> + "\">Pending
 	Quotes</a>
-<br> 
-<a href="http://localhost:8080/SocialMediaScheduler/search?accessToken=<%=request.getParameter("accessToken")%> + "\">Search
+<br>
+<a
+	href="http://localhost:8080/SocialMediaScheduler/search?accessToken=<%=request.getParameter("accessToken")%> + "\">Search
 </a>
 <br>
 <br>
 </head>
 <body>
 
-<!--  checked -->
-<form ACTION="QuoteHistory">
-	
-	<c:choose>
-	<c:when test="${lastType eq \"byDate\"}">
-		<INPUT TYPE="radio" NAME="type" VALUE="byDate" checked>byDate&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-	</c:when>
-	<c:otherwise>
-		<INPUT TYPE="radio" NAME="type" VALUE="byDate">byDate&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-	</c:otherwise>
-	</c:choose>	
-	
-	<c:choose>
-	<c:when test="${order eq \"ascending\"}">
-		<INPUT TYPE="radio" NAME="order" VALUE="ascending" checked>ascending&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-	</c:when>
-	<c:otherwise>
-		<INPUT TYPE="radio" NAME="order" VALUE="ascending">ascending&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-	</c:otherwise>
-	</c:choose>
-	
-	<input type="submit" value="Submit"> 			<br>
-	
-	<c:choose>
-	<c:when test="${lastType eq \"byAuthor\"}">
-		<INPUT TYPE="radio" NAME="type" VALUE="byAuthor" checked>byAuthor&nbsp;&nbsp;&nbsp;
-	</c:when>
-	<c:otherwise>
-		<INPUT TYPE="radio" NAME="type" VALUE="byAuthor">byAuthor&nbsp;&nbsp;&nbsp;
-	</c:otherwise>
-	</c:choose>
-	
-	
-	<c:choose>
-	<c:when test="${order eq \"descending\"}">
-		<INPUT TYPE="radio" NAME="order" VALUE="descending" checked>descending <br>
-	</c:when>
-	<c:otherwise>
-		<INPUT TYPE="radio" NAME="order" VALUE="descending">descending <br>
-	</c:otherwise>
-	</c:choose>
-	
-	<c:choose>
-	<c:when test="${lastType eq \"byQuote\"}">
-		<INPUT TYPE="radio" NAME="type" VALUE="byQuote" checked>byQuote
-	</c:when>
-	<c:otherwise>
-		<INPUT TYPE="radio" NAME="type" VALUE="byQuote">byQuote
-	</c:otherwise>
-	</c:choose>
-	
-	
+	<!--  checked -->
+	<form ACTION="QuoteHistory">
 
-	<INPUT TYPE="hidden" NAME="accessToken" VALUE=<%=request.getParameter("accessToken")%>>
-	<INPUT TYPE="hidden" NAME="page" VALUE="${currentPage}" >
-	<br> <br>
-</form>
+		<c:choose>
+			<c:when test="${lastType eq \"byDate\"}">
+				<INPUT TYPE="radio" NAME="type" VALUE="byDate" checked>byDate&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	</c:when>
+			<c:otherwise>
+				<INPUT TYPE="radio" NAME="type" VALUE="byDate">byDate&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	</c:otherwise>
+		</c:choose>
+
+		<c:choose>
+			<c:when test="${order eq \"ascending\"}">
+				<INPUT TYPE="radio" NAME="order" VALUE="ascending" checked>ascending&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	</c:when>
+			<c:otherwise>
+				<INPUT TYPE="radio" NAME="order" VALUE="ascending">ascending&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	</c:otherwise>
+		</c:choose>
+
+		<input type="submit" value="Submit"> <br>
+
+		<c:choose>
+			<c:when test="${lastType eq \"byAuthor\"}">
+				<INPUT TYPE="radio" NAME="type" VALUE="byAuthor" checked>byAuthor&nbsp;&nbsp;&nbsp;
+	</c:when>
+			<c:otherwise>
+				<INPUT TYPE="radio" NAME="type" VALUE="byAuthor">byAuthor&nbsp;&nbsp;&nbsp;
+	</c:otherwise>
+		</c:choose>
+
+
+		<c:choose>
+			<c:when test="${order eq \"descending\"}">
+				<INPUT TYPE="radio" NAME="order" VALUE="descending" checked>descending <br>
+			</c:when>
+			<c:otherwise>
+				<INPUT TYPE="radio" NAME="order" VALUE="descending">descending <br>
+			</c:otherwise>
+		</c:choose>
+
+		<c:choose>
+			<c:when test="${lastType eq \"byQuote\"}">
+				<INPUT TYPE="radio" NAME="type" VALUE="byQuote" checked>byQuote
+	</c:when>
+			<c:otherwise>
+				<INPUT TYPE="radio" NAME="type" VALUE="byQuote">byQuote
+	</c:otherwise>
+		</c:choose>
 
 
 
-	<c:choose>
-		<c:when test="${auth > 0}">
-			<c:forEach var="quote" items="${quotesList}">
+		<INPUT TYPE="hidden" NAME="accessToken"
+			VALUE=<%=request.getParameter("accessToken")%>> <INPUT
+			TYPE="hidden" NAME="page" VALUE="${currentPage}"> <br>
+		<br>
+	</form>
+
+
+
+<!-- 	<table border="1" cellpadding="5" cellspacing="5"> -->
+<!-- background-color: red; width:100%;  -->
+	<table border="1" style="width:100%;">
+		<tr bgcolor="#d3d3d3">
+			<td>Due at</td>
+			<td>Service</td>
+			<td>Text</td>
+		</tr>
+		<c:choose>
+			<c:when test="${auth > 0}">
+				<c:forEach var="quote" items="${quotesList}">
 				${quote.toString()}
-				
-	</c:forEach>
+				</c:forEach>
+	</table>
 
-			<%--For displaying Previous link except for the 1st page --%>
-			<%-- <c:if test="${currentPage != 1}">
+				<%--For displaying Previous link except for the 1st page --%>
+				<%-- <c:if test="${currentPage != 1}">
 				<td><a href="QuoteHistory?page=${currentPage - 1}">Previous</a></td>
 			</c:if> --%>
-			<%--For displaying Page numbers. 
+				<%--For displaying Page numbers. 
     The when condition does not display a link for the current page--%>
-			<table border="1" cellpadding="5" cellspacing="5">
-				<tr>
+				<table border="1" cellpadding="5" cellspacing="5">
+					<!-- <tr> -->
 					<c:forEach begin="1" end="${noOfPages}" var="i">
 						<c:choose>
 							<c:when test="${currentPage eq i}">
@@ -117,17 +128,17 @@
 							</c:otherwise>
 						</c:choose>
 					</c:forEach>
-				</tr>
-			</table>
+					<!-- </tr> -->
+				</table>
 
-			<%--For displaying Next link --%>
-			<%-- <c:if test="${currentPage lt noOfPages}">
+				<%--For displaying Next link --%>
+				<%-- <c:if test="${currentPage lt noOfPages}">
 				<td><a href="QuoteHistory?page=${currentPage + 1}">Next</a></td>
 			</c:if> --%>
-		</c:when>
-		<c:otherwise>
+			</c:when>
+			<c:otherwise>
 The access token is probably not a good one...
 </c:otherwise>
-	</c:choose>
+		</c:choose>
 </body>
 </html>
