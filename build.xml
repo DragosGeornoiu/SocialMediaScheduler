@@ -35,12 +35,18 @@
       <war destfile="${name}.war" webxml="${web.dir}/WEB-INF/web.xml">
          <fileset dir="${web.dir}">
             <include name="**/*.*"/>
-         </fileset>   
+         </fileset>  
       </war>   
       
 	   <copy todir="${deploy.path}" preservelastmodified="true">
          <fileset dir="${src.dir}/main/resources">
             <include name="**/*.*"/>
+         </fileset>
+      </copy>
+	  
+	  <copy todir="${deploy.path}" preservelastmodified="true">
+         <fileset dir="D:\workspace\SocialMediaScheduler">
+            <include name="**/*.log"/>
          </fileset>
       </copy>
       

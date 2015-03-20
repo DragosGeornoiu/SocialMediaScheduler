@@ -74,22 +74,6 @@ public abstract class Parser {
 					}
 					tempQuotes.put(entry.getValue().getMD5(), entry.getValue());
 				}
-
-				/*
-				 * Set entrySet = pageQuotes.entrySet(); Iterator it =
-				 * entrySet.iterator(); while (it.hasNext()) { if
-				 * (quote.equals(((Quote)it.next()
-				 * ;pageQuotes.get(i).getQuote())) { endCondition = true; break;
-				 * } else { tempQuotes.add(pageQuotes.get(i)); }
-				 * 
-				 * }
-				 */
-
-				/*
-				 * for (int i = 0; i < pageQuotes.size(); i++) { if
-				 * (quote.equals(pageQuotes.get(i).getQuote())) { endCondition =
-				 * true; break; } else { tempQuotes.add(pageQuotes.get(i)); } }
-				 */
 			}
 
 			newQuotes.putAll(tempQuotes);
