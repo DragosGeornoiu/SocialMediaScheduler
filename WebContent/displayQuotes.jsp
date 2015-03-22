@@ -7,31 +7,31 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Pending Quotes</title>
+</head>
+<body>
 <br>
 <a href="http://localhost:8080/SocialMediaScheduler\">Home</a>
 <br>
 <a
-	href="http://localhost:8080/SocialMediaScheduler/parse?accessToken=<%=request.getParameter("accessToken")%> + "\">Parse</a>
+	href="http://localhost:8080/SocialMediaScheduler/parse">Parse</a>
 <br>
 <a
-	href="http://localhost:8080/SocialMediaScheduler/Post?accessToken=<%=request.getParameter("accessToken")%> + "\">Schedule
+	href="http://localhost:8080/SocialMediaScheduler/Post">Schedule
 	Quote</a>
 <br>
 <a
-	href="http://localhost:8080/SocialMediaScheduler/QuoteHistory?accessToken=<%=request.getParameter("accessToken")%> + "\">Quote
+	href="http://localhost:8080/SocialMediaScheduler/QuoteHistory">Quote
 	History</a>
 <br>
 <a
-	href="http://localhost:8080/SocialMediaScheduler/PendingQuotes?accessToken=<%=request.getParameter("accessToken")%> + "\">Pending
+	href="http://localhost:8080/SocialMediaScheduler/PendingQuotes">Pending
 	Quotes</a>
 <br>
 <a
-	href="http://localhost:8080/SocialMediaScheduler/search?accessToken=<%=request.getParameter("accessToken")%> + "\">Search
+	href="http://localhost:8080/SocialMediaScheduler/Search">Search
 </a>
 <br>
 <br>
-</head>
-<body>
 
 	<!--  checked -->
 	<form ACTION="QuoteHistory">
@@ -86,8 +86,8 @@
 
 
 
-		<INPUT TYPE="hidden" NAME="accessToken"
-			VALUE=<%=request.getParameter("accessToken")%>> <INPUT
+		<%-- <INPUT TYPE="hidden" NAME="accessToken"
+			VALUE=<%=request.getParameter("accessToken")%>> --%> <INPUT
 			TYPE="hidden" NAME="page" VALUE="${currentPage}"> <br>
 		<br>
 	</form>
@@ -124,7 +124,7 @@
 							</c:when>
 							<c:otherwise>
 								<td><a
-									href="QuoteHistory?type=${lastType}&order=${order}&page=${i}&accessToken=<%=request.getParameter("accessToken")%>">${i}</a></td>
+									href="QuoteHistory?type=${lastType}&order=${order}&page=${i}">${i}</a></td>
 							</c:otherwise>
 						</c:choose>
 					</c:forEach>

@@ -4,30 +4,6 @@
 	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee 
       http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
 	<servlet>
-		<servlet-name>Hello</servlet-name>
-		<servlet-class>ro.project.servlet.SocialMediaServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>Hello</servlet-name>
-		<url-pattern>/HelloServlet</url-pattern>
-	</servlet-mapping>
-	<servlet>
-		<servlet-name>Pending</servlet-name>
-		<servlet-class>ro.project.servlet.PendingQuotesServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>Pending</servlet-name>
-		<url-pattern>/PendingQuotes</url-pattern>
-	</servlet-mapping>
-	<servlet>
-		<servlet-name>Parse</servlet-name>
-		<servlet-class>ro.project.servlet.ParseWebsiteServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>Parse</servlet-name>
-		<url-pattern>/ParseWebsite</url-pattern>
-	</servlet-mapping>
-	<servlet>
 		<servlet-name>parsejsp</servlet-name>
 		<jsp-file>/parse.jsp</jsp-file>
 	</servlet>
@@ -35,57 +11,6 @@
 		<servlet-name>parsejsp</servlet-name>
 		<url-pattern>/parse</url-pattern>
 	</servlet-mapping>
-	<servlet>
-		<servlet-name>Post</servlet-name>
-		<servlet-class>ro.project.servlet.PostToSocialMediaServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>Post</servlet-name>
-		<url-pattern>/Post</url-pattern>
-	</servlet-mapping>
-	<servlet>
-		<servlet-name>DeletePending</servlet-name>
-		<servlet-class>ro.project.servlet.DeletePendingQuoteServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>DeletePending</servlet-name>
-		<url-pattern>/DeletePending</url-pattern>
-	</servlet-mapping>
-	<servlet>
-		<servlet-name>PaginationServlet</servlet-name>
-		<servlet-class>ro.project.servlet.PaginationServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>PaginationServlet</servlet-name>
-		<url-pattern>/QuoteHistory</url-pattern>
-	</servlet-mapping>
-	<servlet>
-		<servlet-name>History</servlet-name>
-		<servlet-class>ro.project.servlet.QuoteHistoryServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>History</servlet-name>
-		<url-pattern>/history</url-pattern>
-	</servlet-mapping>
-
-	<servlet>
-		<servlet-name>AccessToken</servlet-name>
-		<servlet-class>ro.project.servlet.AccessToken</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>AccessToken</servlet-name>
-		<url-pattern>/AccessToken</url-pattern>
-	</servlet-mapping>
-
-	<servlet>
-		<servlet-name>SearchServlet</servlet-name>
-		<servlet-class>ro.project.servlet.SearchServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>SearchServlet</servlet-name>
-		<url-pattern>/search</url-pattern>
-	</servlet-mapping>
-
 	<welcome-file-list>
 		<welcome-file>Home.jsp</welcome-file>
 	</welcome-file-list>
@@ -100,10 +25,107 @@
 	</context-param> -->
 	<context-param>
 		<param-name>path2</param-name>
-		<param-value>C:/Tomcat/apache-tomcat-7.0.59/webapps/</param-value>
+		<param-value>C:/Users/Dragos/Documents/GitHub/SocialMediaScheduler/src/main/resources/</param-value>
 	</context-param>
 	<context-param>	
 		<param-name>path</param-name>
-		<param-value>C:\\\\Tomcat\\\\apache-tomcat-7.0.59\\\\webapps\\\\</param-value>
+		<param-value>C:\\\\Users\\\\Dragos\\\\Documents\\\\GitHub\\\\SocialMediaScheduler\\\\src\\\\main\\\\resources\\\\</param-value>
 	</context-param>
+	
+	
+	<servlet>
+		<servlet-name>AccessToken</servlet-name>
+		<servlet-class>ro.project.servlet.AccessToken</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>AccessToken</servlet-name>
+		<url-pattern>/AccessToken</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>AccessToken</servlet-name>
+		<url-pattern>/PendingQuotes</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>AccessToken</servlet-name>
+		<url-pattern>/DeletePending</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>AccessToken</servlet-name>
+		<url-pattern>/Search</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>AccessToken</servlet-name>
+		<url-pattern>/ParseWebsite</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>AccessToken</servlet-name>
+		<url-pattern>/Post</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>AccessToken</servlet-name>
+		<url-pattern>/QuoteHistory</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>AccessToken</servlet-name>
+		<url-pattern>/HelloServlet</url-pattern>
+	</servlet-mapping>
+	
+	<!-- <servlet>
+		<servlet-name>Pending</servlet-name>
+		<servlet-class>ro.project.servlet.PendingQuotesServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Pending</servlet-name>
+		<url-pattern>/PendingQuotes</url-pattern>
+	</servlet-mapping>
+
+		<servlet>
+		<servlet-name>DeletePending</servlet-name>
+	<servlet-class>ro.project.servlet.DeletePendingQuoteServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>DeletePending</servlet-name>
+		<url-pattern>/DeletePending</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>SearchServlet</servlet-name>
+		<servlet-class>ro.project.servlet.SearchServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>SearchServlet</servlet-name>
+		<url-pattern>/search</url-pattern>
+	</servlet-mapping>
+		<servlet>
+		<servlet-name>Parse</servlet-name>
+		<servlet-class>ro.project.servlet.ParseWebsiteServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Parse</servlet-name>
+		<url-pattern>/ParseWebsite</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>Post</servlet-name>
+		<servlet-class>ro.project.servlet.PostToSocialMediaServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Post</servlet-name>
+		<url-pattern>/Post</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>PaginationServlet</servlet-name>
+		<servlet-class>ro.project.servlet.PaginationServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>PaginationServlet</servlet-name>
+		<url-pattern>/QuoteHistory</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>Hello</servlet-name>
+		<servlet-class>ro.project.servlet.SocialMediaServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Hello</servlet-name>
+		<url-pattern>/HelloServlet</url-pattern>
+	</servlet-mapping>-->
 </web-app>
