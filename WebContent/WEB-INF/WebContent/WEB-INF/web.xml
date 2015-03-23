@@ -15,24 +15,6 @@
 		<welcome-file>Home.jsp</welcome-file>
 	</welcome-file-list>
 	
-	<!-- <context-param>
-		<param-name>path</param-name>
-		<param-value>D:\\\\workspace\\\\SocialMediaScheduler\\\\src\\\\main\\\\resources\\\\quotes</param-value>
-	</context-param>
-	<context-param>
-		<param-name>path2</param-name>
-		<param-value>D:/workspace/SocialMediaScheduler/src/main/resources/quotes/</param-value>
-	</context-param> -->
-	<context-param>
-		<param-name>path2</param-name>
-		<param-value>C:/Users/Dragos/Documents/GitHub/SocialMediaScheduler/src/main/resources/</param-value>
-	</context-param>
-	<context-param>	
-		<param-name>path</param-name>
-		<param-value>C:\\\\Users\\\\Dragos\\\\Documents\\\\GitHub\\\\SocialMediaScheduler\\\\src\\\\main\\\\resources\\\\</param-value>
-	</context-param>
-	
-	
 	<servlet>
 		<servlet-name>AccessToken</servlet-name>
 		<servlet-class>ro.project.servlet.AccessToken</servlet-class>
@@ -69,6 +51,15 @@
 		<servlet-name>AccessToken</servlet-name>
 		<url-pattern>/HelloServlet</url-pattern>
 	</servlet-mapping>
+	
+	<context-param> 
+		<param-name>path2</param-name> 
+		<param-value>C:/Tomcat/apache-tomcat-7.0.59/webapps/</param-value> 
+	</context-param> 
+	<context-param> 
+		<param-name>path</param-name> 
+		<param-value>C:\\\\Tomcat\\\\apache-tomcat-7.0.59\\\\webapps\\\\</param-value> 
+	</context-param>
 	
 	<!-- <servlet>
 		<servlet-name>Pending</servlet-name>
