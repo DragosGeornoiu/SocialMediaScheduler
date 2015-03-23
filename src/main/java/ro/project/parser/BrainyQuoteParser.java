@@ -10,6 +10,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import ro.project.Constants;
 import ro.project.scheduler.Quote;
 
 /**
@@ -36,10 +37,10 @@ public class BrainyQuoteParser extends Parser {
 
 		try {
 			document = Jsoup.connect(url)
-					.userAgent("Mozilla/5.0 (X11; Linux x86_64; rv:32.0) Gecko/20100101 Firefox/32.0")
+					.userAgent(Constants.MOZILLA_USER_AGENT)
 					.ignoreHttpErrors(true).get();
 
-			elements = document.getElementsByClass("boxyPaddingBig");
+			elements = document.getElementsByClass(Constants.BOXY_PADDING_BIG);
 			quotesPageList = getQuotesAsHashtable(elements);
 
 		} catch (MalformedURLException e) {
@@ -62,8 +63,8 @@ public class BrainyQuoteParser extends Parser {
 	protected Hashtable<String, Quote> getQuotesAsHashtable(Elements elements) {
 		Hashtable<String, Quote> tempList = new Hashtable<String, Quote>();
 		for (Element element : elements) {
-			String quote = element.getElementsByClass("bqQuoteLink").select("a").text().toString();
-			String auth = element.getElementsByClass("bq-aut").select("a").text().toString();
+			String quote = element.getElementsByClass(Constants.BQ_QUOTE_LINK).select(Constants.HREF_A).text().toString();
+			String auth = element.getElementsByClass(Constants.BQ_AUT).select(Constants.HREF_A).text().toString();
 
 			Quote q = new Quote(quote, auth);
 			tempList.put(q.getMD5(), q);
@@ -85,12 +86,12 @@ public class BrainyQuoteParser extends Parser {
 		Elements elements = null;
 		try {
 			document = Jsoup.connect(url)
-					.userAgent("Mozilla/5.0 (X11; Linux x86_64; rv:32.0) Gecko/20100101 Firefox/32.0")
+					.userAgent(Constants.MOZILLA_USER_AGENT)
 					.ignoreHttpErrors(true).get();
-			elements = document.getElementsByClass("nav").select("a");
+			elements = document.getElementsByClass(Constants.NAV).select(Constants.HREF_A);
 			for (Element element : elements) {
 				if (element.text().contains("Next")) {
-					return "http://www.brainyquote.com" + element.attr("href").toString();
+					return Constants.BRAINIQUOTE_URL + element.attr(Constants.HREF).toString();
 				}
 			}
 		} catch (MalformedURLException e) {

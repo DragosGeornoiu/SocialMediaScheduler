@@ -33,6 +33,7 @@
 <br>
 <br>
 
+
 	<!--  checked -->
 	<form ACTION="QuoteHistory">
 
@@ -54,7 +55,7 @@
 	</c:otherwise>
 		</c:choose>
 
-		<input type="submit" value="Submit"> <br>
+		<input type="submit" value="Submit" > <br>
 
 		<c:choose>
 			<c:when test="${lastType eq \"byAuthor\"}">
@@ -83,15 +84,9 @@
 				<INPUT TYPE="radio" NAME="type" VALUE="byQuote">byQuote
 	</c:otherwise>
 		</c:choose>
-
-
-
-		<%-- <INPUT TYPE="hidden" NAME="accessToken"
-			VALUE=<%=request.getParameter("accessToken")%>> --%> <INPUT
-			TYPE="hidden" NAME="page" VALUE="${currentPage}"> <br>
+			<INPUT TYPE="hidden" NAME="page" VALUE="${currentPage}"> <br>
 		<br>
 	</form>
-
 
 
 <!-- 	<table border="1" cellpadding="5" cellspacing="5"> -->

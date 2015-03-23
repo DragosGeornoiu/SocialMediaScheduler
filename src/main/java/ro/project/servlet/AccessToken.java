@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import ro.project.Constants;
 import ro.project.parser.FileManager;
 import ro.project.parser.Parser;
 import ro.project.scheduler.Scheduler;
@@ -32,18 +33,18 @@ public class AccessToken extends HttpServlet {
 	
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-		if ((accessToken == null) && request.getParameter("accessToken") != null) {
-			accessToken = request.getParameter("accessToken");
+		if ((accessToken == null) && request.getParameter(Constants.ACCESS_TOKEN) != null) {
+			accessToken = request.getParameter(Constants.ACCESS_TOKEN);
 		}
 		
 		out = response.getWriter();
 		if (request.getRequestURI().equals("/SocialMediaScheduler/AccessToken")) {
 			printMenu();
-			if (request.getParameter("accessToken") == null) {
+			if (request.getParameter(Constants.ACCESS_TOKEN) == null) {
 				out.println("<BR> You didn't tell us your access token... <br> ");
 			} else {
 				out.println("<BR> Your access token is: "
-						+ request.getParameter("accessToken"));
+						+ request.getParameter(Constants.ACCESS_TOKEN));
 			}
 			out.print("</body>\n</html>");
 		} else if (request.getRequestURI().equals(

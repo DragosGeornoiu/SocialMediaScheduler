@@ -12,6 +12,8 @@ import java.util.Random;
 
 import org.apache.log4j.Logger;
 
+import ro.project.Constants;
+
 /**
  * 
  * @author Caphyon1
@@ -28,7 +30,7 @@ public class QuoteManager {
 	private String quotesFile;
 
 	public QuoteManager(String quotesFile, String file) {
-		this.file = file + "quotes\\\\";
+		this.file = file + Constants.QUOTES_FILE + "\\\\";
 		this.quotesFile = this.file + quotesFile;
 	}
 
@@ -136,7 +138,6 @@ public class QuoteManager {
 			quotes = (Hashtable<String, Quote>) in.readObject();
 			in.close();
 		} catch (Exception e) {
-			// e.printStackTrace();
 			logger.error("Deserialisation of already posted quotes unsuccesfull.", e);
 		}
 

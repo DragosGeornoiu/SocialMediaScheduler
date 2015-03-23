@@ -8,6 +8,8 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import ro.project.Constants;
+
 /**
  * 
  * @author Caphyon1
@@ -19,7 +21,7 @@ public class FileManager {
 	private String path;
 
 	public FileManager(String path) {
-		this.path = path + "quotes/";
+		this.path = path + Constants.QUOTES_FILE;
 	}
 	/**
 	 * Given an URL it creates a file name from it.
@@ -84,7 +86,7 @@ public class FileManager {
 	private String getValidFileName(String fileName) {
 		String temp = fileName.replace("^\\.+", "").replaceAll("[\\\\/:*?\"<>|]", "");
 
-		if ((temp.equals("http")) || (temp.equals("www")) || (temp.equals("html"))) {
+		if ((temp.equals(Constants.HTTP)) || (temp.equals(Constants.WWW)) || (temp.equals(Constants.HTML))) {
 			return "";
 		}
 

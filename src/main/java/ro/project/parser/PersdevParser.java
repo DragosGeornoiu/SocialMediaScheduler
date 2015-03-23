@@ -10,8 +10,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import ro.project.Constants;
 import ro.project.scheduler.Quote;
-
 
 /**
  * 
@@ -20,7 +20,7 @@ import ro.project.scheduler.Quote;
  */
 public class PersdevParser extends Parser {
 	final static Logger logger = Logger.getLogger(PersdevParser.class);
-	
+
 	/**
 	 * Select all quotes from the given URL.
 	 * 
@@ -36,10 +36,8 @@ public class PersdevParser extends Parser {
 		Hashtable<String, Quote> quotesPageList = new Hashtable<String, Quote>();
 
 		try {
-			document = Jsoup.connect(url)
-					.userAgent("Mozilla/5.0 (X11; Linux x86_64; rv:32.0) Gecko/20100101 Firefox/32.0")
-					.ignoreHttpErrors(true).get();
-			elements = document.getElementsByTag("article");
+			document = Jsoup.connect(url).userAgent(Constants.MOZILLA_USER_AGENT).ignoreHttpErrors(true).get();
+			elements = document.getElementsByTag(Constants.TAG_ARTICLE);
 			quotesPageList = getQuotesAsHashtable(elements);
 
 		} catch (MalformedURLException e) {
@@ -54,7 +52,8 @@ public class PersdevParser extends Parser {
 	/**
 	 * The quotes are returned in a Hashtable of type <String, Quote>.
 	 * 
-	 * @param elements represent the quotes as org.jsoup.select.Elements.
+	 * @param elements
+	 *            represent the quotes as org.jsoup.select.Elements.
 	 * 
 	 * @return the quotes as a hashtable of type <String, Quote>.
 	 */
@@ -63,10 +62,11 @@ public class PersdevParser extends Parser {
 		Hashtable<String, Quote> tempList = new Hashtable<String, Quote>();
 		for (Element element : elements) {
 
-			String quote = element.select("p").toString();
-			quote = quote.replace("&laquo;", "").replace("&raquo;", "").replace("<p>", "").replace("<em>", "")
-					.replace("</em>", "").replace("<strong>", "").replace("</strong>", "").replace("</p>", "")
-					.replace("<br />", "- ");
+			String quote = element.select(Constants.TAG_P).toString();
+			quote = quote.replace(Constants.TAG_LAQUO, "").replace(Constants.TAG_RAQUO, "")
+					.replace(Constants.TAG_P, "").replace(Constants.TAG_EM, "").replace(Constants.TAG_EM_END, "")
+					.replace(Constants.TAG_STRONG, "").replace(Constants.TAG_STRONG_END, "")
+					.replace(Constants.TAG_P_END, "").replace(Constants.TAG_BR, "- ");
 
 			Quote q = new Quote(quote.split(" - ")[0], quote.split(" - ")[1]);
 			tempList.put(q.getMD5(), q);
@@ -78,7 +78,8 @@ public class PersdevParser extends Parser {
 	/**
 	 * The quotes are returned in a Hashtable of type <String, Quote>.
 	 * 
-	 * @param elements represent the quotes as org.jsoup.select.Elements.
+	 * @param elements
+	 *            represent the quotes as org.jsoup.select.Elements.
 	 * 
 	 * @return the quotes as a hashtable of type <String, Quote>.
 	 */
@@ -88,12 +89,12 @@ public class PersdevParser extends Parser {
 		Elements elements = null;
 		try {
 			document = Jsoup.connect(url)
-					.userAgent("Mozilla/5.0 (X11; Linux x86_64; rv:32.0) Gecko/20100101 Firefox/32.0")
+					.userAgent(Constants.MOZILLA_USER_AGENT)
 					.ignoreHttpErrors(true).get();
-			elements = document.getElementsByTag("nav").select("a");
+			elements = document.getElementsByTag(Constants.NAV).select(Constants.HREF_A);
 			for (Element element : elements) {
 				if (element.text().contains("Previous")) {
-					return element.attr("href").toString();
+					return element.attr(Constants.HREF).toString();
 				}
 			}
 		} catch (MalformedURLException e) {

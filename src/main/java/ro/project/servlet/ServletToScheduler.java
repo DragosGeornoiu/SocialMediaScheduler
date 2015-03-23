@@ -11,6 +11,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import ro.project.Constants;
 import ro.project.parser.BrainyQuoteParser;
 import ro.project.parser.FileManager;
 import ro.project.parser.Parser;
@@ -33,22 +34,22 @@ public class ServletToScheduler {
 		String out = "";
 		try {
 			if ((scheduler.getPendingUpdates(accessToken, 1,
-					scheduler.getProfileId(accessToken, "facebook")) == null)
+					scheduler.getProfileId(accessToken, Constants.FACEBOOK)) == null)
 					|| (scheduler.getPendingUpdates(accessToken, 1,
-							scheduler.getProfileId(accessToken, "facebook")).trim()
+							scheduler.getProfileId(accessToken, Constants.FACEBOOK)).trim()
 							.isEmpty())) {
 
 				out += "Something went wrong. The access token might be the problem... <br>";
 			} else {
 				String jString = scheduler.getPendingUpdates(accessToken, 1,
-						scheduler.getProfileId(accessToken, "facebook"));
+						scheduler.getProfileId(accessToken, Constants.FACEBOOK));
 				JSONObject jsonObject = new JSONObject(jString);
-				int totalFacebook = jsonObject.getInt("total");
+				int totalFacebook = jsonObject.getInt(Constants.TOTAL);
 
 				jString = scheduler.getPendingUpdates(accessToken, 1,
-						scheduler.getProfileId(accessToken, "twitter"));
+						scheduler.getProfileId(accessToken, Constants.TWITTER));
 				jsonObject = new JSONObject(jString);
-				int totalTwitter = jsonObject.getInt("total");
+				int totalTwitter = jsonObject.getInt(Constants.TOTAL);
 				out += "<table border=\"1\" style=\"width:100%;\" cellpadding=\"5\" cellspacing=\"5\">";
 				out += "<tr bgcolor=\"#d3d3d3\">";
 				out += "<td>Due at</td>";
@@ -63,17 +64,17 @@ public class ServletToScheduler {
 
 					j = 1;
 					jString = scheduler.getPendingUpdates(accessToken, j,
-							scheduler.getProfileId(accessToken, "facebook"));
+							scheduler.getProfileId(accessToken, Constants.FACEBOOK));
 					jsonObject = new JSONObject(jString);
-					int total = jsonObject.getInt("total");
-					JSONArray updates = jsonObject.getJSONArray("updates");
+					int total = jsonObject.getInt(Constants.TOTAL);
+					JSONArray updates = jsonObject.getJSONArray(Constants.UPDATES);
 					for (int i = 0; i < total; i++) {
 						if ((i % 20 == 0) && (i != 0)) {
 							j++;
 							jString = scheduler.getPendingUpdates(accessToken, j,
-									scheduler.getProfileId(accessToken, "facebook"));
+									scheduler.getProfileId(accessToken, Constants.FACEBOOK));
 							jsonObject = new JSONObject(jString);
-							updates = jsonObject.getJSONArray("updates");
+							updates = jsonObject.getJSONArray(Constants.UPDATES);
 						}
 						JSONObject update = updates.getJSONObject(i % 20);
 						out += parsePendingUpdate(update);
@@ -81,17 +82,17 @@ public class ServletToScheduler {
 
 					j = 1;
 					jString = scheduler.getPendingUpdates(accessToken, j,
-							scheduler.getProfileId(accessToken, "twitter"));
+							scheduler.getProfileId(accessToken, Constants.TWITTER));
 					jsonObject = new JSONObject(jString);
-					total = jsonObject.getInt("total");
-					updates = jsonObject.getJSONArray("updates");
+					total = jsonObject.getInt(Constants.TOTAL);
+					updates = jsonObject.getJSONArray(Constants.UPDATES);
 					for (int i = 0; i < total; i++) {
 						if ((i % 20 == 0) && (i != 0)) {
 							j++;
 							jString = scheduler.getPendingUpdates(accessToken, j,
-									scheduler.getProfileId(accessToken, "twitter"));
+									scheduler.getProfileId(accessToken, Constants.TWITTER));
 							jsonObject = new JSONObject(jString);
-							updates = jsonObject.getJSONArray("updates");
+							updates = jsonObject.getJSONArray(Constants.UPDATES);
 						}
 						JSONObject update = updates.getJSONObject(i % 20);
 						out += parsePendingUpdate(update);
@@ -113,12 +114,12 @@ public class ServletToScheduler {
 		String pendingUpdate = "";
 		pendingUpdate += "<BR>";
 		Calendar c = Calendar.getInstance();
-		c.setTimeInMillis(new Long(((int) update.getInt("due_at"))) * 1000);
+		c.setTimeInMillis(new Long(((int) update.getInt(Constants.DUE_AT))) * 1000);
 		int mYear = c.get(Calendar.YEAR);
 		pendingUpdate += "<tr>";
-		pendingUpdate += "<td>" + update.get("due_time") + "; "
+		pendingUpdate += "<td>" + update.get(Constants.DUE_TIME) + "; "
 				+ update.get("day") + "; " + mYear + "</td>";
-		pendingUpdate += "<td>" + update.get("profile_service") + "</td>";
+		pendingUpdate += "<td>" + update.get(Constants.PROFILE_SERVICE) + "</td>";
 		pendingUpdate += "<td>" + update.get("text") + "</td>";
 		pendingUpdate += "<td>" + "<form ACTION=\"DeletePending\">";
 		pendingUpdate += "<INPUT TYPE=\"hidden\" name=\"url\" value="
@@ -156,21 +157,21 @@ public class ServletToScheduler {
 		String jString = scheduler.getUpdatesFor(accessToken, 1,
 				scheduler.getProfileId(accessToken, socialNetwork.toLowerCase()));
 		JSONObject jsonObject = new JSONObject(jString);
-		int total = jsonObject.getInt("total");
-		JSONArray updates = jsonObject.getJSONArray("updates");
+		int total = jsonObject.getInt(Constants.TOTAL);
+		JSONArray updates = jsonObject.getJSONArray(Constants.UPDATES);
 		for (int i = 0; i < total; i++) {
 			if ((i % 20 == 0) && (i != 0)) {
 				j++;
 				jString = scheduler.getUpdatesFor(accessToken, j,
 						scheduler.getProfileId(accessToken, socialNetwork));
 				jsonObject = new JSONObject(jString);
-				updates = jsonObject.getJSONArray("updates");
+				updates = jsonObject.getJSONArray(Constants.UPDATES);
 			}
 			JSONObject update = updates.getJSONObject(i % 20);
 
 			String temp = "";
 			try {
-				temp = ((String) update.get("text")).split(" - ")[1];
+				temp = ((String) update.get(Constants.TEXT)).split(" - ")[1];
 			} catch (Exception e) {
 				logger.error("Problem splitting the text.", e);
 			}
@@ -178,13 +179,13 @@ public class ServletToScheduler {
 			if (temp.equals(author)) {
 				quotesByAuthor += " <br> ";
 				Calendar c = Calendar.getInstance();
-				c.setTimeInMillis(new Long(((int) update.getInt("due_at"))) * 1000);
+				c.setTimeInMillis(new Long(((int) update.getInt(Constants.DUE_AT))) * 1000);
 				int mYear = c.get(Calendar.YEAR);
-				quotesByAuthor += "<tr><td>" + update.get("due_time") + "; "
+				quotesByAuthor += "<tr><td>" + update.get(Constants.DUE_TIME) + "; "
 						+ update.get("day") + "; " + mYear + "</td>";
-				quotesByAuthor += "<td>" + update.get("profile_service")
+				quotesByAuthor += "<td>" + update.get(Constants.PROFILE_SERVICE)
 						+ "</td>";
-				quotesByAuthor += "<td>" + update.get("text") + "</td>";
+				quotesByAuthor += "<td>" + update.get(Constants.TEXT) + "</td>";
 				quotesByAuthor += "</tr> ";
 			}
 		}
@@ -196,11 +197,11 @@ public class ServletToScheduler {
 		FileManager fileManager = new FileManager(path);
 		boolean selectionCorrect = true;
 
-		if ((link.equals("http://persdev-q.com/"))
-				&& (website.startsWith("http://persdev-q.com/"))) {
+		if ((link.equals(Constants.PERSDEV_URL))
+				&& (website.startsWith(Constants.PERSDEV_URL))) {
 			parser = new PersdevParser();
-		} else if ((link.equals("http://www.brainyquote.com/"))
-				&& (website.startsWith("http://www.brainyquote.com/"))) {
+		} else if ((link.equals(Constants.BRAINIQUOTE_URL))
+				&& (website.startsWith(Constants.BRAINIQUOTE_URL))) {
 			parser = new BrainyQuoteParser();
 		} else {
 			selectionCorrect = false;
@@ -208,8 +209,8 @@ public class ServletToScheduler {
 
 		if (selectionCorrect) {
 			if (parser.parseWebsite(website, path)) {
-				fileManager.createFileInPath("facebookquotes.txt");
-				fileManager.createFileInPath("twitterquotes.txt");
+				fileManager.createFileInPath(Constants.FACEBOOK_QUOTES_TXT);
+				fileManager.createFileInPath(Constants.TWITTER_QUOTES_TXT);
 				return " <br> <br> The quotes from the given website were retrieved... <br> What do you want to do next? <br>";
 			} else {
 				return "<br> <br> The website was already parsed... <br>";
@@ -341,7 +342,7 @@ public class ServletToScheduler {
 		List<String> optionList = new ArrayList<String>();
 		BufferedReader br = null;
 		try {
-			br = new BufferedReader(new FileReader(path + "\\\\parser.txt"));
+			br = new BufferedReader(new FileReader(path + "\\\\" + Constants.PARSER_TXT));
 			String line;
 			while ((line = br.readLine()) != null) {
 				optionList.add(line);

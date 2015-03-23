@@ -17,6 +17,7 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.jsoup.select.Elements;
 
+import ro.project.Constants;
 import ro.project.scheduler.Quote;
 
 /**
@@ -56,7 +57,7 @@ public abstract class Parser {
 	 * @return true if the URL can be parsed, false otherwise.
 	 */
 	public boolean parseWebsite(String website, String optionPath) {
-		this.optionPath = optionPath + "quotes/";
+		this.optionPath = optionPath + Constants.QUOTES_FILE;
 		fileManager = new FileManager(optionPath);
 		String fileName = fileManager.createFileNameFromUrl(website);
 
