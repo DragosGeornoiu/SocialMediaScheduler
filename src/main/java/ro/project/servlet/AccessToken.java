@@ -28,36 +28,24 @@ public class AccessToken extends HttpServlet {
 	ServletToScheduler servletToScheduler;
 	Parser parser;
 	FileManager fileManager;
-	PrintWriter out;
+	PrintWriter out = null;
 	String accessToken = null;
-	
-	protected void doGet(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
+
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		out = response.getWriter();
+
 		if ((accessToken == null) && request.getParameter(Constants.ACCESS_TOKEN) != null) {
 			accessToken = request.getParameter(Constants.ACCESS_TOKEN);
 		}
-		
-		out = response.getWriter();
-		if (request.getRequestURI().equals("/SocialMediaScheduler/AccessToken")) {
-			printMenu();
-			if (request.getParameter(Constants.ACCESS_TOKEN) == null) {
-				out.println("<BR> You didn't tell us your access token... <br> ");
-			} else {
-				out.println("<BR> Your access token is: "
-						+ request.getParameter(Constants.ACCESS_TOKEN));
-			}
-			out.print("</body>\n</html>");
-		} else if (request.getRequestURI().equals(
-				"/SocialMediaScheduler/PendingQuotes")) {
+
+		if (request.getRequestURI().equals("/SocialMediaScheduler/PendingQuotes")) {
 			printMenu();
 			out.print(servletToScheduler.getAllPendingQuotes(accessToken));
-		} else if (request.getRequestURI().equals(
-				"/SocialMediaScheduler/DeletePending")) {
+		} else if (request.getRequestURI().equals("/SocialMediaScheduler/DeletePending")) {
 			printMenu();
 			scheduler.deleteUpdate(accessToken, request.getParameter("url"));
 			response.sendRedirect("http://localhost:8080/SocialMediaScheduler/PendingQuotes");
-		} else if (request.getRequestURI().equals(
-				"/SocialMediaScheduler/Search")) {
+		} else if (request.getRequestURI().equals("/SocialMediaScheduler/Search")) {
 			printMenu();
 			out.println("<form ACTION=\"Search\">");
 			out.println("Insert author: <INPUT TYPE=\"text\" name=\"author\"> ");
@@ -68,14 +56,11 @@ public class AccessToken extends HttpServlet {
 				out.println("<br> <br> Please enter an author <br> <br>");
 			} else {
 				String author = request.getParameter("author");
-				out.println(servletToScheduler
-						.getAllPostedQuotesByAuthor(accessToken, author));
+				out.println(servletToScheduler.getAllPostedQuotesByAuthor(accessToken, author));
 			}
-		} else if (request.getRequestURI().equals(
-				"/SocialMediaScheduler/ParseWebsite")) {
+		} else if (request.getRequestURI().equals("/SocialMediaScheduler/ParseWebsite")) {
 			printMenu();
-			if ((request.getParameter("radios") == null)
-					|| (request.getParameter("website") == null)) {
+			if ((request.getParameter("radios") == null) || (request.getParameter("website") == null)) {
 				out.println("<BR> You didn't select a parser... <br> ");
 			} else {
 				String link = request.getParameter("radios");
@@ -84,11 +69,9 @@ public class AccessToken extends HttpServlet {
 				out.println(servletToScheduler.parseWebsite(link, path, website));
 			}
 		} else if (request.getRequestURI().equals("/SocialMediaScheduler/Post")) {
-			String path = getServletContext().getInitParameter("path")
-					+ "quotes/";
-				out.print(servletToScheduler.postToSocialMediaView(accessToken, path));
-		} else if (request.getRequestURI().equals(
-				"/SocialMediaScheduler/QuoteHistory")) {
+			String path = getServletContext().getInitParameter("path") + "quotes/";
+			out.print(servletToScheduler.postToSocialMediaView(accessToken, path));
+		} else if (request.getRequestURI().equals("/SocialMediaScheduler/QuoteHistory")) {
 			boolean ascending = true;
 			String type = "";
 			if (request.getParameter("type") != null) {
@@ -108,15 +91,13 @@ public class AccessToken extends HttpServlet {
 			int recordsPerPage = 10;
 			if (request.getParameter("page") != null)
 				page = Integer.parseInt(request.getParameter("page"));
-			List<String> list = dao.getPostedQuotes(accessToken, 
-					(page - 1) * recordsPerPage, recordsPerPage, type,
+			List<String> list = dao.getPostedQuotes(accessToken, (page - 1) * recordsPerPage, recordsPerPage, type,
 					ascending);
 			int noOfRecords = dao.getNoOfRecords(accessToken);
 			if (noOfRecords < 0 || list == null) {
 				request.setAttribute("auth", 0);
 			} else {
-				int noOfPages = (int) Math.ceil(noOfRecords * 1.0
-						/ recordsPerPage);
+				int noOfPages = (int) Math.ceil(noOfRecords * 1.0 / recordsPerPage);
 				request.setAttribute("auth", 1);
 				request.setAttribute("quotesList", list);
 				request.setAttribute("noOfPages", noOfPages);
@@ -124,11 +105,9 @@ public class AccessToken extends HttpServlet {
 				request.setAttribute("lastType", type);
 				request.setAttribute("order", request.getParameter("order"));
 			}
-			RequestDispatcher view = request
-					.getRequestDispatcher("displayQuotes.jsp");
+			RequestDispatcher view = request.getRequestDispatcher("displayQuotes.jsp");
 			view.forward(request, response);
-		} else if (request.getRequestURI().equals(
-				"/SocialMediaScheduler/HelloServlet")) {
+		} else if (request.getRequestURI().equals("/SocialMediaScheduler/HelloServlet")) {
 			String path = getServletContext().getInitParameter("path");
 			String path2 = getServletContext().getInitParameter("path2");
 			String radios = request.getParameter("radios");
@@ -141,11 +120,29 @@ public class AccessToken extends HttpServlet {
 			String gmtDropDown = request.getParameter("gmtdropdown");
 
 			printMenu();
-			out.println(servletToScheduler.postToSocialMedia(accessToken, path, path2,
-					radios, where, yearDropDown, monthDropDown, dayDropDown,
-					hourDropDown, minuteDropDown, gmtDropDown));
+			out.println(servletToScheduler.postToSocialMedia(accessToken, path, path2, radios, where, yearDropDown,
+					monthDropDown, dayDropDown, hourDropDown, minuteDropDown, gmtDropDown));
 		}
 
+	}
+
+	@Override
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		out = resp.getWriter();
+
+		if ((accessToken == null) && req.getParameter(Constants.ACCESS_TOKEN) != null) {
+			accessToken = req.getParameter(Constants.ACCESS_TOKEN);
+		}
+
+		if (req.getRequestURI().equals("/SocialMediaScheduler/AccessToken")) {
+			printMenu();
+			if (req.getParameter(Constants.ACCESS_TOKEN) == null) {
+				out.println("<BR> You didn't tell us your access token... <br> ");
+			} else {
+				out.println("<BR> Your access token is: " + req.getParameter(Constants.ACCESS_TOKEN));
+			}
+			out.print("</body>\n</html>");
+		}
 	}
 
 	@Override

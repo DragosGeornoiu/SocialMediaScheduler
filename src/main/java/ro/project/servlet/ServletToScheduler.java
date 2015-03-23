@@ -235,7 +235,7 @@ public class ServletToScheduler {
 			out +="<br> <a href=\"http://localhost:8080/SocialMediaScheduler/Post\">Schedule Quote</a> \n";
 			out +="<br> <a href=\"http://localhost:8080/SocialMediaScheduler/QuoteHistory\">Quote History</a> \n";
 			out +="<br> <a href=\"http://localhost:8080/SocialMediaScheduler/PendingQuotes\">Pending Quotes</a> \n";
-			out +="<br> <a href=\"http://localhost:8080/SocialMediaScheduler/search\">Search</a><br><br> \n";
+			out +="<br> <a href=\"http://localhost:8080/SocialMediaScheduler/Search\">Search</a><br><br> \n";
 			out +="</head> \n";
 			out +="<body> \n";
 			out +="The access token is probably not correct, please insert it again... \n";

@@ -36,7 +36,7 @@ public class Scheduler {
 	/** the access token of the registered appplication */
 	private static Scheduler instance = null;
 
-	protected Scheduler() {
+	private Scheduler() {
 	}
 
 	public static Scheduler getInstance() {

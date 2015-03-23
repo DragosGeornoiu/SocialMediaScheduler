@@ -6,7 +6,7 @@
 <h2>Hello:</h2>
 <br>
 <br>
-<form ACTION="AccessToken">
+<form ACTION="AccessToken" method="post">
 	Insert access token: <INPUT TYPE="text" name="accessToken"> 
 	<input type="submit">;
 </form>
