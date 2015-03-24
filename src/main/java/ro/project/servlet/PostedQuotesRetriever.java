@@ -1,6 +1,7 @@
 package ro.project.servlet;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
@@ -10,6 +11,8 @@ import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.sun.corba.se.impl.orbutil.closure.Constant;
 
 import ro.project.Constants;
 import ro.project.scheduler.Quote;
@@ -32,18 +35,17 @@ public class PostedQuotesRetriever {
 		this.scheduler = scheduler;
 	}
 
-	public List<String> getPostedQuotes(int from, int indexesPerPage, String sortedBy,
-			boolean ascending) {
+	public List<String> getPostedQuotes(int from, int indexesPerPage, String sortedBy, boolean ascending) {
 
 		List<String> quotesToBeDisplayed = new ArrayList<String>();
 		List<OrderObject> temp = null;
 
 		try {
-			temp = parse(scheduler.getAccessToken());
+			temp = parse();
 
 			if (temp == null) {
 				return null;
-			} else  if(sortedBy != null){
+			} else if (sortedBy != null) {
 				Comparator<OrderObject> comparator = new OrderObjectComparator(sortedBy, ascending);
 				Collections.sort(temp, comparator);
 			}
@@ -64,87 +66,81 @@ public class PostedQuotesRetriever {
 		return quotesToBeDisplayed;
 	}
 
-	private List<OrderObject> parse(String accessToken) throws JSONException {
+	private List<OrderObject> parse() throws JSONException {
 		List<OrderObject> quotes = new ArrayList<OrderObject>();
 
-		String jString = scheduler.getUpdatesFor(1,
-				scheduler.getProfileId(Constants.FACEBOOK));
-		if ((jString == null) || jString.trim().isEmpty()) {
-			return null;
-		}
-		JSONObject jsonObject = new JSONObject(jString);
-		int totalFacebook = jsonObject.getInt(Constants.TOTAL);
-
-		jString = scheduler.getUpdatesFor(1, scheduler.getProfileId(Constants.TWITTER));
-		if ((jString == null) || jString.trim().isEmpty()) {
-			return null;
-		}
-		jsonObject = new JSONObject(jString);
-		int totalTwitter = jsonObject.getInt(Constants.TOTAL);
-
-		int iTwitter;
-		int iFacebook;
-		iFacebook = iTwitter = 1;
-		int twitterEnd, facebookEnd;
-		while (quotes.size() < Constants.QUOTE_HISTORY_LIMIT && totalFacebook > 0 && totalTwitter > 0) {
-			String twitterjString = scheduler.getUpdatesFor(iTwitter,
-					scheduler.getProfileId(Constants.TWITTER));
-			OrderObject twitterObject;
-			if (totalTwitter - (iTwitter * Constants.UPDATES_PER_PAGE) >= Constants.UPDATES_PER_PAGE) {
-				twitterEnd = Constants.UPDATES_PER_PAGE;
-			} else {
-				twitterEnd = totalTwitter % Constants.UPDATES_PER_PAGE;
-			}
-			twitterObject = parseJStringFromStartToEnd(twitterjString, 0, twitterEnd).get(twitterEnd-1);
-
-			String facebookjString = scheduler.getUpdatesFor(iFacebook,
-					scheduler.getProfileId(Constants.FACEBOOK));
-			OrderObject facebookObject;
-			if (totalFacebook - (iFacebook * Constants.UPDATES_PER_PAGE) >= Constants.UPDATES_PER_PAGE) {
-				facebookEnd = Constants.UPDATES_PER_PAGE;
-			} else {
-				facebookEnd = totalFacebook % Constants.UPDATES_PER_PAGE;
-			}
-			facebookObject = parseJStringFromStartToEnd(facebookjString, 0, facebookEnd).get(facebookEnd-1);
-
-			if (twitterObject.getCalendar().compareTo(facebookObject.getCalendar()) < 0) {
-				quotes.addAll(parseJStringFromStartToEnd(facebookjString, 0, facebookEnd));
-				iFacebook++;
-				totalFacebook -= (facebookEnd + 1);
-			} else {
-				quotes.addAll(parseJStringFromStartToEnd(twitterjString, 0, twitterEnd));
-				iTwitter++;
-				totalTwitter -= (twitterEnd + 1);
-			}
-			
-
+		List<String> profiles = scheduler.getAllProfiles();
+		List<Integer> total = Arrays.asList(new Integer[profiles.size()]);
+		int totalSocialNetwork = 0;
+		String jString;
+		JSONObject jsonObject;
+		for (int i = 0; i < profiles.size(); i++) {
+			jString = scheduler
+					.getUpdatesFor(1, scheduler.getProfileId(profiles.get(i).toLowerCase().replace(" ", "")));
+			jsonObject = new JSONObject(jString);
+			total.set(i, new Integer(jsonObject.getInt(Constants.TOTAL)));
+			totalSocialNetwork += total.get(i);
 		}
 
-		if(quotes.size() < Constants.QUOTE_HISTORY_LIMIT) {
-			if(totalFacebook > 0) {
-				for (int i = 1; i <= (totalFacebook / Constants.UPDATES_PER_PAGE + 1); i++) {
-					jString = scheduler.getUpdatesFor(i + iFacebook - 1, scheduler.getProfileId(Constants.FACEBOOK));
-					if (totalFacebook - (i * Constants.UPDATES_PER_PAGE) > 0) {
-						quotes.addAll(parseJStringFromStartToEnd(jString, 0, Constants.UPDATES_PER_PAGE));
+		List<Integer> iSocialNetworkList = Arrays.asList(new Integer[profiles.size()]);
+		for (int i = 0; i < iSocialNetworkList.size(); i++) {
+			iSocialNetworkList.set(i, 1);
+		}
+
+		List<OrderObject> orderObjectList = Arrays.asList(new OrderObject[profiles.size()]);
+
+		while (quotes.size() < Constants.QUOTE_HISTORY_LIMIT && totalSocialNetwork > 0) {
+			int end;
+			for (int i = 0; i < profiles.size(); i++) {
+
+				if (i == 0) {
+					orderObjectList = new ArrayList<OrderObject>();
+				}
+
+				if (total.get(i) > 0) {
+
+					jString = scheduler.getUpdatesFor(iSocialNetworkList.get(i),
+							scheduler.getProfileId(profiles.get(i)));
+					if (total.get(i) >= Constants.UPDATES_PER_PAGE) {
+						end = Constants.UPDATES_PER_PAGE;
 					} else {
-						quotes.addAll(parseJStringFromStartToEnd(jString, 0, (totalFacebook % Constants.UPDATES_PER_PAGE) - 1));
+						end = total.get(i) % Constants.UPDATES_PER_PAGE;
 					}
 
-				}
-			} else if (totalTwitter > 0) {
-				for (int i = 1; i <= (totalTwitter / Constants.UPDATES_PER_PAGE + 1); i++) {
-					jString = scheduler.getUpdatesFor(i + iTwitter - 1, scheduler.getProfileId(Constants.TWITTER));
-					if (totalTwitter - (i * Constants.UPDATES_PER_PAGE) > 0) {
-						quotes.addAll(parseJStringFromStartToEnd(jString, 0, Constants.UPDATES_PER_PAGE));
-					} else {
-						quotes.addAll(parseJStringFromStartToEnd(jString, 0, (totalTwitter % Constants.UPDATES_PER_PAGE) - 1));
-					}
-					
-
+					orderObjectList.add(parseJStringFromStartToEnd(jString, 0, end).get(end - 1));
 				}
 			}
+
+			Comparator<OrderObject> comparator = new OrderObjectComparator(Constants.BY_DATE, false);
+			Collections.sort(orderObjectList, comparator);
+
+			int index = 0;
+			String service = orderObjectList.get(0).getService();
+			for (int i = 0; i < profiles.size(); i++) {
+
+				try {
+					if (profiles.get(i).equals(service) || profiles.get(i).startsWith(service)) {
+						index = i;
+						break;
+					}
+				} catch (Exception e) {
+				}
+			}
+
+			jString = scheduler.getUpdatesFor(iSocialNetworkList.get(index),
+					scheduler.getProfileId(profiles.get(index)));
+
+			if (total.get(index) >= Constants.UPDATES_PER_PAGE) {
+				end = Constants.UPDATES_PER_PAGE;
+			} else {
+				end = total.get(index) % Constants.UPDATES_PER_PAGE;
+			}
+			quotes.addAll(0, parseJStringFromStartToEnd(jString, 0, end));
+			iSocialNetworkList.set(index, iSocialNetworkList.get(index) + 1);
+			totalSocialNetwork -= (end);
+			total.set(index, total.get(index) - end);
 		}
-		
+
 		return quotes;
 	}
 
@@ -171,28 +167,25 @@ public class PostedQuotesRetriever {
 			quoteList.add(ord);
 
 		}
+
 		return quoteList;
 	}
 
 	public int getNoOfRecords() {
-		int total = -1;
+		int totalSocialNetwork = 0;
 		try {
-			String jString = scheduler.getUpdatesFor(1,
-					scheduler.getProfileId(Constants.FACEBOOK));
-			if ((jString == null) || (jString.trim().isEmpty())) {
-
-			} else {
-				JSONObject jsonObject = new JSONObject(jString);
-				int totalFacebook = jsonObject.getInt(Constants.TOTAL);
+			List<String> profiles = scheduler.getAllProfiles();
+			String jString;
+			JSONObject jsonObject;
+			for (int i = 0; i < profiles.size(); i++) {
 				jString = scheduler.getUpdatesFor(1,
-						scheduler.getProfileId(Constants.TWITTER));
+						scheduler.getProfileId(profiles.get(i).toLowerCase().replace(" ", "")));
 				jsonObject = new JSONObject(jString);
-				int totalTwitter = jsonObject.getInt(Constants.TOTAL);
-				total = totalFacebook + totalTwitter;
+				totalSocialNetwork += jsonObject.getInt(Constants.TOTAL);
 			}
 		} catch (Exception e) {
-			logger.error("Problem retieving the number of total updates posted", e);
+			e.printStackTrace();
 		}
-		return total;
+		return totalSocialNetwork;
 	}
 }

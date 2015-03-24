@@ -34,7 +34,7 @@ public class SocialMediaSchedulerServlet extends HttpServlet {
 		out = response.getWriter();
 
 		if (scheduler.getAccessToken() == null) {
-			response.sendRedirect("http://localhost:8080/SocialMediaScheduler/home");
+			response.sendRedirect("http://localhost:8080/SocialMediaScheduler/Edit");
 		}
 
 		if (request.getRequestURI().equals("/SocialMediaScheduler/")) {
@@ -122,11 +122,10 @@ public class SocialMediaSchedulerServlet extends HttpServlet {
 			String gmtDropDown = request.getParameter(Constants.GMT_DROP_DOWN);
 
 			
-			System.out.println(path + " - " + path2);
 			printMenu();
 			out.println(servletToScheduler.postToSocialMedia(path, path2, radios, where,
 					yearDropDown, monthDropDown, dayDropDown, hourDropDown, minuteDropDown, gmtDropDown));
-		}
+		} 
 	}
 
 	@Override

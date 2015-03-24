@@ -3,7 +3,8 @@ package ro.project;
 public class Constants {
 
 	private Constants() {}
-
+	public static final String ACCESS_TOKEN_PATH  = "C:/Tomcat/apache-tomcat-7.0.59/webapps/accessToken.txt";
+	
 	public static final String MOZILLA_USER_AGENT = "Mozilla/5.0 (X11; Linux x86_64; rv:32.0) Gecko/20100101 Firefox/32.0";
 	public static final String BOXY_PADDING_BIG = "boxyPaddingBig";
 	public static final String BQ_QUOTE_LINK = "bqQuoteLink";
@@ -39,6 +40,8 @@ public class Constants {
 	public static final String FORMATED_SERVICE = "formatted_service";
 	public static final String BUFFERAPP_PROFILES_JSON = "https://api.bufferapp.com/1/profiles.json";
 	public static final String FACEBOOK = "facebook";
+	public static final String GOOGLE = "google+page";
+	public static final String LINKEDIN = "linkeding";
 	public static final String TWITTER = "twitter";
 	public static final String ACCESS_TOKEN = "accessToken";
 	public static final String BY_DATE = "byDate";
@@ -51,8 +54,6 @@ public class Constants {
 	public static final String DUE_AT = "due_at";
 	public static final String DUE_TIME = "due_time";
 	public static final String TEXT = "text";
-	public static final String FACEBOOK_QUOTES_TXT = "facebookquotes.txt";
-	public static final String TWITTER_QUOTES_TXT = "twitterquotes.txt";
 	public static final String PARSER_TXT = "parser.txt";
 	public static final int UPDATES_PER_PAGE = 20;
 	public static final String RADIOS = "radios";
@@ -75,6 +76,4 @@ public class Constants {
 	public static final String HOUR_DROP_DOWN = "hourdropdown";
 	public static final String MINUTE_DROP_DOWN = "minutedropdown";
 	public static final String GMT_DROP_DOWN = "gmtdropdown";
-	
-	
 }

@@ -109,9 +109,9 @@ public class FileManager {
 		try {
 			file.createNewFile();
 		} catch (IOException e) {
-			// e.printStackTrace();
 			logger.error("Problem creating file in path", e);
 		}
+		
 		return path + "\\\\" + fileName ;
 	}
 

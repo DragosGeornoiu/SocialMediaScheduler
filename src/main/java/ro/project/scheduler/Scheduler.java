@@ -40,11 +40,14 @@ public class Scheduler {
 	/** the access token of the registered appplication */
 	private static Scheduler instance = null;
 	private String accessToken;
+
 	private Scheduler() {
-		try (BufferedReader br = new BufferedReader(new FileReader("C:/Tomcat/apache-tomcat-7.0.59/webapps/accessToken.txt"))) {
+		try {
+			BufferedReader br = new BufferedReader(new FileReader(Constants.ACCESS_TOKEN_PATH));
 			accessToken = br.readLine();
 		} catch (Exception e) {
-			logger.error("The access token couldn't be retrieved from Scheduler...", e);;
+			logger.error("The access token couldn't be retrieved from Scheduler...", e);
+			;
 		}
 	}
 
@@ -308,7 +311,9 @@ public class Scheduler {
 			JSONArray updates = new JSONArray(jsonResponse);
 			for (int i = 0; i < updates.length(); i++) {
 				JSONObject update = updates.getJSONObject(i);
-				if (((String) update.get(Constants.FORMATED_SERVICE)).equalsIgnoreCase(service))
+				if (((String) update.get(Constants.FORMATED_SERVICE)).toLowerCase().replaceAll(" ", "")
+						.equalsIgnoreCase(service.toLowerCase().replaceAll(" ", "")))
+					
 					return (String) update.get("id");
 			}
 		} catch (JSONException e) {
@@ -357,7 +362,8 @@ public class Scheduler {
 			JSONArray updates = new JSONArray(jsonResponse);
 			for (int i = 0; i < updates.length(); i++) {
 				JSONObject update = updates.getJSONObject(i);
-				allProfilesList.add((String) update.get("formatted_service"));
+				//allProfilesList.add(((String) update.get("formatted_service")).toLowerCase().replace(" ", ""));
+				allProfilesList.add(((String) update.get("formatted_service")).toLowerCase().replace(" ", ""));
 			}
 		} catch (JSONException e) {
 			logger.error("Something went wrong when trying to parse the name of the user's profiles", e);
@@ -374,11 +380,17 @@ public class Scheduler {
 	 * @return the number of maximum characters allowed.
 	 */
 	public int getMaxCharacters(String service) {
+		service = service.replaceAll(" ", "");
+		System.out.println(service);
 		if (service.equalsIgnoreCase(Constants.TWITTER)) {
 			return 140;
 		}
 
 		if (service.equalsIgnoreCase(Constants.FACEBOOK)) {
+			return 500;
+		}
+
+		if (service.equalsIgnoreCase(Constants.GOOGLE)) {
 			return 500;
 		}
 
