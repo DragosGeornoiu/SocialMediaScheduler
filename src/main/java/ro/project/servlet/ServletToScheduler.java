@@ -28,26 +28,26 @@ public class ServletToScheduler {
 		this.scheduler = scheduler;
 	}
 
-	public String getAllPendingQuotes(String accessToken) {
+	public String getAllPendingQuotes() {
 		int j;
 
 		String out = "";
 		try {
-			if ((scheduler.getPendingUpdates(accessToken, 1,
-					scheduler.getProfileId(accessToken, Constants.FACEBOOK)) == null)
-					|| (scheduler.getPendingUpdates(accessToken, 1,
-							scheduler.getProfileId(accessToken, Constants.FACEBOOK)).trim()
+			if ((scheduler.getPendingUpdates(1,
+					scheduler.getProfileId(Constants.FACEBOOK)) == null)
+					|| (scheduler.getPendingUpdates(1,
+							scheduler.getProfileId(Constants.FACEBOOK)).trim()
 							.isEmpty())) {
 
 				out += "Something went wrong. The access token might be the problem... <br>";
 			} else {
-				String jString = scheduler.getPendingUpdates(accessToken, 1,
-						scheduler.getProfileId(accessToken, Constants.FACEBOOK));
+				String jString = scheduler.getPendingUpdates(1,
+						scheduler.getProfileId(Constants.FACEBOOK));
 				JSONObject jsonObject = new JSONObject(jString);
 				int totalFacebook = jsonObject.getInt(Constants.TOTAL);
 
-				jString = scheduler.getPendingUpdates(accessToken, 1,
-						scheduler.getProfileId(accessToken, Constants.TWITTER));
+				jString = scheduler.getPendingUpdates(1,
+						scheduler.getProfileId(Constants.TWITTER));
 				jsonObject = new JSONObject(jString);
 				int totalTwitter = jsonObject.getInt(Constants.TOTAL);
 				out += "<table border=\"1\" style=\"width:100%;\" cellpadding=\"5\" cellspacing=\"5\">";
@@ -63,16 +63,16 @@ public class ServletToScheduler {
 				} else {
 
 					j = 1;
-					jString = scheduler.getPendingUpdates(accessToken, j,
-							scheduler.getProfileId(accessToken, Constants.FACEBOOK));
+					jString = scheduler.getPendingUpdates(j,
+							scheduler.getProfileId(Constants.FACEBOOK));
 					jsonObject = new JSONObject(jString);
 					int total = jsonObject.getInt(Constants.TOTAL);
 					JSONArray updates = jsonObject.getJSONArray(Constants.UPDATES);
 					for (int i = 0; i < total; i++) {
 						if ((i % 20 == 0) && (i != 0)) {
 							j++;
-							jString = scheduler.getPendingUpdates(accessToken, j,
-									scheduler.getProfileId(accessToken, Constants.FACEBOOK));
+							jString = scheduler.getPendingUpdates(j,
+									scheduler.getProfileId(Constants.FACEBOOK));
 							jsonObject = new JSONObject(jString);
 							updates = jsonObject.getJSONArray(Constants.UPDATES);
 						}
@@ -81,16 +81,16 @@ public class ServletToScheduler {
 					}
 
 					j = 1;
-					jString = scheduler.getPendingUpdates(accessToken, j,
-							scheduler.getProfileId(accessToken, Constants.TWITTER));
+					jString = scheduler.getPendingUpdates(j,
+							scheduler.getProfileId(Constants.TWITTER));
 					jsonObject = new JSONObject(jString);
 					total = jsonObject.getInt(Constants.TOTAL);
 					updates = jsonObject.getJSONArray(Constants.UPDATES);
 					for (int i = 0; i < total; i++) {
 						if ((i % 20 == 0) && (i != 0)) {
 							j++;
-							jString = scheduler.getPendingUpdates(accessToken, j,
-									scheduler.getProfileId(accessToken, Constants.TWITTER));
+							jString = scheduler.getPendingUpdates(j,
+									scheduler.getProfileId(Constants.TWITTER));
 							jsonObject = new JSONObject(jString);
 							updates = jsonObject.getJSONArray(Constants.UPDATES);
 						}
@@ -131,7 +131,7 @@ public class ServletToScheduler {
 		return pendingUpdate;
 	}
 
-	public String getAllPostedQuotesByAuthor(String accessToken, String author) {
+	public String getAllPostedQuotesByAuthor(String author) {
 		String postedQuotes = "";
 		try {
 			postedQuotes += "<br> <br> Author: " + author;
@@ -141,8 +141,8 @@ public class ServletToScheduler {
 			postedQuotes += "<td>Service</td>";
 			postedQuotes += "<td>Text</td>";
 			postedQuotes += "</tr>";
-			postedQuotes += getQuotesByAuthor(accessToken, "Facebook", author);
-			postedQuotes += getQuotesByAuthor(accessToken, "Twitter", author);
+			postedQuotes += getQuotesByAuthor("Facebook", author);
+			postedQuotes += getQuotesByAuthor("Twitter", author);
 		} catch (JSONException e) {
 			logger.error("Problem retrieving all the posted updates", e);
 		}
@@ -150,20 +150,20 @@ public class ServletToScheduler {
 		return postedQuotes;
 	}
 
-	private String getQuotesByAuthor(String accessToken, String socialNetwork, String author)
+	private String getQuotesByAuthor(String socialNetwork, String author)
 			throws JSONException {
 		String quotesByAuthor = "";
 		int j = 1;
-		String jString = scheduler.getUpdatesFor(accessToken, 1,
-				scheduler.getProfileId(accessToken, socialNetwork.toLowerCase()));
+		String jString = scheduler.getUpdatesFor(1,
+				scheduler.getProfileId(socialNetwork.toLowerCase()));
 		JSONObject jsonObject = new JSONObject(jString);
 		int total = jsonObject.getInt(Constants.TOTAL);
 		JSONArray updates = jsonObject.getJSONArray(Constants.UPDATES);
 		for (int i = 0; i < total; i++) {
 			if ((i % 20 == 0) && (i != 0)) {
 				j++;
-				jString = scheduler.getUpdatesFor(accessToken, j,
-						scheduler.getProfileId(accessToken, socialNetwork));
+				jString = scheduler.getUpdatesFor(j,
+						scheduler.getProfileId(socialNetwork));
 				jsonObject = new JSONObject(jString);
 				updates = jsonObject.getJSONArray(Constants.UPDATES);
 			}
@@ -206,6 +206,12 @@ public class ServletToScheduler {
 		} else {
 			selectionCorrect = false;
 		}
+		
+		System.out.println(link.equals(Constants.BRAINIQUOTE_URL));
+		System.out.println(website.startsWith(Constants.BRAINIQUOTE_URL));
+		System.out.println("link: " + link);
+		System.out.println("website: " + website);
+		System.out.println("selectionCorrect: " + selectionCorrect);
 
 		if (selectionCorrect) {
 			if (parser.parseWebsite(website, path)) {
@@ -221,12 +227,12 @@ public class ServletToScheduler {
 
 	}
 
-	public String postToSocialMediaView(String accessToken, String path) {
+	public String postToSocialMediaView(String path) {
 		List<String> optionsList = new ArrayList<String>();
 		optionsList = getOptionsList(path);
 		String out = "";
-		System.out.println("accessToken in postToSocialMediaView(): " + accessToken);
-		List<String> allProfiles = scheduler.getAllProfiles(accessToken);
+		System.out.println("accessToken in postToSocialMediaView(): " + scheduler.getAccessToken());
+		List<String> allProfiles = scheduler.getAllProfiles();
 		if (allProfiles.size() == 0) {
 			out +="<html> \n";
 			out +="<head> \n";
@@ -235,7 +241,8 @@ public class ServletToScheduler {
 			out +="<br> <a href=\"http://localhost:8080/SocialMediaScheduler/Post\">Schedule Quote</a> \n";
 			out +="<br> <a href=\"http://localhost:8080/SocialMediaScheduler/QuoteHistory\">Quote History</a> \n";
 			out +="<br> <a href=\"http://localhost:8080/SocialMediaScheduler/PendingQuotes\">Pending Quotes</a> \n";
-			out +="<br> <a href=\"http://localhost:8080/SocialMediaScheduler/Search\">Search</a><br><br> \n";
+			out +="<br> <a href=\"http://localhost:8080/SocialMediaScheduler/Search\">Search</a> \n";
+			out +="<br> <a href=\"http://localhost:8080/SocialMediaScheduler/Edit\">Edit</a><br><br>";
 			out +="</head> \n";
 			out +="<body> \n";
 			out +="The access token is probably not correct, please insert it again... \n";
@@ -290,19 +297,18 @@ public class ServletToScheduler {
 			out +="<br> <a href=\"http://localhost:8080/SocialMediaScheduler/Post\">Schedule Quote</a> \n";
 			out +="<br> <a href=\"http://localhost:8080/SocialMediaScheduler/QuoteHistory\">Quote History</a> \n";
 			out +="<br> <a href=\"http://localhost:8080/SocialMediaScheduler/PendingQuotes\">Pending Quotes</a> \n";
-			out +="<br> <a href=\"http://localhost:8080/SocialMediaScheduler/search\">Search</a><br><br> \n";
+			out +="<br> <a href=\"http://localhost:8080/SocialMediaScheduler/Search\">Search</a>\n";
+			out +="<br> <a href=\"http://localhost:8080/SocialMediaScheduler/Edit\">Edit</a><br><br>";
 			out +="</head> \n";
 			out +="</head> \n";
 			out +="<body> \n";
 			out +="<form action=\"HelloServlet\"> \n";
 
-			// print only connected profiles
-			// scheduler.
 			out +=" \n";
 			out +="Where to post: <br> \n";
 			for (int i = 0; i < allProfiles.size(); i++) {
 				out +="<input type=\"checkbox\" name=\"where\" value=\"" + allProfiles.get(i) + "\">"
-						+ allProfiles.get(i) + "<BR> \n";
+						+ allProfiles.get(i).replaceAll(" ", "") + "<BR> \n";
 			}
 
 			out +="<br> <br> \n";
@@ -355,7 +361,7 @@ public class ServletToScheduler {
 		return optionList;
 	}
 
-	public String postToSocialMedia(String accessToken, String path, String path2, String radios,
+	public String postToSocialMedia(String path, String path2, String radios,
 			String[] where, String yearDropDown, String monthDropDown,
 			String dayDropDown, String hourDropDown, String minuteDropDown,
 			String gmtDropDown) {
@@ -387,7 +393,6 @@ public class ServletToScheduler {
 				fileName += ".ser";
 				QuoteManager quoteManager = new QuoteManager(fileName, path2);
 				// scheduler = new Scheduler(accessToken);
-				scheduler = Scheduler.getInstance();
 
 				String date = yearDropDown + "-" + monthDropDown + "-"
 						+ dayDropDown + " " + hourDropDown + ":"
@@ -396,7 +401,7 @@ public class ServletToScheduler {
 				if (where != null) {
 					for (int i = 0; i < where.length; i++) {
 						System.out.println(out);
-						scheduler.setUserId(scheduler.getProfileId(accessToken, where[i]));
+						scheduler.setUserId(scheduler.getProfileId(where[i]));
 						int max = scheduler.getMaxCharacters(where[i]);
 						Quote quote = quoteManager
 								.getRandomQuote(where[i], max);
@@ -405,7 +410,7 @@ public class ServletToScheduler {
 							out += "<br> <br> Found nothing to print on " + where[i]
 									+ " \n";
 						} else {
-							int code = scheduler.sendMessage(accessToken, quote.toString(),
+							int code = scheduler.sendMessage(quote.toString(),
 									date);
 							if (code == 200) {
 								out += " <br> <br> Quote \""

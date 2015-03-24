@@ -11,13 +11,19 @@
 		<servlet-name>parsejsp</servlet-name>
 		<url-pattern>/parse</url-pattern>
 	</servlet-mapping>
-	<welcome-file-list>
-		<welcome-file>Home.jsp</welcome-file>
-	</welcome-file-list>
+	
+	<servlet>
+		<servlet-name>edit</servlet-name>
+		<jsp-file>/Home.jsp</jsp-file>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>edit</servlet-name>
+		<url-pattern>/Edit</url-pattern>
+	</servlet-mapping>
 	
 	<servlet>
 		<servlet-name>AccessToken</servlet-name>
-		<servlet-class>ro.project.servlet.AccessToken</servlet-class>
+		<servlet-class>ro.project.servlet.SocialMediaSchedulerServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>AccessToken</servlet-name>
@@ -51,6 +57,11 @@
 		<servlet-name>AccessToken</servlet-name>
 		<url-pattern>/HelloServlet</url-pattern>
 	</servlet-mapping>
+		<servlet-mapping>
+		<servlet-name>AccessToken</servlet-name>
+		<url-pattern>/</url-pattern>
+	</servlet-mapping>
+	
 	
 	<context-param> 
 		<param-name>path2</param-name> 
@@ -60,6 +71,7 @@
 		<param-name>path</param-name> 
 		<param-value>C:\\\\Tomcat\\\\apache-tomcat-7.0.59\\\\webapps\\\\</param-value> 
 	</context-param>
+</web-app>
 	
 	<!-- <servlet>
 		<servlet-name>Pending</servlet-name>
@@ -119,4 +131,3 @@
 		<servlet-name>Hello</servlet-name>
 		<url-pattern>/HelloServlet</url-pattern>
 	</servlet-mapping>-->
-</web-app>

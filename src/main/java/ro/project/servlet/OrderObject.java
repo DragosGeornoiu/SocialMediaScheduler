@@ -61,8 +61,5 @@ public class OrderObject {
 		
 		return "<tr> <td>" + mYear + "-" + (mMonth + 1) + "-" + mDay + " " + mHour + ":" + mMinute
 				+ "</td>" + "<td>" + service + "</td><td>" + quote.toString() + "</td></tr> ";
-				
-		/*return " <BR> <BR> " + " Due at: " + mYear + "-" + (mMonth + 1) + "-" + mDay + " " + mHour + ":" + mMinute
-				+ " <BR >" + " Service: " + service + " <BR> " + " Text: " + quote.toString() + " <BR> ";<tr>*/
 	}
 }

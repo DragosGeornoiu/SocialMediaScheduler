@@ -6,7 +6,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Pending Quotes</title>
+<title>Quote History</title>
 </head>
 <body>
 <br>
@@ -30,6 +30,9 @@
 <a
 	href="http://localhost:8080/SocialMediaScheduler/Search">Search
 </a>
+<br> 
+<a href="http://localhost:8080/SocialMediaScheduler/Edit/">Edit</a><br><br>
+
 <br>
 <br>
 

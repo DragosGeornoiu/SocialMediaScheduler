@@ -27,8 +27,9 @@
 	Quotes</a>
 <br>
 <a
-	href="http://localhost:8080/SocialMediaScheduler/search">Search
+	href="http://localhost:8080/SocialMediaScheduler/Search">Search
 </a>
+<br> <a href="http://localhost:8080/SocialMediaScheduler/Edit">Edit</a><br><br>
 <br>
 <br>
 

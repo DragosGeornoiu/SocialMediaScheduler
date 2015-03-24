@@ -32,14 +32,14 @@ public class PostedQuotesRetriever {
 		this.scheduler = scheduler;
 	}
 
-	public List<String> getPostedQuotes(String accessToken, int from, int indexesPerPage, String sortedBy,
+	public List<String> getPostedQuotes(int from, int indexesPerPage, String sortedBy,
 			boolean ascending) {
 
 		List<String> quotesToBeDisplayed = new ArrayList<String>();
 		List<OrderObject> temp = null;
 
 		try {
-			temp = parse(accessToken);
+			temp = parse(scheduler.getAccessToken());
 
 			if (temp == null) {
 				return null;
@@ -67,15 +67,15 @@ public class PostedQuotesRetriever {
 	private List<OrderObject> parse(String accessToken) throws JSONException {
 		List<OrderObject> quotes = new ArrayList<OrderObject>();
 
-		String jString = scheduler.getUpdatesFor(accessToken, 1,
-				scheduler.getProfileId(accessToken, Constants.FACEBOOK));
+		String jString = scheduler.getUpdatesFor(1,
+				scheduler.getProfileId(Constants.FACEBOOK));
 		if ((jString == null) || jString.trim().isEmpty()) {
 			return null;
 		}
 		JSONObject jsonObject = new JSONObject(jString);
 		int totalFacebook = jsonObject.getInt(Constants.TOTAL);
 
-		jString = scheduler.getUpdatesFor(accessToken, 1, scheduler.getProfileId(accessToken, Constants.TWITTER));
+		jString = scheduler.getUpdatesFor(1, scheduler.getProfileId(Constants.TWITTER));
 		if ((jString == null) || jString.trim().isEmpty()) {
 			return null;
 		}
@@ -86,21 +86,21 @@ public class PostedQuotesRetriever {
 		int iFacebook;
 		iFacebook = iTwitter = 1;
 		int twitterEnd, facebookEnd;
-		while (quotes.size() < 1000 && totalFacebook > 0 && totalTwitter > 0) {
-			String twitterjString = scheduler.getUpdatesFor(accessToken, iTwitter,
-					scheduler.getProfileId(accessToken, Constants.TWITTER));
+		while (quotes.size() < Constants.QUOTE_HISTORY_LIMIT && totalFacebook > 0 && totalTwitter > 0) {
+			String twitterjString = scheduler.getUpdatesFor(iTwitter,
+					scheduler.getProfileId(Constants.TWITTER));
 			OrderObject twitterObject;
-			if (totalTwitter - (iTwitter * Constants.UPDATES_PER_PAGE) > 19) {
+			if (totalTwitter - (iTwitter * Constants.UPDATES_PER_PAGE) >= Constants.UPDATES_PER_PAGE) {
 				twitterEnd = Constants.UPDATES_PER_PAGE;
 			} else {
 				twitterEnd = totalTwitter % Constants.UPDATES_PER_PAGE;
 			}
 			twitterObject = parseJStringFromStartToEnd(twitterjString, 0, twitterEnd).get(twitterEnd-1);
 
-			String facebookjString = scheduler.getUpdatesFor(accessToken, iFacebook,
-					scheduler.getProfileId(accessToken, Constants.FACEBOOK));
+			String facebookjString = scheduler.getUpdatesFor(iFacebook,
+					scheduler.getProfileId(Constants.FACEBOOK));
 			OrderObject facebookObject;
-			if (totalFacebook - (iFacebook * Constants.UPDATES_PER_PAGE) >= 19) {
+			if (totalFacebook - (iFacebook * Constants.UPDATES_PER_PAGE) >= Constants.UPDATES_PER_PAGE) {
 				facebookEnd = Constants.UPDATES_PER_PAGE;
 			} else {
 				facebookEnd = totalFacebook % Constants.UPDATES_PER_PAGE;
@@ -120,10 +120,10 @@ public class PostedQuotesRetriever {
 
 		}
 
-		if(quotes.size() < 1000) {
+		if(quotes.size() < Constants.QUOTE_HISTORY_LIMIT) {
 			if(totalFacebook > 0) {
 				for (int i = 1; i <= (totalFacebook / Constants.UPDATES_PER_PAGE + 1); i++) {
-					jString = scheduler.getUpdatesFor(accessToken, i + iFacebook - 1, scheduler.getProfileId(accessToken, Constants.FACEBOOK));
+					jString = scheduler.getUpdatesFor(i + iFacebook - 1, scheduler.getProfileId(Constants.FACEBOOK));
 					if (totalFacebook - (i * Constants.UPDATES_PER_PAGE) > 0) {
 						quotes.addAll(parseJStringFromStartToEnd(jString, 0, Constants.UPDATES_PER_PAGE));
 					} else {
@@ -133,11 +133,11 @@ public class PostedQuotesRetriever {
 				}
 			} else if (totalTwitter > 0) {
 				for (int i = 1; i <= (totalTwitter / Constants.UPDATES_PER_PAGE + 1); i++) {
-					jString = scheduler.getUpdatesFor(accessToken, i + iTwitter - 1, scheduler.getProfileId(accessToken, Constants.TWITTER));
+					jString = scheduler.getUpdatesFor(i + iTwitter - 1, scheduler.getProfileId(Constants.TWITTER));
 					if (totalTwitter - (i * Constants.UPDATES_PER_PAGE) > 0) {
-						quotes.addAll(parseJStringFromStartToEnd(jString, 0, 20));
+						quotes.addAll(parseJStringFromStartToEnd(jString, 0, Constants.UPDATES_PER_PAGE));
 					} else {
-						quotes.addAll(parseJStringFromStartToEnd(jString, 0, (totalTwitter % 20) - 1));
+						quotes.addAll(parseJStringFromStartToEnd(jString, 0, (totalTwitter % Constants.UPDATES_PER_PAGE) - 1));
 					}
 					
 
@@ -160,8 +160,8 @@ public class PostedQuotesRetriever {
 			Calendar c = Calendar.getInstance();
 			c.setTimeInMillis(new Long(((int) update.getInt("due_at"))) * 1000);
 			try {
-				quote = ((String) update.get("text")).split(" - ")[0];
-				author = ((String) update.get("text")).split(" - ")[1];
+				quote = ((String) update.get(Constants.TEXT)).split(" - ")[0];
+				author = ((String) update.get(Constants.TEXT)).split(" - ")[1];
 			} catch (Exception e) {
 				logger.error("Problem prasing quote", e);
 			}
@@ -174,20 +174,20 @@ public class PostedQuotesRetriever {
 		return quoteList;
 	}
 
-	public int getNoOfRecords(String accessToken) {
+	public int getNoOfRecords() {
 		int total = -1;
 		try {
-			String jString = scheduler.getUpdatesFor(accessToken, 1,
-					scheduler.getProfileId(accessToken, Constants.FACEBOOK));
+			String jString = scheduler.getUpdatesFor(1,
+					scheduler.getProfileId(Constants.FACEBOOK));
 			if ((jString == null) || (jString.trim().isEmpty())) {
 
 			} else {
 				JSONObject jsonObject = new JSONObject(jString);
-				int totalFacebook = jsonObject.getInt("total");
-				jString = scheduler.getUpdatesFor(accessToken, 1,
-						scheduler.getProfileId(accessToken, Constants.TWITTER));
+				int totalFacebook = jsonObject.getInt(Constants.TOTAL);
+				jString = scheduler.getUpdatesFor(1,
+						scheduler.getProfileId(Constants.TWITTER));
 				jsonObject = new JSONObject(jString);
-				int totalTwitter = jsonObject.getInt("total");
+				int totalTwitter = jsonObject.getInt(Constants.TOTAL);
 				total = totalFacebook + totalTwitter;
 			}
 		} catch (Exception e) {

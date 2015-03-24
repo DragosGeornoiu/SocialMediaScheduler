@@ -2,7 +2,10 @@ package ro.project.scheduler;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.sql.Timestamp;
@@ -20,6 +23,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import ro.project.Constants;
+import ro.project.servlet.SocialMediaSchedulerServlet;
 
 /**
  * 
@@ -35,8 +39,13 @@ public class Scheduler {
 	private String userId;
 	/** the access token of the registered appplication */
 	private static Scheduler instance = null;
-
+	private String accessToken;
 	private Scheduler() {
+		try (BufferedReader br = new BufferedReader(new FileReader("C:/Tomcat/apache-tomcat-7.0.59/webapps/accessToken.txt"))) {
+			accessToken = br.readLine();
+		} catch (Exception e) {
+			logger.error("The access token couldn't be retrieved from Scheduler...", e);;
+		}
 	}
 
 	public static Scheduler getInstance() {
@@ -57,7 +66,7 @@ public class Scheduler {
 	 * @param responseCode
 	 *            int representing the response code of the Post request.
 	 */
-	public int sendMessage(String accessToken, String message, String timeToPost) {
+	public int sendMessage(String message, String timeToPost) {
 		logger.info("Sending \"" + message + "\" at " + timeToPost);
 		StringBuffer response = null;
 		String url = "";
@@ -112,10 +121,10 @@ public class Scheduler {
 	 * 
 	 * @return String representing the Twitter updates.
 	 */
-	public String getUpdatesFor(String accessToken, int page, String userId) {
+	public String getUpdatesFor(int page, String userId) {
 		logger.info("Retrieving updates for userId: " + userId + " at page " + page);
 		this.userId = userId;
-		return getUpdates(accessToken, page);
+		return getUpdates(page);
 	}
 
 	/**
@@ -127,7 +136,7 @@ public class Scheduler {
 	 * 
 	 * @return String representing the updates.
 	 */
-	public String getUpdates(String accessToken, int page) {
+	public String getUpdates(int page) {
 		String url = Constants.BUFFERAPP_PROFILES + userId + "/updates/sent.json?" + "page=" + page
 				+ Constants.ACCESS_TOKEN_PARAM + accessToken;
 		System.out.println(url);
@@ -169,10 +178,10 @@ public class Scheduler {
 	 * 
 	 * @return String representing the pending Twitter updates.
 	 */
-	public String getPendingUpdates(String accessToken, int page, String userId) {
+	public String getPendingUpdates(int page, String userId) {
 		logger.info("Retrieving pending updates for userId: " + userId + " at page " + page);
 		this.userId = userId;
-		return getPendingUpdatesAt(accessToken, page);
+		return getPendingUpdatesAt(page);
 	}
 
 	/**
@@ -184,7 +193,7 @@ public class Scheduler {
 	 * 
 	 * @return String representing the pending updates.
 	 */
-	public String getPendingUpdatesAt(String accessToken, int page) {
+	public String getPendingUpdatesAt(int page) {
 		String url = Constants.BUFFERAPP_PROFILES + userId + "/updates/pending.json?" + "page=" + page
 				+ "&access_token=" + accessToken;
 		StringBuffer response = null;
@@ -222,7 +231,7 @@ public class Scheduler {
 	 * 
 	 * @return int representing the response code of request.
 	 */
-	public int deleteUpdate(String accessToken, String id) {
+	public int deleteUpdate(String id) {
 		logger.info("Deleting update " + id);
 		int responseCode = 0;
 		try {
@@ -266,7 +275,7 @@ public class Scheduler {
 	 * 
 	 * @return the id of the profile.
 	 */
-	public String getProfileId(String accessToken, String service) {
+	public String getProfileId(String service) {
 		String url = Constants.BUFFERAPP_PROFILES_JSON + "?access_token=" + accessToken;
 		StringBuffer response = null;
 		try {
@@ -314,7 +323,7 @@ public class Scheduler {
 	 * 
 	 * @return a list where each member represents a profile of the user.
 	 */
-	public List<String> getAllProfiles(String accessToken) {
+	public List<String> getAllProfiles() {
 		List<String> allProfilesList = new ArrayList<String>();
 
 		String url = Constants.BUFFERAPP_PROFILES_JSON + "?access_token=" + accessToken;
@@ -383,4 +392,23 @@ public class Scheduler {
 	public void setUserId(String userId) {
 		this.userId = userId;
 	}
+
+	public String getAccessToken() {
+		return accessToken;
+	}
+
+	public void setAccessToken(String accessToken) {
+		this.accessToken = accessToken;
+		PrintWriter writer = null;
+		try {
+			System.out.println("ÄAA");
+			writer = new PrintWriter("C:/Tomcat/apache-tomcat-7.0.59/webapps/accessToken.txt");
+			writer.write(accessToken);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		writer.print("");
+		writer.close();
+	}
+
 }

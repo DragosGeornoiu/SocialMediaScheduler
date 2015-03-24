@@ -10,7 +10,7 @@ public class Constants {
 	public static final String HREF_A = "a";
 	public static final String BQ_AUT = "bq-aut";
 	public static final String NAV = "nav";
-	public static final String BRAINIQUOTE_URL = "http://www.brainyquote.com";
+	public static final String BRAINIQUOTE_URL = "http://www.brainyquote.com/";
 	public static final String PERSDEV_URL = "http://persdev-q.com/";
 	public static final String HREF = "href";
 	public static final String QUOTES_FILE = "quotes/";
@@ -55,5 +55,26 @@ public class Constants {
 	public static final String TWITTER_QUOTES_TXT = "twitterquotes.txt";
 	public static final String PARSER_TXT = "parser.txt";
 	public static final int UPDATES_PER_PAGE = 20;
+	public static final String RADIOS = "radios";
+	public static final String WEBSITE = "website";
+	public static final String PATH = "path";
+	public static final String TYPE = "type";
+	public static final String ORDER = "order";
+	public static final String ORDER_ASCENDING = "ascending";
+	public static final String PAGE = "page";
+	public static final String AUTH = "auth";
+	public static final String QUOTES_LIST = "quotesList";
+	public static final String NO_OF_PAGES = "noOfPages";
+	public static final String CURRENT_PAGE = "currentPage";
+	public static final String LAST_TYPE = "lastType";
+	public static final String PATH_2 = "path2";
+	public static final String WHERE = "where";
+	public static final String YEAR_DROP_DOWN = "yeardropdown";
+	public static final String MONTH_DROP_DOWN = "monthdropdown";
+	public static final String DAY_DROP_DOWN = "daydropdown";
+	public static final String HOUR_DROP_DOWN = "hourdropdown";
+	public static final String MINUTE_DROP_DOWN = "minutedropdown";
+	public static final String GMT_DROP_DOWN = "gmtdropdown";
+	
 	
 }
