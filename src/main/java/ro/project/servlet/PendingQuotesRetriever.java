@@ -35,18 +35,7 @@ public class PendingQuotesRetriever {
 		List<String> temp = null;
 
 		try {
-			/*out += "<table border=\"1\" style=\"width:100%;\" cellpadding=\"5\" cellspacing=\"5\">";
-			out += "<tr bgcolor=\"#d3d3d3\">";
-			out += "<td>Due at</td>";
-			out += "<td>Service</td>";
-			out += "<td>Text</td>";
-			out += "<td>Delete</td>";
-			out += "</tr>";*/
 			temp = servletToScheduler.getAllPendingQuotes();
-			
-		/*	out += "</table>";
-			out += "</html>\n</body>";*/
-			
 
 			if (temp == null) {
 				return null;

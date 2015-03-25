@@ -35,7 +35,10 @@ public class SocialMediaSchedulerServlet extends HttpServlet {
 
 		if (scheduler.getAccessToken() == null) {
 			response.sendRedirect("http://localhost:8080/SocialMediaScheduler/Edit");
+			 return;
 		}
+		
+		System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAA: " + scheduler.getAccessToken());
 
 		if (request.getRequestURI().equals("/SocialMediaScheduler/")) {
 			printMenu();
@@ -90,8 +93,7 @@ public class SocialMediaSchedulerServlet extends HttpServlet {
 			int recordsPerPage = 10;
 			if (request.getParameter(Constants.PAGE) != null)
 				page = Integer.parseInt(request.getParameter(Constants.PAGE));
-			List<String> list = dao.getPostedQuotes((page - 1) * recordsPerPage,
-					recordsPerPage, type, ascending);
+			List<String> list = dao.getPostedQuotes((page - 1) * recordsPerPage, recordsPerPage, type, ascending);
 			int noOfRecords = dao.getNoOfRecords();
 			if (noOfRecords < 0 || list == null) {
 				request.setAttribute("auth", 0);
@@ -118,10 +120,9 @@ public class SocialMediaSchedulerServlet extends HttpServlet {
 			String minuteDropDown = request.getParameter(Constants.MINUTE_DROP_DOWN);
 			String gmtDropDown = request.getParameter(Constants.GMT_DROP_DOWN);
 
-			
 			printMenu();
-			out.println(servletToScheduler.postToSocialMedia(path, path2, radios, where,
-					yearDropDown, monthDropDown, dayDropDown, hourDropDown, minuteDropDown, gmtDropDown));
+			out.println(servletToScheduler.postToSocialMedia(path, path2, radios, where, yearDropDown, monthDropDown,
+					dayDropDown, hourDropDown, minuteDropDown, gmtDropDown));
 		} else if (request.getRequestURI().equals("/SocialMediaScheduler/PendingQuotes")) {
 			PendingQuotesRetriever dao = new PendingQuotesRetriever(scheduler);
 
@@ -129,8 +130,7 @@ public class SocialMediaSchedulerServlet extends HttpServlet {
 			int recordsPerPage = 10;
 			if (request.getParameter(Constants.PAGE) != null)
 				page = Integer.parseInt(request.getParameter(Constants.PAGE));
-			List<String> list = dao.getPendingQuotes((page - 1) * recordsPerPage,
-					recordsPerPage);
+			List<String> list = dao.getPendingQuotes((page - 1) * recordsPerPage, recordsPerPage);
 			int noOfRecords = dao.getNoOfRecords();
 			if (noOfRecords < 0 || list == null) {
 				request.setAttribute("auth", 0);
@@ -149,7 +149,7 @@ public class SocialMediaSchedulerServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		out = resp.getWriter();
-		
+
 		scheduler.setAccessToken(req.getParameter(Constants.ACCESS_TOKEN));
 		resp.sendRedirect("http://localhost:8080/SocialMediaScheduler/");
 
@@ -175,6 +175,6 @@ public class SocialMediaSchedulerServlet extends HttpServlet {
 		out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/PendingQuotes\">Pending Quotes</a>");
 		out.println("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/Search\">Search</a>");
 		out.println("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/Edit\">Edit</a><br><br>");
-	
+
 	}
 }
