@@ -5,14 +5,14 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import com.sun.corba.se.impl.orbutil.closure.Constant;
 
 import ro.project.Constants;
 import ro.project.scheduler.Quote;
@@ -71,71 +71,77 @@ public class PostedQuotesRetriever {
 
 		List<String> profiles = scheduler.getAllProfiles();
 		List<Integer> total = Arrays.asList(new Integer[profiles.size()]);
+		List<OrderObject> orderObjectList = new ArrayList<OrderObject>();
+		List<Integer> iSocialNetworkList = Arrays.asList(new Integer[profiles.size()]);
 		int totalSocialNetwork = 0;
 		String jString;
 		JSONObject jsonObject;
+		Map<Integer, List<OrderObject>> map = new HashMap<Integer, List<OrderObject>>();
+		int end;
+
+		// se calculeaza nr. total de update-uri si nr. total de update-uri pt. fiecare profil.
+		// se initiaza cu 1 nr-ul paginii de json.
+		// se ia primul jstring pt. fiecare profil.
 		for (int i = 0; i < profiles.size(); i++) {
 			jString = scheduler
 					.getUpdatesFor(1, scheduler.getProfileId(profiles.get(i).toLowerCase().replace(" ", "")));
 			jsonObject = new JSONObject(jString);
 			total.set(i, new Integer(jsonObject.getInt(Constants.TOTAL)));
 			totalSocialNetwork += total.get(i);
-		}
-
-		List<Integer> iSocialNetworkList = Arrays.asList(new Integer[profiles.size()]);
-		for (int i = 0; i < iSocialNetworkList.size(); i++) {
+			
 			iSocialNetworkList.set(i, 1);
-		}
+			
+			if (total.get(i) > 0) {
+				jString = scheduler.getUpdatesFor(iSocialNetworkList.get(i), scheduler.getProfileId(profiles.get(i)));
+				if (total.get(i) >= Constants.UPDATES_PER_PAGE) {
+					end = Constants.UPDATES_PER_PAGE;
+				} else {
+					end = total.get(i) % Constants.UPDATES_PER_PAGE;
+				}
 
-		List<OrderObject> orderObjectList = Arrays.asList(new OrderObject[profiles.size()]);
+				map.put(i, parseJStringFromStartToEnd(jString, 0, end));
+				orderObjectList.add(map.get(i).get(end - 1));
+			}
+			
+		}
 
 		while (quotes.size() < Constants.QUOTE_HISTORY_LIMIT && totalSocialNetwork > 0) {
-			int end;
-			for (int i = 0; i < profiles.size(); i++) {
-
-				if (i == 0) {
-					orderObjectList = new ArrayList<OrderObject>();
-				}
-
-				if (total.get(i) > 0) {
-
-					jString = scheduler.getUpdatesFor(iSocialNetworkList.get(i),
-							scheduler.getProfileId(profiles.get(i)));
-					if (total.get(i) >= Constants.UPDATES_PER_PAGE) {
-						end = Constants.UPDATES_PER_PAGE;
-					} else {
-						end = total.get(i) % Constants.UPDATES_PER_PAGE;
-					}
-
-					orderObjectList.add(parseJStringFromStartToEnd(jString, 0, end).get(end - 1));
-				}
-			}
-
+			// verific care e cel mai recent
 			Comparator<OrderObject> comparator = new OrderObjectComparator(Constants.BY_DATE, false);
 			Collections.sort(orderObjectList, comparator);
 
+			// se gaseste index-ul din liste al profilului cu cel mai recent
+			// ultim update de pe fiecare profil
 			int index = 0;
 			String service = orderObjectList.get(0).getService();
 			for (int i = 0; i < profiles.size(); i++) {
-
 				if (profiles.get(i).equals(service) || profiles.get(i).startsWith(service)) {
 					index = i;
 					break;
 				}
 			}
 
-			jString = scheduler.getUpdatesFor(iSocialNetworkList.get(index),
-					scheduler.getProfileId(profiles.get(index)));
-
-			if (total.get(index) >= Constants.UPDATES_PER_PAGE) {
-				end = Constants.UPDATES_PER_PAGE;
-			} else {
-				end = total.get(index) % Constants.UPDATES_PER_PAGE;
-			}
-			quotes.addAll(0, parseJStringFromStartToEnd(jString, 0, end));
+			quotes.addAll(map.get(index));
 			iSocialNetworkList.set(index, iSocialNetworkList.get(index) + 1);
-			totalSocialNetwork -= (end);
-			total.set(index, total.get(index) - end);
+			totalSocialNetwork -= (map.get(index).size());
+			total.set(index, total.get(index) - map.get(index).size());
+
+			// pt. cel mai recent iau urmatorul jstring si orderedObjectul
+			if (total.get(index) > 0) {
+				jString = scheduler.getUpdatesFor(iSocialNetworkList.get(index),
+						scheduler.getProfileId(profiles.get(index)));
+				if (total.get(index) >= Constants.UPDATES_PER_PAGE) {
+					end = Constants.UPDATES_PER_PAGE;
+				} else {
+					end = total.get(index) % Constants.UPDATES_PER_PAGE;
+				}
+
+				map.put(index, parseJStringFromStartToEnd(jString, 0, end));
+				orderObjectList.remove(0);
+				orderObjectList.add((map.get(index)).get(map.get(index).size() - 1));
+			} else {
+				orderObjectList.remove(0);
+			}
 		}
 
 		return quotes;
@@ -144,14 +150,14 @@ public class PostedQuotesRetriever {
 	private List<OrderObject> parseJStringFromStartToEnd(String jString, int start, int end) throws JSONException {
 		List<OrderObject> quoteList = new ArrayList<OrderObject>();
 		jsonObject = new JSONObject(jString);
-		updates = jsonObject.getJSONArray("updates");
+		updates = jsonObject.getJSONArray(Constants.UPDATES);
 
 		for (int i = start; i < end; i++) {
 			String quote = "";
 			String author = "";
 			JSONObject update = updates.getJSONObject(i);
 			Calendar c = Calendar.getInstance();
-			c.setTimeInMillis(new Long(((int) update.getInt("due_at"))) * 1000);
+			c.setTimeInMillis(new Long(((int) update.getInt(Constants.DUE_AT))) * 1000);
 			try {
 				quote = ((String) update.get(Constants.TEXT)).split(" - ")[0];
 				author = ((String) update.get(Constants.TEXT)).split(" - ")[1];
