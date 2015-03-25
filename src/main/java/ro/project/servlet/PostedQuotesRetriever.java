@@ -118,12 +118,9 @@ public class PostedQuotesRetriever {
 			String service = orderObjectList.get(0).getService();
 			for (int i = 0; i < profiles.size(); i++) {
 
-				try {
-					if (profiles.get(i).equals(service) || profiles.get(i).startsWith(service)) {
-						index = i;
-						break;
-					}
-				} catch (Exception e) {
+				if (profiles.get(i).equals(service) || profiles.get(i).startsWith(service)) {
+					index = i;
+					break;
 				}
 			}
 
@@ -165,9 +162,7 @@ public class PostedQuotesRetriever {
 			OrderObject ord = new OrderObject(c, new Quote(quote, author),
 					(String) update.get(Constants.PROFILE_SERVICE));
 			quoteList.add(ord);
-
 		}
-
 		return quoteList;
 	}
 

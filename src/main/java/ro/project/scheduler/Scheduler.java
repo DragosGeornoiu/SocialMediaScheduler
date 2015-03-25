@@ -383,15 +383,15 @@ public class Scheduler {
 		service = service.replaceAll(" ", "");
 		System.out.println(service);
 		if (service.equalsIgnoreCase(Constants.TWITTER)) {
-			return 140;
+			return Constants.TWITTER_MAX_CHARC;
 		}
 
 		if (service.equalsIgnoreCase(Constants.FACEBOOK)) {
-			return 500;
+			return Constants.FACEBOOK_MAX_CHARC;
 		}
 
 		if (service.equalsIgnoreCase(Constants.GOOGLE)) {
-			return 500;
+			return Constants.GOOGLE_MAX_CHARC;
 		}
 
 		return 0;

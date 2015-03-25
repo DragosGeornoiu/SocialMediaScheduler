@@ -76,4 +76,7 @@ public class Constants {
 	public static final String HOUR_DROP_DOWN = "hourdropdown";
 	public static final String MINUTE_DROP_DOWN = "minutedropdown";
 	public static final String GMT_DROP_DOWN = "gmtdropdown";
+	public static final int TWITTER_MAX_CHARC = 140;
+	public static final int FACEBOOK_MAX_CHARC = 500;
+	public static final int GOOGLE_MAX_CHARC = 500;
 }

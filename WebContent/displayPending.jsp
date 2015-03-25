@@ -31,11 +31,7 @@
 	href="http://localhost:8080/SocialMediaScheduler/Search">Search
 </a>
 <br> 
-<a href="http://localhost:8080/SocialMediaScheduler/Edit/">Edit</a><br><br>
-
-<br>
-<br>
-
+<a href="http://localhost:8080/SocialMediaScheduler/Edit/">Edit</a><br>
 
 <!-- 	<table border="1" cellpadding="5" cellspacing="5"> -->
 <!-- background-color: red; width:100%;  -->
@@ -67,7 +63,7 @@
 							</c:when>
 							<c:otherwise>
 								<td><a
-									href="QuoteHistory?type=${lastType}&order=${order}&page=${i}">${i}</a></td>
+									href="PendingQuotes?type=${lastType}&order=${order}&page=${i}">${i}</a></td>
 							</c:otherwise>
 						</c:choose>
 					</c:forEach>

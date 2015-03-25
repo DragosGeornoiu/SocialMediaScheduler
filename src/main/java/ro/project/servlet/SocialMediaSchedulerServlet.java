@@ -40,9 +40,6 @@ public class SocialMediaSchedulerServlet extends HttpServlet {
 		if (request.getRequestURI().equals("/SocialMediaScheduler/")) {
 			printMenu();
 			out.println("<br> Your accessToken is: " + scheduler.getAccessToken());
-		} else if (request.getRequestURI().equals("/SocialMediaScheduler/PendingQuotes")) {
-			printMenu();
-			out.print(servletToScheduler.getAllPendingQuotes());
 		} else if (request.getRequestURI().equals("/SocialMediaScheduler/DeletePending")) {
 			printMenu();
 			scheduler.deleteUpdate(request.getParameter("url"));
@@ -125,7 +122,28 @@ public class SocialMediaSchedulerServlet extends HttpServlet {
 			printMenu();
 			out.println(servletToScheduler.postToSocialMedia(path, path2, radios, where,
 					yearDropDown, monthDropDown, dayDropDown, hourDropDown, minuteDropDown, gmtDropDown));
-		} 
+		} else if (request.getRequestURI().equals("/SocialMediaScheduler/PendingQuotes")) {
+			PendingQuotesRetriever dao = new PendingQuotesRetriever(scheduler);
+
+			int page = 1;
+			int recordsPerPage = 10;
+			if (request.getParameter(Constants.PAGE) != null)
+				page = Integer.parseInt(request.getParameter(Constants.PAGE));
+			List<String> list = dao.getPendingQuotes((page - 1) * recordsPerPage,
+					recordsPerPage);
+			int noOfRecords = dao.getNoOfRecords();
+			if (noOfRecords < 0 || list == null) {
+				request.setAttribute("auth", 0);
+			} else {
+				int noOfPages = (int) Math.ceil(noOfRecords * 1.0 / recordsPerPage);
+				request.setAttribute(Constants.AUTH, 1);
+				request.setAttribute(Constants.QUOTES_LIST, list);
+				request.setAttribute(Constants.NO_OF_PAGES, noOfPages);
+				request.setAttribute(Constants.CURRENT_PAGE, page);
+			}
+			RequestDispatcher view = request.getRequestDispatcher("displayPending.jsp");
+			view.forward(request, response);
+		}
 	}
 
 	@Override

@@ -28,10 +28,10 @@ public class ServletToScheduler {
 		this.scheduler = scheduler;
 	}
 
-	public String getAllPendingQuotes() {
+	public List<String> getAllPendingQuotes() {
 		int j;
 
-		String out = "";
+		List<String> out = new ArrayList<String>();
 		try {
 			List<String> profiles = scheduler.getAllProfiles();
 
@@ -43,16 +43,9 @@ public class ServletToScheduler {
 				jsonObject = new JSONObject(jString);
 				totalFromAllSocialNetworks += jsonObject.getInt(Constants.TOTAL);
 			}
-			out += "<table border=\"1\" style=\"width:100%;\" cellpadding=\"5\" cellspacing=\"5\">";
-			out += "<tr bgcolor=\"#d3d3d3\">";
-			out += "<td>Due at</td>";
-			out += "<td>Service</td>";
-			out += "<td>Text</td>";
-			out += "<td>Delete</td>";
-			out += "</tr>";
 
 			if (totalFromAllSocialNetworks == 0) {
-				out += "<BR> There are no pending quotes...";
+				out.add("<BR> There are no pending quotes...");
 			} else {
 				for (int k = 0; k < profiles.size(); k++) {
 					j = 1;
@@ -69,7 +62,7 @@ public class ServletToScheduler {
 							updates = jsonObject.getJSONArray(Constants.UPDATES);
 						}
 						JSONObject update = updates.getJSONObject(i % 20);
-						out += parsePendingUpdate(update);
+						out.add(parsePendingUpdate(update));
 					}
 
 					/*
@@ -90,8 +83,7 @@ public class ServletToScheduler {
 					 */
 				}
 			}
-			out += "</table>";
-			out += "</html>\n</body>";
+			
 
 		} catch (Exception e) {
 			logger.error("Problem retrieving scheduled updates", e);
@@ -101,7 +93,7 @@ public class ServletToScheduler {
 
 	private String parsePendingUpdate(JSONObject update) throws JSONException {
 		String pendingUpdate = "";
-		pendingUpdate += "<BR>";
+		/*pendingUpdate += "<BR>";*/
 		Calendar c = Calendar.getInstance();
 		c.setTimeInMillis(new Long(((int) update.getInt(Constants.DUE_AT))) * 1000);
 		int mYear = c.get(Calendar.YEAR);
