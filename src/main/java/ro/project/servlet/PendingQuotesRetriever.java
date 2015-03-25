@@ -1,19 +1,12 @@
 package ro.project.servlet;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import ro.project.Constants;
-import ro.project.scheduler.Quote;
 import ro.project.scheduler.Scheduler;
 
 public class PendingQuotesRetriever {
@@ -21,8 +14,6 @@ public class PendingQuotesRetriever {
 
 	ServletToScheduler servletToScheduler;
 	private Scheduler scheduler;
-	private JSONObject jsonObject;
-	private JSONArray updates;
 
 	PendingQuotesRetriever(Scheduler scheduler) {
 		this.scheduler = scheduler;

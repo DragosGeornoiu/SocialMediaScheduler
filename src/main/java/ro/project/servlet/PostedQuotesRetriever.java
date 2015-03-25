@@ -79,18 +79,18 @@ public class PostedQuotesRetriever {
 		Map<Integer, List<OrderObject>> map = new HashMap<Integer, List<OrderObject>>();
 		int end;
 
-		// se calculeaza nr. total de update-uri si nr. total de update-uri pt. fiecare profil.
-		// se initiaza cu 1 nr-ul paginii de json.
-		// se ia primul jstring pt. fiecare profil.
 		for (int i = 0; i < profiles.size(); i++) {
+			// se calculeaza nr. total de update-uri si nr. total de update-uri pt. fiecare profil.
 			jString = scheduler
 					.getUpdatesFor(1, scheduler.getProfileId(profiles.get(i).toLowerCase().replace(" ", "")));
 			jsonObject = new JSONObject(jString);
 			total.set(i, new Integer(jsonObject.getInt(Constants.TOTAL)));
 			totalSocialNetwork += total.get(i);
-			
+		
+			// se initiaza cu 1 nr-ul paginii de json.
 			iSocialNetworkList.set(i, 1);
 			
+			// se ia primul jstring pt. fiecare profil.
 			if (total.get(i) > 0) {
 				jString = scheduler.getUpdatesFor(iSocialNetworkList.get(i), scheduler.getProfileId(profiles.get(i)));
 				if (total.get(i) >= Constants.UPDATES_PER_PAGE) {
