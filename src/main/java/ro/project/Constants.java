@@ -3,8 +3,6 @@ package ro.project;
 public class Constants {
 
 	private Constants() {}
-	public static final String ACCESS_TOKEN_PATH  = "C:/Tomcat/apache-tomcat-7.0.59/webapps/accessToken.txt";
-	
 	public static final String MOZILLA_USER_AGENT = "Mozilla/5.0 (X11; Linux x86_64; rv:32.0) Gecko/20100101 Firefox/32.0";
 	public static final String BOXY_PADDING_BIG = "boxyPaddingBig";
 	public static final String BQ_QUOTE_LINK = "bqQuoteLink";
@@ -79,4 +77,13 @@ public class Constants {
 	public static final int TWITTER_MAX_CHARC = 140;
 	public static final int FACEBOOK_MAX_CHARC = 500;
 	public static final int GOOGLE_MAX_CHARC = 500;
+	public static final String ACCESS_TOKEN_TXT = "accessToken.txt";
+	public static final String URL = "url";
+	public static final String AUTHOR = "author";
+	public static final String AUTHOR_ENTRIES = "authorEntries";
+	public static final String RESPONSE = "responce";
+	public static final String POST_TO_SM = "postToSocialMedia";
+	public static final String OPTIONS_LIST = "optionsList";
+	public static final String ALL_PROFILES = "allProfiles";
+	public static final String SIZE = "size";
 }

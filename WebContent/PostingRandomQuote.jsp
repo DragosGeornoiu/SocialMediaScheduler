@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Home</title>
+<title>Posting random quote</title>
 </head>
 <body>
 	<a href="http://localhost:8080/SocialMediaScheduler">Home</a>
@@ -28,7 +28,8 @@
 	<br>
 	
 	<%
-		out.println("Your accessToken is:  " + request.getAttribute("accessToken"));
+		out.println("Posted the following: <br>" + request.getAttribute("postToSocialMedia"));
 	%>
+
 </body>
 </html>

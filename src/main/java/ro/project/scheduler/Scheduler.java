@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
@@ -23,7 +24,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import ro.project.Constants;
-import ro.project.servlet.SocialMediaSchedulerServlet;
 
 /**
  * 
@@ -42,13 +42,6 @@ public class Scheduler {
 	private String accessToken;
 
 	private Scheduler() {
-		try {
-			BufferedReader br = new BufferedReader(new FileReader(Constants.ACCESS_TOKEN_PATH));
-			accessToken = br.readLine();
-		} catch (Exception e) {
-			logger.error("The access token couldn't be retrieved from Scheduler...", e);
-			;
-		}
 	}
 
 	public static Scheduler getInstance() {
@@ -142,7 +135,6 @@ public class Scheduler {
 	public String getUpdates(int page) {
 		String url = Constants.BUFFERAPP_PROFILES + userId + "/updates/sent.json?" + "page=" + page
 				+ Constants.ACCESS_TOKEN_PARAM + accessToken;
-		System.out.println(url);
 
 		StringBuffer response = null;
 		try {
@@ -313,7 +305,7 @@ public class Scheduler {
 				JSONObject update = updates.getJSONObject(i);
 				if (((String) update.get(Constants.FORMATED_SERVICE)).toLowerCase().replaceAll(" ", "")
 						.equalsIgnoreCase(service.toLowerCase().replaceAll(" ", "")))
-					
+
 					return (String) update.get("id");
 			}
 		} catch (JSONException e) {
@@ -362,7 +354,6 @@ public class Scheduler {
 			JSONArray updates = new JSONArray(jsonResponse);
 			for (int i = 0; i < updates.length(); i++) {
 				JSONObject update = updates.getJSONObject(i);
-				//allProfilesList.add(((String) update.get("formatted_service")).toLowerCase().replace(" ", ""));
 				allProfilesList.add(((String) update.get("formatted_service")).toLowerCase().replace(" ", ""));
 			}
 		} catch (JSONException e) {
@@ -381,7 +372,6 @@ public class Scheduler {
 	 */
 	public int getMaxCharacters(String service) {
 		service = service.replaceAll(" ", "");
-		System.out.println(service);
 		if (service.equalsIgnoreCase(Constants.TWITTER)) {
 			return Constants.TWITTER_MAX_CHARC;
 		}
@@ -409,18 +399,35 @@ public class Scheduler {
 		return accessToken;
 	}
 
-	public void setAccessToken(String accessToken) {
+	public void setAccessTokenWithpath(String accessToken, String path) {
 		this.accessToken = accessToken;
-		PrintWriter writer = null;
-		try {
-			System.out.println("ÄAA");
-			writer = new PrintWriter("C:/Tomcat/apache-tomcat-7.0.59/webapps/accessToken.txt");
-			writer.write(accessToken);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
-		writer.print("");
-		writer.close();
-	}
 
+		if (accessToken.trim().equals("") || accessToken == null) {
+			BufferedReader br = null;
+			try {
+				br = new BufferedReader(new FileReader(path + Constants.ACCESS_TOKEN_TXT));
+				this.accessToken = br.readLine();
+				
+			} catch (Exception e) {
+				logger.error("The access token couldn't be retrieved from Scheduler...", e);
+			} finally {
+				try {
+					br.close();
+				} catch (IOException e) {
+					logger.error("The BufferedReader couldn't be closed...", e);
+				}
+			}
+		} else {
+
+			PrintWriter writer = null;
+			try {
+				writer = new PrintWriter(path + Constants.ACCESS_TOKEN_TXT);
+				writer.write(accessToken);
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
+			writer.print("");
+			writer.close();
+		}
+	}
 }

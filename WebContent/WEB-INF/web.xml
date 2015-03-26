@@ -14,7 +14,7 @@
 	
 	<servlet>
 		<servlet-name>edit</servlet-name>
-		<jsp-file>/Home.jsp</jsp-file>
+		<jsp-file>/Edit.jsp</jsp-file>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>edit</servlet-name>

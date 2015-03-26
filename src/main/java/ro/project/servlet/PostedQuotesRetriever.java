@@ -92,7 +92,6 @@ public class PostedQuotesRetriever {
 			
 			// se ia primul jstring pt. fiecare profil.
 			if (total.get(i) > 0) {
-				jString = scheduler.getUpdatesFor(iSocialNetworkList.get(i), scheduler.getProfileId(profiles.get(i)));
 				if (total.get(i) >= Constants.UPDATES_PER_PAGE) {
 					end = Constants.UPDATES_PER_PAGE;
 				} else {
@@ -102,7 +101,6 @@ public class PostedQuotesRetriever {
 				map.put(i, parseJStringFromStartToEnd(jString, 0, end));
 				orderObjectList.add(map.get(i).get(end - 1));
 			}
-			
 		}
 
 		while (quotes.size() < Constants.QUOTE_HISTORY_LIMIT && totalSocialNetwork > 0) {
@@ -126,7 +124,8 @@ public class PostedQuotesRetriever {
 			totalSocialNetwork -= (map.get(index).size());
 			total.set(index, total.get(index) - map.get(index).size());
 
-			// pt. cel mai recent iau urmatorul jstring si orderedObjectul
+			// pt. profilul  cu update-ul detyerminat cel mai recent,
+			// iau urmatorul jstring si orderedObject
 			if (total.get(index) > 0) {
 				jString = scheduler.getUpdatesFor(iSocialNetworkList.get(index),
 						scheduler.getProfileId(profiles.get(index)));

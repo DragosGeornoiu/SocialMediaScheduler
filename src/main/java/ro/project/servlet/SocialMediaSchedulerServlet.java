@@ -35,44 +35,45 @@ public class SocialMediaSchedulerServlet extends HttpServlet {
 
 		if (scheduler.getAccessToken() == null) {
 			response.sendRedirect("http://localhost:8080/SocialMediaScheduler/Edit");
-			 return;
+			return;
 		}
-		
-		System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAA: " + scheduler.getAccessToken());
 
 		if (request.getRequestURI().equals("/SocialMediaScheduler/")) {
-			printMenu();
-			out.println("<br> Your accessToken is: " + scheduler.getAccessToken());
+			request.setAttribute(Constants.ACCESS_TOKEN, scheduler.getAccessToken());
+			RequestDispatcher view = request.getRequestDispatcher("Home.jsp");
+			view.forward(request, response);
 		} else if (request.getRequestURI().equals("/SocialMediaScheduler/DeletePending")) {
-			printMenu();
-			scheduler.deleteUpdate(request.getParameter("url"));
+			scheduler.deleteUpdate(request.getParameter(Constants.URL));
 			response.sendRedirect("http://localhost:8080/SocialMediaScheduler/PendingQuotes");
 		} else if (request.getRequestURI().equals("/SocialMediaScheduler/Search")) {
-			printMenu();
-			out.println("<form ACTION=\"Search\">");
-			out.println("Insert author: <INPUT TYPE=\"text\" name=\"author\"> ");
-			out.println("<input type=\"submit\">;");
-			out.println("</form>");
-
-			if (request.getParameter("author") == null) {
-				out.println("<br> <br> Please enter an author <br> <br>");
+			if (request.getParameter(Constants.AUTHOR) == null) {
+				request.setAttribute(Constants.AUTHOR_ENTRIES, "");
 			} else {
-				String author = request.getParameter("author");
-				out.println(servletToScheduler.getAllPostedQuotesByAuthor(author));
+				String author = request.getParameter(Constants.AUTHOR);
+				request.setAttribute(Constants.AUTHOR_ENTRIES, servletToScheduler.getAllPostedQuotesByAuthor(author));
 			}
+			RequestDispatcher view = request.getRequestDispatcher("SearchByAuthor.jsp");
+			view.forward(request, response);
 		} else if (request.getRequestURI().equals("/SocialMediaScheduler/ParseWebsite")) {
-			printMenu();
 			if ((request.getParameter(Constants.RADIOS) == null) || (request.getParameter(Constants.WEBSITE) == null)) {
-				out.println("<BR> You didn't select a parser... <br> ");
+				request.setAttribute(Constants.RESPONSE, "You didn't select a parser... ");
 			} else {
 				String link = request.getParameter(Constants.RADIOS);
 				String path = getServletContext().getInitParameter(Constants.PATH);
 				String website = request.getParameter(Constants.WEBSITE);
-				out.println(servletToScheduler.parseWebsite(link, path, website));
+				request.setAttribute(Constants.RESPONSE, servletToScheduler.parseWebsite(link, path, website));
 			}
+			RequestDispatcher view = request.getRequestDispatcher("ParseWebsite.jsp");
+			view.forward(request, response);
 		} else if (request.getRequestURI().equals("/SocialMediaScheduler/Post")) {
 			String path = getServletContext().getInitParameter(Constants.PATH) + Constants.QUOTES_FILE;
-			out.print(servletToScheduler.postToSocialMediaView(path));
+			request.setAttribute(Constants.PATH, path);
+			// out.print(servletToScheduler.postToSocialMediaView(path));
+			request.setAttribute(Constants.OPTIONS_LIST, servletToScheduler.getOptionsList(path));
+			request.setAttribute(Constants.ALL_PROFILES, scheduler.getAllProfiles());
+
+			RequestDispatcher view = request.getRequestDispatcher("ScheduleQuote.jsp");
+			view.forward(request, response);
 		} else if (request.getRequestURI().equals("/SocialMediaScheduler/QuoteHistory")) {
 			boolean ascending = true;
 			String type = "";
@@ -96,15 +97,19 @@ public class SocialMediaSchedulerServlet extends HttpServlet {
 			List<String> list = dao.getPostedQuotes((page - 1) * recordsPerPage, recordsPerPage, type, ascending);
 			int noOfRecords = dao.getNoOfRecords();
 			if (noOfRecords < 0 || list == null) {
-				request.setAttribute("auth", 0);
+				request.setAttribute(Constants.AUTH, 0);
 			} else {
-				int noOfPages = (int) Math.ceil(noOfRecords * 1.0 / recordsPerPage);
-				request.setAttribute(Constants.AUTH, 1);
-				request.setAttribute(Constants.QUOTES_LIST, list);
-				request.setAttribute(Constants.NO_OF_PAGES, noOfPages);
-				request.setAttribute(Constants.CURRENT_PAGE, page);
-				request.setAttribute(Constants.LAST_TYPE, type);
-				request.setAttribute(Constants.ORDER, request.getParameter("order"));
+				if (list.size() == 0) {
+					request.setAttribute(Constants.AUTH, 0);
+				} else {
+					int noOfPages = (int) Math.ceil(noOfRecords * 1.0 / recordsPerPage);
+					request.setAttribute(Constants.AUTH, 1);
+					request.setAttribute(Constants.QUOTES_LIST, list);
+					request.setAttribute(Constants.NO_OF_PAGES, noOfPages);
+					request.setAttribute(Constants.CURRENT_PAGE, page);
+					request.setAttribute(Constants.LAST_TYPE, type);
+					request.setAttribute(Constants.ORDER, request.getParameter("order"));
+				}
 			}
 			RequestDispatcher view = request.getRequestDispatcher("displayQuotes.jsp");
 			view.forward(request, response);
@@ -120,9 +125,10 @@ public class SocialMediaSchedulerServlet extends HttpServlet {
 			String minuteDropDown = request.getParameter(Constants.MINUTE_DROP_DOWN);
 			String gmtDropDown = request.getParameter(Constants.GMT_DROP_DOWN);
 
-			printMenu();
-			out.println(servletToScheduler.postToSocialMedia(path, path2, radios, where, yearDropDown, monthDropDown,
-					dayDropDown, hourDropDown, minuteDropDown, gmtDropDown));
+			request.setAttribute(Constants.POST_TO_SM, servletToScheduler.postToSocialMedia(path, path2, radios, where,
+					yearDropDown, monthDropDown, dayDropDown, hourDropDown, minuteDropDown, gmtDropDown));
+			RequestDispatcher view = request.getRequestDispatcher("PostingRandomQuote.jsp");
+			view.forward(request, response);
 		} else if (request.getRequestURI().equals("/SocialMediaScheduler/PendingQuotes")) {
 			PendingQuotesRetriever dao = new PendingQuotesRetriever(scheduler);
 
@@ -133,7 +139,7 @@ public class SocialMediaSchedulerServlet extends HttpServlet {
 			List<String> list = dao.getPendingQuotes((page - 1) * recordsPerPage, recordsPerPage);
 			int noOfRecords = dao.getNoOfRecords();
 			if (noOfRecords < 0 || list == null) {
-				request.setAttribute("auth", 0);
+				request.setAttribute(Constants.AUTH, 0);
 			} else {
 				int noOfPages = (int) Math.ceil(noOfRecords * 1.0 / recordsPerPage);
 				request.setAttribute(Constants.AUTH, 1);
@@ -141,6 +147,7 @@ public class SocialMediaSchedulerServlet extends HttpServlet {
 				request.setAttribute(Constants.NO_OF_PAGES, noOfPages);
 				request.setAttribute(Constants.CURRENT_PAGE, page);
 			}
+
 			RequestDispatcher view = request.getRequestDispatcher("displayPending.jsp");
 			view.forward(request, response);
 		}
@@ -150,31 +157,18 @@ public class SocialMediaSchedulerServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		out = resp.getWriter();
 
-		scheduler.setAccessToken(req.getParameter(Constants.ACCESS_TOKEN));
+		scheduler.setAccessTokenWithpath(req.getParameter(Constants.ACCESS_TOKEN), getServletContext()
+				.getInitParameter(Constants.PATH));
 		resp.sendRedirect("http://localhost:8080/SocialMediaScheduler/");
-
 	}
 
 	@Override
 	public void init() throws ServletException {
 		super.init();
+		String path = getServletContext().getInitParameter(Constants.PATH);
 		scheduler = Scheduler.getInstance();
+		scheduler.setAccessTokenWithpath("", path);
 		servletToScheduler = new ServletToScheduler(scheduler);
 	}
 
-	private void printMenu() {
-		out.println("<html>");
-		out.println("<head>");
-		out.println("<title>Scheduler</title>");
-		out.println("</head>");
-		out.println("<body>");
-		out.println("<a href=\"http://localhost:8080/SocialMediaScheduler\">Home</a>");
-		out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/parse\">Parse</a>");
-		out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/Post\">Schedule Quote</a>");
-		out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/QuoteHistory\">Quote History</a>");
-		out.print("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/PendingQuotes\">Pending Quotes</a>");
-		out.println("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/Search\">Search</a>");
-		out.println("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/Edit\">Edit</a><br><br>");
-
-	}
 }

@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Home</title>
+<title>Parse Website</title>
 </head>
 <body>
 	<a href="http://localhost:8080/SocialMediaScheduler">Home</a>
@@ -24,11 +24,11 @@
 		by author</a>
 	<br>
 	<a href="http://localhost:8080/SocialMediaScheduler/Edit">Edit</a>
-	<br>
-	<br>
-	
+
+<br><br>	
 	<%
-		out.println("Your accessToken is:  " + request.getAttribute("accessToken"));
+		out.println(request.getAttribute("responce"));
 	%>
+
 </body>
 </html>
