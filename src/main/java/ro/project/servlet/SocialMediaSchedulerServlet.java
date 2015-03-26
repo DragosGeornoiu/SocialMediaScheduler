@@ -59,14 +59,14 @@ public class SocialMediaSchedulerServlet extends HttpServlet {
 				request.setAttribute(Constants.RESPONSE, "You didn't select a parser... ");
 			} else {
 				String link = request.getParameter(Constants.RADIOS);
-				String path = getServletContext().getInitParameter(Constants.PATH);
+				String path = getServletContext().getInitParameter(Constants.PATH_2).replace("/", "\\\\");;
 				String website = request.getParameter(Constants.WEBSITE);
 				request.setAttribute(Constants.RESPONSE, servletToScheduler.parseWebsite(link, path, website));
 			}
 			RequestDispatcher view = request.getRequestDispatcher("ParseWebsite.jsp");
 			view.forward(request, response);
 		} else if (request.getRequestURI().equals("/SocialMediaScheduler/Post")) {
-			String path = getServletContext().getInitParameter(Constants.PATH) + Constants.QUOTES_FILE;
+			String path = getServletContext().getInitParameter(Constants.PATH_2).replace("/", "\\\\") + Constants.QUOTES_FILE;
 			request.setAttribute(Constants.PATH, path);
 			// out.print(servletToScheduler.postToSocialMediaView(path));
 			request.setAttribute(Constants.OPTIONS_LIST, servletToScheduler.getOptionsList(path));
@@ -114,7 +114,7 @@ public class SocialMediaSchedulerServlet extends HttpServlet {
 			RequestDispatcher view = request.getRequestDispatcher("displayQuotes.jsp");
 			view.forward(request, response);
 		} else if (request.getRequestURI().equals("/SocialMediaScheduler/HelloServlet")) {
-			String path = getServletContext().getInitParameter(Constants.PATH);
+			String path = getServletContext().getInitParameter(Constants.PATH_2).replace("/", "\\\\");;
 			String path2 = getServletContext().getInitParameter(Constants.PATH_2);
 			String radios = request.getParameter(Constants.RADIOS);
 			String[] where = request.getParameterValues(Constants.WHERE);
@@ -158,14 +158,14 @@ public class SocialMediaSchedulerServlet extends HttpServlet {
 		out = resp.getWriter();
 
 		scheduler.setAccessTokenWithpath(req.getParameter(Constants.ACCESS_TOKEN), getServletContext()
-				.getInitParameter(Constants.PATH));
+				.getInitParameter(Constants.PATH_2).replace("/", "\\\\"));
 		resp.sendRedirect("http://localhost:8080/SocialMediaScheduler/");
 	}
 
 	@Override
 	public void init() throws ServletException {
 		super.init();
-		String path = getServletContext().getInitParameter(Constants.PATH);
+		String path = getServletContext().getInitParameter(Constants.PATH_2).replace("/", "\\\\");;
 		scheduler = Scheduler.getInstance();
 		scheduler.setAccessTokenWithpath("", path);
 		servletToScheduler = new ServletToScheduler(scheduler);

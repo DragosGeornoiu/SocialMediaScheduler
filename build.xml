@@ -47,7 +47,7 @@
 	  <copy todir="${deploy.path}" preservelastmodified="true">
          <fileset dir="D:\workspace\SocialMediaScheduler">
             <include name="**/*.log"/>
-			<include name="**/*.txt" />
+			<include name="**/accessToken.txt" />
          </fileset>
       </copy>
       
