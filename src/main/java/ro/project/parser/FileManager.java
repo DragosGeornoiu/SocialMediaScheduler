@@ -14,7 +14,8 @@ import ro.project.Constants;
  * 
  * @author Caphyon1
  *
- *	FileManager class is used for creating a file name from a given URl and for creating that file in path.
+ *         FileManager class is used for creating a file name from a given URl
+ *         and for creating that file in path.
  */
 public class FileManager {
 	final static Logger logger = Logger.getLogger(FileManager.class);
@@ -23,6 +24,7 @@ public class FileManager {
 	public FileManager(String path) {
 		this.path = path + Constants.QUOTES_FILE;
 	}
+
 	/**
 	 * Given an URL it creates a file name from it.
 	 * 
@@ -33,11 +35,30 @@ public class FileManager {
 	public String createFileNameFromUrl(String url) {
 		List<String> files = splitUrlToFileNames(url);
 		String dir = "";
+		int i=0;
+		if (url.contains("brainyquote")) {
+			while(!files.get(i).equals("quotes")) {
+				dir += files.get(i);
+				i++;
+			}
+			
+			i=i+1;
 
-		for (int i = 0; i < files.size(); i++) {
-			dir += files.get(i);
+			dir += " - ";
+			
+			if(files.get(i).equals("topics")) {
+
+				dir += files.get(i+1).split("_")[1];
+			} else if(files.get(i).equals("authors")) {
+				dir += files.get(i+2);
+			}
+		} else {
+			for (i = 0; i < files.size(); i++) {
+				dir += files.get(i);
+			}
+
 		}
-
+		
 		return dir;
 	}
 
@@ -102,17 +123,17 @@ public class FileManager {
 	 */
 	public String createFileInPath(String fileName) {
 		File file = new File(path + "\\\\" + fileName);
-		if(file.exists() && !file.isDirectory()) {
+		if (file.exists() && !file.isDirectory()) {
 			return "";
-		} 
+		}
 		file.getParentFile().mkdirs();
 		try {
 			file.createNewFile();
 		} catch (IOException e) {
 			logger.error("Problem creating file in path", e);
 		}
-		
-		return path + "\\\\" + fileName ;
+
+		return path + "\\\\" + fileName;
 	}
 
 }

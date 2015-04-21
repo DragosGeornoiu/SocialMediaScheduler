@@ -70,6 +70,7 @@ public class SocialMediaSchedulerServlet extends HttpServlet {
 			request.setAttribute(Constants.PATH, path);
 			// out.print(servletToScheduler.postToSocialMediaView(path));
 			request.setAttribute(Constants.OPTIONS_LIST, servletToScheduler.getOptionsList(path));
+			List<String> a = servletToScheduler.getOptionsList(path);
 			request.setAttribute(Constants.ALL_PROFILES, scheduler.getAllProfiles());
 
 			RequestDispatcher view = request.getRequestDispatcher("ScheduleQuote.jsp");

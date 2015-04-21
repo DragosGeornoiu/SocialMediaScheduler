@@ -61,7 +61,7 @@ public abstract class Parser {
 		fileManager = new FileManager(optionPath);
 		String fileName = fileManager.createFileNameFromUrl(website);
 
-		path = fileManager.createFileInPath(fileName + ".ser");
+		path = fileManager.createFileInPath(fileName + ".xml");
 		if (path.trim().isEmpty()) {
 			return false;
 		}
@@ -77,7 +77,7 @@ public abstract class Parser {
 			logger.info("Saving the quotes retrieved from " + website);
 			saveQuotesFromWebsite(website);
 			logger.info("Saving the website as parsed for future usage. " + website);
-			saveWebsiteAsOption(website);
+			saveWebsiteAsOption(fileName + ".xml");
 		} else {
 			boolean endCondition = false;
 			while (!endCondition) {
@@ -189,6 +189,8 @@ public abstract class Parser {
 	 */
 	protected void saveQuotesToFile(Hashtable<String, Quote> quotesList) {
 		try {
+			//aici ar trebui sa le salvez in xml 
+			//here
 			FileOutputStream fileOut = new FileOutputStream(path);
 			ObjectOutputStream out = new ObjectOutputStream(fileOut);
 			out.writeObject(quotesList);

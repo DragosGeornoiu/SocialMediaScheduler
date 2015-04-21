@@ -103,8 +103,9 @@
 			out.println("<br> <br> \n");
 
 			for (int i = 0; i < optionsList.size(); i++) {
-				out.println("<INPUT TYPE=\"radio\" NAME=\"radios\" VALUE=" + optionsList.get(i) + "> From "
+				out.println("<INPUT TYPE=\"radio\" NAME=\"radios\" VALUE=\"" + optionsList.get(i) + "\"> "
 						+ optionsList.get(i) + "<BR> \n");
+				
 			}
 			out.println("<input type=\"submit\" value=\"Submit\"> <br> <br> \n");
 			out.println("</form> \n");

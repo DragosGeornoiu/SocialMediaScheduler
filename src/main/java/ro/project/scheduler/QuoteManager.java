@@ -66,7 +66,6 @@ public class QuoteManager {
 	 */
 	private Quote getRandomQuoteForSocialMedia(String fileName) {
 		Quote quote = null;
-
 		Hashtable<String, Quote> quotesList = new Hashtable<String, Quote>();
 		try {
 			ObjectInputStream in = new ObjectInputStream(new FileInputStream(quotesFile));

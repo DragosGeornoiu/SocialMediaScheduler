@@ -162,7 +162,8 @@ public class ServletToScheduler {
 			if (parser.parseWebsite(website, path)) {
 				List<String> profiles = scheduler.getAllProfiles();
 				for (int i = 0; i < profiles.size(); i++) {
-					fileManager.createFileInPath(profiles.get(i).replaceAll(" ", ""));
+					// maybe add here +quotes.txt
+					fileManager.createFileInPath(profiles.get(i).replaceAll(" ", "") + "quotes.txt");
 				}
 
 				return " <br> <br> The quotes from the given website were retrieved... <br> What do you want to do next? <br>";
@@ -212,8 +213,9 @@ public class ServletToScheduler {
 				out += "<br> A problem occured. <br> This could happen if you did no pick a valid date for the quote to be scheduled <br>";
 				out += "</html>\n</body>";
 			} else {
-				String fileName = fileManager.createFileNameFromUrl(radios);
-				fileName += ".ser";
+				//String fileName = fileManager.createFileNameFromUrl(radios);
+				String fileName = radios;
+				//fileName += ".xml";
 				QuoteManager quoteManager = new QuoteManager(fileName, path2);
 
 				String date = yearDropDown + "-" + monthDropDown + "-" + dayDropDown + " " + hourDropDown + ":"
