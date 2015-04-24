@@ -85,18 +85,19 @@ public class ServletToScheduler {
 		pendingUpdate += "<td>" + update.get(Constants.DUE_TIME) + "; " + update.get("day") + "; " + mYear + "</td>";
 		pendingUpdate += "<td>" + update.get(Constants.PROFILE_SERVICE) + "</td>";
 		pendingUpdate += "<td>" + update.get("text") + "</td>";
-		//System.out.println("AAAAAAA" + update.get("text"));
-		String author = ((String)update.get("text")).split(" - ")[0];
-		String quote = ((String)update.get("text")).split(" - ")[1];
+		// System.out.println("AAAAAAA" + update.get("text"));
+		String author = ((String) update.get("text")).split(" - ")[0];
+		String quote = ((String) update.get("text")).split(" - ")[1];
 		Quote q = new Quote(quote, author);
-		//System.out.println(q.getAuthor());
-		//System.out.println(q.getQuote());
-		//System.out.println(q.getMD5());
+		// System.out.println(q.getAuthor());
+		// System.out.println(q.getQuote());
+		// System.out.println(q.getMD5());
 		pendingUpdate += "<td>" + "<form ACTION=\"DeletePending\">";
 		pendingUpdate += "<INPUT TYPE=\"hidden\" name=\"url\" value=" + update.get("_id") + ">";
 		pendingUpdate += "<INPUT TYPE=\"hidden\" name=\"quote\" value=\"" + q.getMD5() + "\">";
 		pendingUpdate += "<INPUT TYPE=\"hidden\" name=\"text\" value=\"" + update.get("text") + "\">";
-		pendingUpdate += "<INPUT TYPE=\"hidden\" name=\"service\" value=\"" + update.get(Constants.PROFILE_SERVICE) + "\">";
+		pendingUpdate += "<INPUT TYPE=\"hidden\" name=\"service\" value=\"" + update.get(Constants.PROFILE_SERVICE)
+				+ "\">";
 		pendingUpdate += "<input type=\"submit\" value=\"Delete\">";
 		pendingUpdate += "</form>" + "</td>";
 		pendingUpdate += "</tr>";
@@ -204,11 +205,14 @@ public class ServletToScheduler {
 		return optionList;
 	}
 
-	public String postToSocialMedia(String path, String path2, String radios, String where, String yearDropDown,
+	public String postToSocialMedia(String path2, String radios, String where, String yearDropDown,
 			String monthDropDown, String dayDropDown, String hourDropDown, String minuteDropDown, String gmtDropDown,
-			String dayDropDown2, String hourDropDown2, String minuteDropDown2, String numberofQuotes) {
+			String dayDropDown2, String hourDropDown2, String minuteDropDown2, String numberofQuotes, int hour,
+			int minute) {
+		
+		System.out.println("POST-TO-SOCIAL-MEDIA");
+		// use hour and minute to check for random to be above
 
-		FileManager fileManager = new FileManager(path);
 		String out = "";
 
 		try {
@@ -263,26 +267,28 @@ public class ServletToScheduler {
 
 					for (int i = 0; i < Integer.parseInt(numberofQuotes); i++) {
 						// calculate random
-						Random rand = new Random();
-						int randomNum = rand.nextInt(minutes + 1);
-						// calculate years, months, days, etc
-						// must check if the sum after integer + parseint is ok
-						// to display it. ex before minutes are 49, after they
-						// are 66
+						int hours = 0;
+						int randomNum = 0;
+						int days = 0;
+						do {
+							Random rand = new Random();
+							randomNum = rand.nextInt(minutes + 1);
+							System.out.println("----");
+							System.out.println("randomNum: " + randomNum);
+							days = randomNum / 1440 + Integer.parseInt(dayDropDown);
+							System.out.println("added days: " + randomNum / 1440);
+							System.out.println("days: " + days);
+							randomNum = randomNum % 1440;
+							hours = randomNum / 60 + +Integer.parseInt(hourDropDown);
+							System.out.println("added hours: " + randomNum / 60);
+							System.out.println("hours: " + hours);
+							randomNum = randomNum % 60 + +Integer.parseInt(minuteDropDown);
+							System.out.println("minutes: " + randomNum);
 
-						System.out.println("----");
-						System.out.println("randomNum: " + randomNum);
-						int days = randomNum / 1440 + Integer.parseInt(dayDropDown);
-						System.out.println("added days: " + randomNum / 1440);
-						System.out.println("days: " + days);
-						randomNum = randomNum % 1440;
-						int hours = randomNum / 60 + + Integer.parseInt(hourDropDown);
-						System.out.println("added hours: " + randomNum /60);
-						System.out.println("hours: " + hours);
-						randomNum = randomNum % 60 + +Integer.parseInt(minuteDropDown);
-						System.out.println("minutes: " + randomNum );
-						String date = yearDropDown + "-" + monthDropDown + "-" + days + " " + hours + ":" + randomNum + ":00" + Constants.GMT
-								+ gmtDropDown + ":00";
+						} while (!((hours > hour) || (hours == hour && randomNum > minute)));
+
+						String date = yearDropDown + "-" + monthDropDown + "-" + days + " " + hours + ":" + randomNum
+								+ ":00" + Constants.GMT + gmtDropDown + ":00";
 						System.out.println(date);
 
 						scheduler.setUserId(scheduler.getProfileId(where));

@@ -126,26 +126,25 @@
 
 			out.println("<br> <br> \n");
 
-			out.print("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
-			out.println("&nbsp;&nbsp;&nbsp;Year&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Month&nbsp; \n");
-			out.println("Day &nbsp;&nbsp;Hour&nbsp;&nbsp; Minute&nbsp;&nbsp;GMT<br>  \n");
+			out.println("&nbsp;&nbsp;&nbsp;");
+			out.println("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp&nbsp&nbsp &nbsp;&nbsp;Hour&nbsp;&nbsp; Minute&nbsp;&nbsp;GMT<br>  \n");
 			out.println("FROM :");
-			out.println("<select id=\"yeardropdown\" name=\"yeardropdown\"></select> \n");
-			out.println("<select id=\"monthdropdown\" name=\"monthdropdown\"></select> \n");
-			out.println("<select id=\"daydropdown\" name=\"daydropdown\"></select> \n");
 			out.println("<select id=\"hourdropdown\" name=\"hourdropdown\"></select> \n");
 			out.println("<select id=\"minutedropdown\" name=\"minutedropdown\"></select> \n");
 			out.println("<select id=\"gmtdropdown\" name=\"gmtdropdown\"></select> \n");
+			out.println("<select style=\"visibility:hidden;\" id=\"yeardropdown\" name=\"yeardropdown\"></select> \n");
+			out.println("<select style=\"visibility:hidden;\" id=\"monthdropdown\" name=\"monthdropdown\"></select> \n");
+			out.println("<select style=\"visibility:hidden;\" id=\"daydropdown\" name=\"daydropdown\"></select> \n");
+			
 			out.println("\n");
 			out.println("<br> <br> \n");
 
 			out.println("TO: ");
-			out.print("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
-			out.print("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 			out.print("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
-			out.println("<select id=\"daydropdown2\" name=\"daydropdown2\"></select> \n");
 			out.println("<select id=\"hourdropdown2\" name=\"hourdropdown2\"></select> \n");
 			out.println("<select id=\"minutedropdown2\" name=\"minutedropdown2\"></select> \n");
+			out.println("<select style=\"visibility:hidden;\" id=\"daydropdown2\" name=\"daydropdown2\"></select> \n");
+			
 
 			out.println("<br> <br> \n");
 			out.println("How many posts? <br>");
@@ -161,8 +160,10 @@
 					out.println("<INPUT TYPE=\"radio\" NAME=\"radios\" VALUE=\"" + optionsList.get(i) + "\"> "
 							+ optionsList.get(i) + "<BR> \n");
 				}
-
 			}
+			out.println("<INPUT TYPE=\"radio\" NAME=\"radios\" VALUE=\"\"> Select your own file <BR> \n");
+			out.println("<input type=\"file\" name=\"myfile\"> <BR><BR>");
+			
 			out.println("<input type=\"submit\" value=\"Submit\"> <br> <br> \n");
 			out.println("</form> \n");
 			out.println(" \n");
