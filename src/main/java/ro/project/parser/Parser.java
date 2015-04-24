@@ -2,17 +2,23 @@ package ro.project.parser;
 
 import java.io.BufferedWriter;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 
 import org.apache.log4j.Logger;
 import org.jsoup.select.Elements;
@@ -73,7 +79,7 @@ public abstract class Parser {
 
 		logger.info("Started the parsing proccess for " + website);
 		if (newQuotes.size() == 0) {
-			
+
 			logger.info("Saving the quotes retrieved from " + website);
 			saveQuotesFromWebsite(website);
 			logger.info("Saving the website as parsed for future usage. " + website);
@@ -134,8 +140,8 @@ public abstract class Parser {
 	}
 
 	/**
-	 * Provided by each parser extending Parser class must be the method to select all quotes from a
-	 * page.
+	 * Provided by each parser extending Parser class must be the method to
+	 * select all quotes from a page.
 	 * 
 	 * @param url
 	 *            the URL to the page where the quotes are located.
@@ -147,7 +153,8 @@ public abstract class Parser {
 	/**
 	 * The quotes are returned in a Hashtable of type <String, Quote>.
 	 * 
-	 * @param elements represent the quotes as org.jsoup.select.Elements.
+	 * @param elements
+	 *            represent the quotes as org.jsoup.select.Elements.
 	 * 
 	 * @return the quotes as a hashtable of type <String, Quote>.
 	 */
@@ -156,7 +163,8 @@ public abstract class Parser {
 	/**
 	 * Returns the URL for next/previous page.
 	 * 
-	 * @param url of current page; 
+	 * @param url
+	 *            of current page;
 	 * 
 	 * @return url of next/previous page.
 	 */
@@ -182,22 +190,42 @@ public abstract class Parser {
 	}
 
 	/**
-	 * Saves all the quotes from the Hashtable<String, Quote> to the fileOut file.
+	 * Saves all the quotes from the Hashtable<String, Quote> to the fileOut
+	 * file.
 	 * 
-	 * @param quotesList the Hashtable of type <String, Quote> representing the retrieved quotes.
+	 * @param quotesList
+	 *            the Hashtable of type <String, Quote> representing the
+	 *            retrieved quotes.
 	 * 
 	 */
 	protected void saveQuotesToFile(Hashtable<String, Quote> quotesList) {
 		try {
-			//aici ar trebui sa le salvez in xml 
-			//here
-			FileOutputStream fileOut = new FileOutputStream(path);
-			ObjectOutputStream out = new ObjectOutputStream(fileOut);
-			out.writeObject(quotesList);
+			// FileOutputStream fileOut = new FileOutputStream(path);
+			// ObjectOutputStream out = new ObjectOutputStream(fileOut);
+			// out.writeObject(quotesList);
+			// out.close();
+			// fileOut.close();
+
+			JAXBContext jc = JAXBContext.newInstance(QuoteHashWrapper.class);
+			QuoteHashWrapper wrapper = new QuoteHashWrapper();
+			wrapper.setHashtable(quotesList);
+
+			StringWriter writerTo = new StringWriter();
+			Marshaller marshaller = jc.createMarshaller();
+			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+			marshaller.marshal(wrapper, writerTo);
+			
+			
+			
+			PrintWriter out = new PrintWriter(path);
+			out.write(writerTo.toString());
 			out.close();
-			fileOut.close();
-		} catch (IOException e) {
-			logger.error("Problem in serialising the quotes hashtable", e);
+			
+
+		} catch (JAXBException e) {
+			e.printStackTrace();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
 		}
 	}
 

@@ -7,14 +7,14 @@
 <title>Schedule Quote</title>
 </head>
 <body>
-<%@ page import="java.util.List" %>
-<%@ page import="java.util.ArrayList" %>
+	<%@ page import="java.util.List"%>
+	<%@ page import="java.util.ArrayList"%>
 	<%
 		String path = (String) request.getAttribute("path");
 		List<String> optionsList = (List<String>) request.getAttribute("optionsList");
 		List<String> allProfiles = (List<String>) request.getAttribute("allProfiles");
 		String outS = "";
-		if (allProfiles.size() == 0) {
+		if (allProfiles == null || allProfiles.size() == 0) {
 			out.println("<br> <a href=\"http://localhost:8080/SocialMediaScheduler\">Home</a> \n");
 			out.println("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/parse\">Parse</a> \n");
 			out.println("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/Post\">Schedule Quote</a> \n");
@@ -29,26 +29,42 @@
 			out.println("<script type=\"text/javascript\"> \n");
 			out.println("var monthtext = [ '01', '02', '03', '04', '05', '06', '07', '08', '09','10', '11', '12' ]; \n");
 			out.println("var gmttext = [ '-12', '-11', '-10', '-09', '-08', '-07', '-06', '-05', '-04', '-03', '-02', '-01', '00', '+01', '+02', '+03', '+04', '+05', '+06', '+07', '+08', '+09', '+10', '+11', '+12', '+13', '+14' ] \n");
-			out.println("function populatedropdown(dayfield, monthfield, yearfield, hourfield, minutefield, gmtfield) { \n");
+
+			out.println("function populatedropdown(dayfield, monthfield, yearfield, hourfield, minutefield, gmtfield, dayfield2, hourfield2, numberOfPosts, minutefield2) { \n");
+
 			out.println("var today = new Date() \n");
+
 			out.println("var dayfield = document.getElementById(dayfield) \n");
 			out.println("var monthfield = document.getElementById(monthfield) \n");
 			out.println("var yearfield = document.getElementById(yearfield) \n");
 			out.println("var minutefield = document.getElementById(minutefield) \n");
+			out.println("var minutefield2 = document.getElementById(minutefield2) \n");
 			out.println("var hourfield = document.getElementById(hourfield) \n");
 			out.println("var gmtfield = document.getElementById(gmtfield) \n");
+
+			out.println("var dayfield2 = document.getElementById(dayfield2) \n");
+			out.println("var hourfield2 = document.getElementById(hourfield2) \n");
+
+			out.println("var numberOfPosts = document.getElementById(numberOfPosts) \n");
+
 			out.println(" \n");
-			out.println("for (var i = 1; i <= 31; i++) \n");
-			out.println("dayfield.options[i-1] = new Option(i, i) \n");
-			out.println("dayfield.options[today.getDate()] = new Option(today.getDate(), today.getDate(), true, true) \n");
+			out.println("for (var i =0; i <= 30; i++) \n");
+			out.println("dayfield.options[i] = new Option(i+1, i+1) \n");
+			out.println("dayfield.options[today.getDate()-1] = new Option(today.getDate(), today.getDate(), true, true) \n");
+			
+			out.println("for (i = 0; i <= 30; i++) \n");
+			out.println("dayfield2.options[i] = new Option(i+1, i+1) \n");
+			out.println("dayfield2.options[today.getDate()-1] = new Option(today.getDate(), today.getDate(), true, true) \n");
 			out.println(" \n");
+
 			out.println("for (var m = 0; m < 12; m++) \n");
 			out.println("monthfield.options[m] = new Option(monthtext[m], monthtext[m]) \n");
 			out.println("monthfield.options[today.getMonth()] = new Option(monthtext[today.getMonth()], monthtext[today.getMonth()], true, true) \n");
-			out.println(" \n");
+
 			out.println("for(var m = 0; m<27;m++) \n");
-			out.println("gmtfield.options[m] = new Option(gmttext[m], gmttext[m+2]) \n");
+			out.println("gmtfield.options[m] = new Option(gmttext[m], gmttext[m+3]) \n");
 			out.println(" \n");
+
 			out.println("var thisyear = today.getFullYear() \n");
 			out.println("for (var y = 0; y < 20; y++) { \n");
 			out.println("yearfield.options[y] = new Option(thisyear, thisyear) \n");
@@ -56,13 +72,26 @@
 			out.println("} \n");
 			out.println("yearfield.options[0] = new Option(today.getFullYear(), today.getFullYear(), true, true) \n");
 			out.println(" \n");
+
 			out.println("for (var i = 0; i <= 23; i++) \n");
 			out.println("hourfield.options[i] = new Option(i, i) \n");
 			out.println(" \n");
-			out.println("for (var i = 0; i < 60; i++) \n");
+			out.println("for (i = 0; i <= 23; i++) \n");
+			out.println("hourfield2.options[i] = new Option(i, i) \n");
+			out.println(" \n");
+
+			out.println("for (var i = 0; i < 10; i++) \n");
+			out.println("numberOfPosts.options[i] = new Option(i+1, i+1) \n");
+			out.println(" \n");
+			out.println("for (i = 0; i < 60; i++) { \n");
+			out.println("minutefield2.options[i] = new Option(i, i) \n");
 			out.println("minutefield.options[i] = new Option(i, i) \n");
+			out.println("}");
 			out.println("minutefield.options[today.getMinutes()] = new Option(minutetext[today.getMinutes()], minutetext[today.getMinutes()], true, true) \n");
+			out.println("minutefield2.options[today.getMinutes()] = new Option(minutetext[today.getMinutes()], minutetext[today.getMinutes()], true, true) \n");
+
 			out.println("} \n");
+
 			out.println("</script> \n");
 			out.println(" \n");
 			out.println(" \n");
@@ -82,17 +111,25 @@
 			out.println("</head> \n");
 			out.println("<body> \n");
 			out.println("<form action=\"HelloServlet\"> \n");
-
 			out.println(" \n");
+
 			out.println("Where to post: <br> \n");
 			for (int i = 0; i < allProfiles.size(); i++) {
-				out.println("<input type=\"checkbox\" name=\"where\" value=\"" + allProfiles.get(i) + "\">"
-						+ allProfiles.get(i).replaceAll(" ", "") + "<BR> \n");
+				if (i == 0) {
+					out.println("<input type=\"radio\" name=\"where\" value=\"" + allProfiles.get(i) + "\" checked=\"checked\">"
+							+ allProfiles.get(i).replaceAll(" ", "") + "<BR> \n");
+				} else {
+					out.println("<input type=\"radio\" name=\"where\" value=\"" + allProfiles.get(i) + "\">"
+							+ allProfiles.get(i).replaceAll(" ", "") + "<BR> \n");
+				}
 			}
 
 			out.println("<br> <br> \n");
-			out.println("&nbsp;&nbsp;&nbsp;Year&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Month&nbsp;&nbsp;&nbsp;&nbsp; \n");
+
+			out.print("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+			out.println("&nbsp;&nbsp;&nbsp;Year&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Month&nbsp; \n");
 			out.println("Day &nbsp;&nbsp;Hour&nbsp;&nbsp; Minute&nbsp;&nbsp;GMT<br>  \n");
+			out.println("FROM :");
 			out.println("<select id=\"yeardropdown\" name=\"yeardropdown\"></select> \n");
 			out.println("<select id=\"monthdropdown\" name=\"monthdropdown\"></select> \n");
 			out.println("<select id=\"daydropdown\" name=\"daydropdown\"></select> \n");
@@ -102,25 +139,49 @@
 			out.println("\n");
 			out.println("<br> <br> \n");
 
+			out.println("TO: ");
+			out.print("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+			out.print("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+			out.print("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+			out.println("<select id=\"daydropdown2\" name=\"daydropdown2\"></select> \n");
+			out.println("<select id=\"hourdropdown2\" name=\"hourdropdown2\"></select> \n");
+			out.println("<select id=\"minutedropdown2\" name=\"minutedropdown2\"></select> \n");
+
+			out.println("<br> <br> \n");
+			out.println("How many posts? <br>");
+			out.println("<select id=\"numberOfPostsDropDown\" name=\"numberOfPostsDropDown\"></select> \n");
+			out.println("\n");
+			out.println("<br> <br> \n");
+
 			for (int i = 0; i < optionsList.size(); i++) {
-				out.println("<INPUT TYPE=\"radio\" NAME=\"radios\" VALUE=\"" + optionsList.get(i) + "\"> "
-						+ optionsList.get(i) + "<BR> \n");
-				
+				if (i == 0) {
+					out.println("<INPUT TYPE=\"radio\" NAME=\"radios\" VALUE=\"" + optionsList.get(i) + "\" checked=\"checked\"> "
+							+ optionsList.get(i) + "<BR> \n");
+				} else {
+					out.println("<INPUT TYPE=\"radio\" NAME=\"radios\" VALUE=\"" + optionsList.get(i) + "\"> "
+							+ optionsList.get(i) + "<BR> \n");
+				}
+
 			}
 			out.println("<input type=\"submit\" value=\"Submit\"> <br> <br> \n");
 			out.println("</form> \n");
 			out.println(" \n");
 			out.println("<script type=\"text/javascript\"> \n");
 			out.println("window.onload = function() { \n");
-			out.println("populatedropdown(\"daydropdown\", \"monthdropdown\", \"yeardropdown\", \"hourdropdown\", \"minutedropdown\", \"gmtdropdown\") \n");
+			out.println("populatedropdown(\"daydropdown\", \"monthdropdown\", \"yeardropdown\", \"hourdropdown\", \"minutedropdown\", \"gmtdropdown\", \"daydropdown2\", \"hourdropdown2\", \"numberOfPostsDropDown\", \"minutedropdown2\") \n");
 			out.println("} \n");
 			out.println("</script> \n");
 			out.println("</body> \n");
 			out.println("</html> \n");
 			out.println(" \n");
 			out.println("\n");
+			out.println("</script>");
+			out.println("");
+			
+			
 		}
 		
+
 		out.println(outS);
 	%>
 </body>

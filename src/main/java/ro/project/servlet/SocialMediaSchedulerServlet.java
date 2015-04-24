@@ -43,7 +43,14 @@ public class SocialMediaSchedulerServlet extends HttpServlet {
 			RequestDispatcher view = request.getRequestDispatcher("Home.jsp");
 			view.forward(request, response);
 		} else if (request.getRequestURI().equals("/SocialMediaScheduler/DeletePending")) {
+			String path = getServletContext().getInitParameter(Constants.PATH_2).replace("/", "\\\\");
+			path += "\\\\quotes\\\\";
+			//System.out.println("IN SOCIALMEDIASCHEDULERSERVLET");
+			//System.out.println("retrieved parameter: " + request.getParameter(Constants.Quote));
 			scheduler.deleteUpdate(request.getParameter(Constants.URL));
+			scheduler.updateWithDeletedPendingUpdate(request.getParameter(Constants.Quote), request.getParameter("service"), request.getParameter("text"), path);
+			//System.out.println("BBBBBBBBBBBBBBB: " + request.getParameter("text"));
+			
 			response.sendRedirect("http://localhost:8080/SocialMediaScheduler/PendingQuotes");
 		} else if (request.getRequestURI().equals("/SocialMediaScheduler/Search")) {
 			if (request.getParameter(Constants.AUTHOR) == null) {
@@ -118,16 +125,22 @@ public class SocialMediaSchedulerServlet extends HttpServlet {
 			String path = getServletContext().getInitParameter(Constants.PATH_2).replace("/", "\\\\");;
 			String path2 = getServletContext().getInitParameter(Constants.PATH_2);
 			String radios = request.getParameter(Constants.RADIOS);
-			String[] where = request.getParameterValues(Constants.WHERE);
+			String where = request.getParameter(Constants.WHERE);
 			String yearDropDown = request.getParameter(Constants.YEAR_DROP_DOWN);
 			String monthDropDown = request.getParameter(Constants.MONTH_DROP_DOWN);
 			String dayDropDown = request.getParameter(Constants.DAY_DROP_DOWN);
 			String hourDropDown = request.getParameter(Constants.HOUR_DROP_DOWN);
 			String minuteDropDown = request.getParameter(Constants.MINUTE_DROP_DOWN);
 			String gmtDropDown = request.getParameter(Constants.GMT_DROP_DOWN);
-
+			
+			String dayDropDown2 = request.getParameter(Constants.DAY_DROP_DOWN_2);
+			String hourDropDown2 = request.getParameter(Constants.HOUR_DROP_DOWN_2);
+			String minuteDropDown2 = request.getParameter(Constants.MINUTE_DROP_DOWN_2);
+			
+			String numberofQuotes = request.getParameter(Constants.NUMBER_OF_POSTS);
 			request.setAttribute(Constants.POST_TO_SM, servletToScheduler.postToSocialMedia(path, path2, radios, where,
-					yearDropDown, monthDropDown, dayDropDown, hourDropDown, minuteDropDown, gmtDropDown));
+					yearDropDown, monthDropDown, dayDropDown, hourDropDown, minuteDropDown, gmtDropDown, 
+					dayDropDown2, hourDropDown2, minuteDropDown2, numberofQuotes));
 			RequestDispatcher view = request.getRequestDispatcher("PostingRandomQuote.jsp");
 			view.forward(request, response);
 		} else if (request.getRequestURI().equals("/SocialMediaScheduler/PendingQuotes")) {

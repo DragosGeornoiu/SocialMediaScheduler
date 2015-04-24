@@ -74,6 +74,13 @@ public class Constants {
 	public static final String HOUR_DROP_DOWN = "hourdropdown";
 	public static final String MINUTE_DROP_DOWN = "minutedropdown";
 	public static final String GMT_DROP_DOWN = "gmtdropdown";
+	public static final String YEAR_DROP_DOWN_2 = "yeardropdown2";
+	public static final String MONTH_DROP_DOWN_2 = "monthdropdown2";
+	public static final String DAY_DROP_DOWN_2 = "daydropdown2";
+	public static final String HOUR_DROP_DOWN_2 = "hourdropdown2";
+	public static final String MINUTE_DROP_DOWN_2 = "minutedropdown2";
+	public static final String GMT_DROP_DOWN_2 = "gmtdropdown2";
+	public static final String NUMBER_OF_POSTS = "numberOfPostsDropDown";
 	public static final int TWITTER_MAX_CHARC = 140;
 	public static final int FACEBOOK_MAX_CHARC = 500;
 	public static final int GOOGLE_MAX_CHARC = 500;
@@ -86,4 +93,7 @@ public class Constants {
 	public static final String OPTIONS_LIST = "optionsList";
 	public static final String ALL_PROFILES = "allProfiles";
 	public static final String SIZE = "size";
+	public static final String GMT = "GMT";
+	public static final String Quote = "quote";
+	
 }

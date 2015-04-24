@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Random;
 
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
@@ -38,14 +39,15 @@ public class ServletToScheduler {
 			int totalFromAllSocialNetworks = 0;
 			String jString;
 			JSONObject jsonObject;
-			for(int i =0; i<profiles.size(); i++) {
-				jString = scheduler.getPendingUpdates(1, scheduler.getProfileId(profiles.get(i).toLowerCase().replaceAll(" ", "")));
+			for (int i = 0; i < profiles.size(); i++) {
+				jString = scheduler.getPendingUpdates(1,
+						scheduler.getProfileId(profiles.get(i).toLowerCase().replaceAll(" ", "")));
 				jsonObject = new JSONObject(jString);
 				totalFromAllSocialNetworks += jsonObject.getInt(Constants.TOTAL);
 			}
 
 			if (totalFromAllSocialNetworks == 0) {
-				//out.add("<BR> There are no pending quotes...");
+				// out.add("<BR> There are no pending quotes...");
 				return null;
 			} else {
 				for (int k = 0; k < profiles.size(); k++) {
@@ -67,7 +69,6 @@ public class ServletToScheduler {
 					}
 				}
 			}
-			
 
 		} catch (Exception e) {
 			logger.error("Problem retrieving scheduled updates", e);
@@ -84,8 +85,18 @@ public class ServletToScheduler {
 		pendingUpdate += "<td>" + update.get(Constants.DUE_TIME) + "; " + update.get("day") + "; " + mYear + "</td>";
 		pendingUpdate += "<td>" + update.get(Constants.PROFILE_SERVICE) + "</td>";
 		pendingUpdate += "<td>" + update.get("text") + "</td>";
+		//System.out.println("AAAAAAA" + update.get("text"));
+		String author = ((String)update.get("text")).split(" - ")[0];
+		String quote = ((String)update.get("text")).split(" - ")[1];
+		Quote q = new Quote(quote, author);
+		//System.out.println(q.getAuthor());
+		//System.out.println(q.getQuote());
+		//System.out.println(q.getMD5());
 		pendingUpdate += "<td>" + "<form ACTION=\"DeletePending\">";
 		pendingUpdate += "<INPUT TYPE=\"hidden\" name=\"url\" value=" + update.get("_id") + ">";
+		pendingUpdate += "<INPUT TYPE=\"hidden\" name=\"quote\" value=\"" + q.getMD5() + "\">";
+		pendingUpdate += "<INPUT TYPE=\"hidden\" name=\"text\" value=\"" + update.get("text") + "\">";
+		pendingUpdate += "<INPUT TYPE=\"hidden\" name=\"service\" value=\"" + update.get(Constants.PROFILE_SERVICE) + "\">";
 		pendingUpdate += "<input type=\"submit\" value=\"Delete\">";
 		pendingUpdate += "</form>" + "</td>";
 		pendingUpdate += "</tr>";
@@ -96,9 +107,9 @@ public class ServletToScheduler {
 	public String getAllPostedQuotesByAuthor(String author) {
 		String postedQuotes = "";
 		try {
-			
+
 			List<String> profiles = scheduler.getAllProfiles();
-			for(int i=0; i<profiles.size(); i++) {
+			for (int i = 0; i < profiles.size(); i++) {
 				postedQuotes += getQuotesByAuthor(profiles.get(i).toLowerCase().replaceAll(" ", ""), author);
 			}
 		} catch (JSONException e) {
@@ -193,8 +204,10 @@ public class ServletToScheduler {
 		return optionList;
 	}
 
-	public String postToSocialMedia(String path, String path2, String radios, String[] where, String yearDropDown,
-			String monthDropDown, String dayDropDown, String hourDropDown, String minuteDropDown, String gmtDropDown) {
+	public String postToSocialMedia(String path, String path2, String radios, String where, String yearDropDown,
+			String monthDropDown, String dayDropDown, String hourDropDown, String minuteDropDown, String gmtDropDown,
+			String dayDropDown2, String hourDropDown2, String minuteDropDown2, String numberofQuotes) {
+
 		FileManager fileManager = new FileManager(path);
 		String out = "";
 
@@ -209,38 +222,86 @@ public class ServletToScheduler {
 					|| (Integer.parseInt(monthDropDown) < 1) || (Integer.parseInt(monthDropDown) > 12)
 					|| (Integer.parseInt(dayDropDown) < 1) || (Integer.parseInt(dayDropDown) > 31)
 					|| (Integer.parseInt(hourDropDown) < 0) || (Integer.parseInt(hourDropDown) > 23)
-					|| (Integer.parseInt(minuteDropDown) < 0) || (Integer.parseInt(minuteDropDown) > 59)) {
+					|| (Integer.parseInt(minuteDropDown) < 0) || (Integer.parseInt(minuteDropDown) > 59)
+					|| (Integer.parseInt(dayDropDown2) < 1) || (Integer.parseInt(dayDropDown2) > 31)
+					|| (Integer.parseInt(hourDropDown2) < 0) || (Integer.parseInt(hourDropDown2) > 23)
+					|| (Integer.parseInt(dayDropDown) > (Integer.parseInt(dayDropDown2)))) {
 				out += "<br> A problem occured. <br> This could happen if you did no pick a valid date for the quote to be scheduled <br>";
 				out += "</html>\n</body>";
 			} else {
-				//String fileName = fileManager.createFileNameFromUrl(radios);
+				// String fileName = fileManager.createFileNameFromUrl(radios);
 				String fileName = radios;
-				//fileName += ".xml";
+				// fileName += ".xml";
 				QuoteManager quoteManager = new QuoteManager(fileName, path2);
+				if (where != null && numberofQuotes != null) {
+					// calculate number of minutes to random from.
+					int minutes = 0;
+					if (Integer.parseInt(hourDropDown) > Integer.parseInt(hourDropDown2)) {
+						minutes += (Integer.parseInt(dayDropDown2) - Integer.parseInt(dayDropDown) - 1) * 1440;
+					} else {
+						minutes += (Integer.parseInt(dayDropDown2) - Integer.parseInt(dayDropDown)) * 1440;
+					}
+					if (Integer.parseInt(hourDropDown) > Integer.parseInt(hourDropDown2)) {
+						if (Integer.parseInt(minuteDropDown) > Integer.parseInt(minuteDropDown2)) {
+							minutes += (24 - Integer.parseInt(hourDropDown) + Integer.parseInt(hourDropDown2) - 1) * 60;
+						} else {
+							minutes += (24 - Integer.parseInt(hourDropDown) + Integer.parseInt(hourDropDown2)) * 60;
+						}
+					} else {
+						if (Integer.parseInt(minuteDropDown) > Integer.parseInt(minuteDropDown2)) {
+							minutes += (Integer.parseInt(hourDropDown2) - Integer.parseInt(hourDropDown) - 1) * 60;
+						} else {
+							minutes += (Integer.parseInt(hourDropDown2) - Integer.parseInt(hourDropDown)) * 60;
+						}
+					}
 
-				String date = yearDropDown + "-" + monthDropDown + "-" + dayDropDown + " " + hourDropDown + ":"
-						+ minuteDropDown + ":00" + "GMT" + gmtDropDown + ":00";
+					if (Integer.parseInt(minuteDropDown) > Integer.parseInt(minuteDropDown2)) {
+						minutes += 60 - Integer.parseInt(minuteDropDown) + Integer.parseInt(minuteDropDown2);
+					} else {
+						minutes += Integer.parseInt(minuteDropDown2) - Integer.parseInt(minuteDropDown);
+					}
 
-				if (where != null) {
-					for (int i = 0; i < where.length; i++) {
-						scheduler.setUserId(scheduler.getProfileId(where[i]));
-						int max = scheduler.getMaxCharacters(where[i]);
-						Quote quote = quoteManager.getRandomQuote(where[i], max);
+					for (int i = 0; i < Integer.parseInt(numberofQuotes); i++) {
+						// calculate random
+						Random rand = new Random();
+						int randomNum = rand.nextInt(minutes + 1);
+						// calculate years, months, days, etc
+						// must check if the sum after integer + parseint is ok
+						// to display it. ex before minutes are 49, after they
+						// are 66
+
+						System.out.println("----");
+						System.out.println("randomNum: " + randomNum);
+						int days = randomNum / 1440 + Integer.parseInt(dayDropDown);
+						System.out.println("added days: " + randomNum / 1440);
+						System.out.println("days: " + days);
+						randomNum = randomNum % 1440;
+						int hours = randomNum / 60 + + Integer.parseInt(hourDropDown);
+						System.out.println("added hours: " + randomNum /60);
+						System.out.println("hours: " + hours);
+						randomNum = randomNum % 60 + +Integer.parseInt(minuteDropDown);
+						System.out.println("minutes: " + randomNum );
+						String date = yearDropDown + "-" + monthDropDown + "-" + days + " " + hours + ":" + randomNum + ":00" + Constants.GMT
+								+ gmtDropDown + ":00";
+						System.out.println(date);
+
+						scheduler.setUserId(scheduler.getProfileId(where));
+						int max = scheduler.getMaxCharacters(where);
+						Quote quote = quoteManager.getRandomQuote(where, max);
 						if ((quote == null) || (quote.getQuote().trim().isEmpty())) {
-							out += "<br> <br> Found nothing to print on " + where[i] + " \n";
+							out += "<br> <br> Found nothing to print on " + where + " \n";
 						} else {
 							int code = scheduler.sendMessage(quote.toString(), date);
 							if (code == 200) {
 								out += " <br> <br> Quote \"" + quote.toString().replaceAll("\\+", " ")
-										+ "\" was schedulet to be posted on " + date + " on " + where[i] + " \n ";
+										+ "\" was schedulet to be posted on " + date + " on " + where + " \n ";
 							} else if (code == 0) {
 								out += "<br> <br>  Something went wrong. Probably the access token is not good..."
 										+ "\n";
 							} else {
-								out += "<br> <br>  Something went wrong when trying to post on " + where[i] + " \n ";
+								out += "<br> <br>  Something went wrong when trying to post on " + where + " \n ";
 							}
 						}
-
 					}
 				}
 			}

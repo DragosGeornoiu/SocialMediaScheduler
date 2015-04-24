@@ -2,10 +2,14 @@ package ro.project.scheduler;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -14,7 +18,11 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -407,7 +415,7 @@ public class Scheduler {
 			try {
 				br = new BufferedReader(new FileReader(path + Constants.ACCESS_TOKEN_TXT));
 				this.accessToken = br.readLine();
-				
+
 			} catch (Exception e) {
 				logger.error("The access token couldn't be retrieved from Scheduler...", e);
 			} finally {
@@ -428,6 +436,52 @@ public class Scheduler {
 			}
 			writer.print("");
 			writer.close();
+		}
+	}
+
+	public void updateWithDeletedPendingUpdate(String parameter, String service, String text, String path) {
+		try {
+			System.out.println("IN SCHEDULER - UPDATEWITHDELETEPENDINGUPDATE");
+			// opeen text file for that servicer
+			Hashtable<String, Quote> quotesList = new Hashtable<String, Quote>();
+			String servicePath = path + service.replace(" ", "") + "quotes.txt";
+			
+			ObjectInputStream in = new ObjectInputStream(new FileInputStream(servicePath));
+			quotesList.putAll((Hashtable<String, Quote>) in.readObject());
+			in.close();
+			
+			// remove the url matching the md5
+			//System.out.println("parameter: " + parameter);
+			//System.out.println("does it contain key: " + 	quotesList.containsKey(parameter));
+			
+			//System.out.println("text: " + text);
+			//System.out.println("does it contain value: " + 	quotesList.containsValue(text));
+			
+			Iterator<Entry<String, Quote>> it = quotesList.entrySet().iterator();
+			while (it.hasNext()) {
+			  Entry<String, Quote> entry = it.next();
+			  //System.out.println("KEY: " + entry.getKey());
+			  //System.out.println("VALUE: " + entry.getValue());
+			  if(entry.getValue().toString().trim().equals(text.trim())) {
+				 parameter = entry.getKey().toString();
+			  }
+			}
+			quotesList.remove(parameter);
+		
+			/*System.out.println(s.getQuote());
+			System.out.println(s.getAuthor());
+			System.out.println(s.getMD5());*/
+
+			// rewrite the hashtable.
+			FileOutputStream fileOut = new FileOutputStream(servicePath);
+			ObjectOutputStream out = new ObjectOutputStream(fileOut);
+			out.writeObject(quotesList);
+			out.close();
+			fileOut.close();
+		} catch (IOException e) {
+			logger.error("Serialisation of hashtable of quotes unsuccesfull", e);
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
 		}
 	}
 }

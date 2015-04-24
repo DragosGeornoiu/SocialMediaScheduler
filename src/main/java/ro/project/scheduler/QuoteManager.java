@@ -1,5 +1,6 @@
 package ro.project.scheduler;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -10,7 +11,16 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Random;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.apache.log4j.Logger;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 import ro.project.Constants;
 
@@ -66,15 +76,17 @@ public class QuoteManager {
 	 */
 	private Quote getRandomQuoteForSocialMedia(String fileName) {
 		Quote quote = null;
-		Hashtable<String, Quote> quotesList = new Hashtable<String, Quote>();
+		Hashtable<String, Quote> quoteHash = new Hashtable<String, Quote>();
 		try {
-			ObjectInputStream in = new ObjectInputStream(new FileInputStream(quotesFile));
-			quotesList.putAll((Hashtable<String, Quote>) in.readObject());
-			in.close();
+			quoteHash = parseXML(quotesFile);
+			
+		//	ObjectInputStream in = new ObjectInputStream(new FileInputStream(quotesFile));
+		//	quotesList.putAll((Hashtable<String, Quote>) in.readObject());
+		//	in.close();
 		} catch (Exception e) {
 			logger.error("Deserialisation of quotes hashtable unsuccesfull", e);
 		}
-		List<Quote> randomQuotesList = new ArrayList<Quote>(quotesList.values());
+		List<Quote> randomQuotesList = new ArrayList<Quote>(quoteHash.values());
 
 		boolean endCondition = false;
 		do {
@@ -96,6 +108,33 @@ public class QuoteManager {
 			quote.setQuote(quote.getQuote().replaceAll(" ", "+").replaceAll("’", "'"));
 			return quote;
 		}
+	}
+
+	private Hashtable<String, Quote> parseXML(String filePath) throws ParserConfigurationException, SAXException, IOException {
+		Hashtable<String, Quote> hash = new Hashtable<String, Quote>();
+		
+		File fXmlFile = new File(filePath);
+		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+		Document doc = dBuilder.parse(fXmlFile);
+		doc.getDocumentElement().normalize();
+		NodeList nList = doc.getElementsByTagName("entry");
+
+		
+		for (int temp = 0; temp < nList.getLength(); temp++) {
+			Node nNode = nList.item(temp);
+			if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+				Element eElement = (Element) nNode;
+				String key = eElement.getElementsByTagName("key").item(0).getTextContent();
+				
+				Element eElement2 = (Element) eElement.getElementsByTagName("value").item(0);
+				
+				Quote quote = new Quote(eElement2.getElementsByTagName("author").item(0).getTextContent(), eElement.getElementsByTagName("quote").item(0).getTextContent());
+				hash.put(key, quote);
+			}
+		}
+		
+		return hash;
 	}
 
 	/**

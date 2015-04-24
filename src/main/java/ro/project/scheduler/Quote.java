@@ -65,8 +65,8 @@ public class Quote implements Serializable {
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
 		}
-		md.update(quote.getBytes());
-
+		md.update(quote.toString().getBytes());
+		
 		byte byteData[] = md.digest();
 
 		StringBuffer sb = new StringBuffer();
