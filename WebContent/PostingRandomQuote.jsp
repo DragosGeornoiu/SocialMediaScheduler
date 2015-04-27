@@ -29,7 +29,7 @@
 	
 	<%
 		//out.println("Posted the following: <br>" + request.getAttribute("postToSocialMedia"));
-		out.println("The schedule was selected");
+		out.println(request.getAttribute("message"));
 	%>
 
 </body>

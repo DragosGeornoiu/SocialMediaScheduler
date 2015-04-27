@@ -116,10 +116,10 @@
 			out.println("Where to post: <br> \n");
 			for (int i = 0; i < allProfiles.size(); i++) {
 				if (i == 0) {
-					out.println("<input type=\"radio\" name=\"where\" value=\"" + allProfiles.get(i) + "\" checked=\"checked\">"
+					out.println("<input type=\"checkbox\" name=\"where\" value=\"" + allProfiles.get(i) + "\" checked=\"checked\">"
 							+ allProfiles.get(i).replaceAll(" ", "") + "<BR> \n");
 				} else {
-					out.println("<input type=\"radio\" name=\"where\" value=\"" + allProfiles.get(i) + "\">"
+					out.println("<input type=\"checkbox\" name=\"where\" value=\"" + allProfiles.get(i) + "\">"
 							+ allProfiles.get(i).replaceAll(" ", "") + "<BR> \n");
 				}
 			}
@@ -161,7 +161,7 @@
 							+ optionsList.get(i) + "<BR> \n");
 				}
 			}
-			out.println("<INPUT TYPE=\"radio\" NAME=\"radios\" VALUE=\"\"> Select your own file <BR> \n");
+			out.println("<INPUT TYPE=\"radio\" NAME=\"radios\" VALUE=\"select\"> Select your own file <BR> \n");
 			out.println("<input type=\"file\" name=\"myfile\"> <BR><BR>");
 			
 			out.println("<input type=\"submit\" value=\"Submit\"> <br> <br> \n");
@@ -178,11 +178,8 @@
 			out.println("\n");
 			out.println("</script>");
 			out.println("");
-			
-			
 		}
 		
-
 		out.println(outS);
 	%>
 </body>

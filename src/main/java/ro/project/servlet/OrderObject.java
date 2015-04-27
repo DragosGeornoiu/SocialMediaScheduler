@@ -5,8 +5,6 @@ import java.util.Calendar;
 import ro.project.scheduler.Quote;
 
 /**
- * @author Caphyon1
- * 
  *         Easier to sort through the posted quotes by saving the date it was
  *         posted on as a Calendar, the quote as a quote and the social network
  *         it was posted on as a String.

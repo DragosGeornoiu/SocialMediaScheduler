@@ -12,8 +12,6 @@ import ro.project.Constants;
 
 /**
  * 
- * @author Caphyon1
- *
  *         FileManager class is used for creating a file name from a given URl
  *         and for creating that file in path.
  */

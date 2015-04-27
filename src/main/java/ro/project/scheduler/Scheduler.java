@@ -35,8 +35,6 @@ import ro.project.Constants;
 
 /**
  * 
- * @author Caphyon1
- * 
  *         Used for making requests to the Buffer API.
  *
  */
@@ -432,7 +430,7 @@ public class Scheduler {
 				writer = new PrintWriter(path + Constants.ACCESS_TOKEN_TXT);
 				writer.write(accessToken);
 			} catch (FileNotFoundException e) {
-				e.printStackTrace();
+				logger.error(e.getMessage());
 			}
 			writer.print("");
 			writer.close();
@@ -441,8 +439,8 @@ public class Scheduler {
 
 	public void updateWithDeletedPendingUpdate(String parameter, String service, String text, String path) {
 		try {
-			System.out.println("IN SCHEDULER - UPDATEWITHDELETEPENDINGUPDATE");
-			// opeen text file for that servicer
+
+			// open text file for that service
 			Hashtable<String, Quote> quotesList = new Hashtable<String, Quote>();
 			String servicePath = path + service.replace(" ", "") + "quotes.txt";
 			
@@ -450,28 +448,15 @@ public class Scheduler {
 			quotesList.putAll((Hashtable<String, Quote>) in.readObject());
 			in.close();
 			
-			// remove the url matching the md5
-			//System.out.println("parameter: " + parameter);
-			//System.out.println("does it contain key: " + 	quotesList.containsKey(parameter));
-			
-			//System.out.println("text: " + text);
-			//System.out.println("does it contain value: " + 	quotesList.containsValue(text));
-			
 			Iterator<Entry<String, Quote>> it = quotesList.entrySet().iterator();
 			while (it.hasNext()) {
 			  Entry<String, Quote> entry = it.next();
-			  //System.out.println("KEY: " + entry.getKey());
-			  //System.out.println("VALUE: " + entry.getValue());
 			  if(entry.getValue().toString().trim().equals(text.trim())) {
 				 parameter = entry.getKey().toString();
 			  }
 			}
 			quotesList.remove(parameter);
 		
-			/*System.out.println(s.getQuote());
-			System.out.println(s.getAuthor());
-			System.out.println(s.getMD5());*/
-
 			// rewrite the hashtable.
 			FileOutputStream fileOut = new FileOutputStream(servicePath);
 			ObjectOutputStream out = new ObjectOutputStream(fileOut);

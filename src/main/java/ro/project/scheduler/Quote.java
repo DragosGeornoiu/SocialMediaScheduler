@@ -4,13 +4,17 @@ import java.io.Serializable;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import org.apache.log4j.Logger;
+
+import ro.project.parser.PersdevParser;
+
 /**
- * @author Caphyon1
  * 
  * A serializable object representing the quotes.
  *
  */
 public class Quote implements Serializable {
+	final static Logger logger = Logger.getLogger(Quote.class);
 	private static final long serialVersionUID = 1L;
 	/** quote is a String representing the actual quote. */
 	private String quote;
@@ -63,7 +67,7 @@ public class Quote implements Serializable {
 		try {
 			md = MessageDigest.getInstance("MD5");
 		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 		md.update(quote.toString().getBytes());
 		

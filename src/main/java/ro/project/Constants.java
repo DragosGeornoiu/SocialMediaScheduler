@@ -46,14 +46,12 @@ public class Constants {
 	public static final String BY_AUTHOR = "byAuthor";
 	public static final String BY_QUOTE = "byQuote";
 	public static final String TOTAL = "total";
-	public static final int QUOTE_HISTORY_LIMIT = 1000;
 	public static final String PROFILE_SERVICE = "profile_service";
 	public static final String UPDATES = "updates";
 	public static final String DUE_AT = "due_at";
 	public static final String DUE_TIME = "due_time";
 	public static final String TEXT = "text";
 	public static final String PARSER_TXT = "parser.txt";
-	public static final int UPDATES_PER_PAGE = 20;
 	public static final String RADIOS = "radios";
 	public static final String WEBSITE = "website";
 	public static final String PATH = "path";
@@ -81,9 +79,7 @@ public class Constants {
 	public static final String MINUTE_DROP_DOWN_2 = "minutedropdown2";
 	public static final String GMT_DROP_DOWN_2 = "gmtdropdown2";
 	public static final String NUMBER_OF_POSTS = "numberOfPostsDropDown";
-	public static final int TWITTER_MAX_CHARC = 140;
-	public static final int FACEBOOK_MAX_CHARC = 500;
-	public static final int GOOGLE_MAX_CHARC = 500;
+	public static final String BRAINIQUOTE = "brainyquotecom";
 	public static final String ACCESS_TOKEN_TXT = "accessToken.txt";
 	public static final String URL = "url";
 	public static final String AUTHOR = "author";
@@ -95,5 +91,15 @@ public class Constants {
 	public static final String SIZE = "size";
 	public static final String GMT = "GMT";
 	public static final String Quote = "quote";
+	public static final String WHERE_SIZE = "whereSize";
+	public static final String INTERVAL = "interval";
+	public static final String CONFIG_PROPERTIES = "config.properties";
+	public static final String MYFILE = "myfile";
 	
+	public static final int TWITTER_MAX_CHARC = 140;
+	public static final int FACEBOOK_MAX_CHARC = 500;
+	public static final int GOOGLE_MAX_CHARC = 500;
+	public static final int QUOTE_HISTORY_LIMIT = 1000;
+	public static final int UPDATES_PER_PAGE = 20;
+	public static final int MINUTES_IN_AN_HOUR = 60;
 }

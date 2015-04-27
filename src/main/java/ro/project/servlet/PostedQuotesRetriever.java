@@ -19,7 +19,6 @@ import ro.project.scheduler.Quote;
 import ro.project.scheduler.Scheduler;
 
 /**
- * @author Caphyon1
  * 
  *         Used for retrieving the posted updates.
  *

@@ -26,10 +26,7 @@ import ro.project.Constants;
 
 /**
  * 
- * @author Caphyon1
- *
- *         QuoteManager is used for retrieving a random quote from a specific
- *         web site.
+ * QuoteManager is used for retrieving a random quote from a specific web site.
  */
 public class QuoteManager {
 	final static Logger logger = Logger.getLogger(QuoteManager.class);
@@ -38,6 +35,20 @@ public class QuoteManager {
 	private String file;
 	/** the file where the quotes from a specific web site are stored. */
 	private String quotesFile;
+
+	public QuoteManager(String quotesFile) {
+		this.quotesFile = quotesFile;
+		//this.file = quotesFile.split(Constants.BRAINIQUOTE)[0];
+
+		this.file = "";
+		String[] splitStrings = quotesFile.replace("\\", "/").split("/");
+		for (int i = 0; i < splitStrings.length; i++) {
+			if (!splitStrings[i].contains(".xml")) {
+				this.file += splitStrings[i] + "\\";
+			}
+		}
+
+	}
 
 	public QuoteManager(String quotesFile, String file) {
 		this.file = file + Constants.QUOTES_FILE + "\\\\";
@@ -71,7 +82,9 @@ public class QuoteManager {
 
 	/**
 	 * Returns a random quote from the given fileName.
-	 * @param fileName the name of the file from which the quote is retrieved.
+	 * 
+	 * @param fileName
+	 *            the name of the file from which the quote is retrieved.
 	 * @return the Quote to be posted on the social network.
 	 */
 	private Quote getRandomQuoteForSocialMedia(String fileName) {
@@ -79,10 +92,11 @@ public class QuoteManager {
 		Hashtable<String, Quote> quoteHash = new Hashtable<String, Quote>();
 		try {
 			quoteHash = parseXML(quotesFile);
-			
-		//	ObjectInputStream in = new ObjectInputStream(new FileInputStream(quotesFile));
-		//	quotesList.putAll((Hashtable<String, Quote>) in.readObject());
-		//	in.close();
+
+			// ObjectInputStream in = new ObjectInputStream(new
+			// FileInputStream(quotesFile));
+			// quotesList.putAll((Hashtable<String, Quote>) in.readObject());
+			// in.close();
 		} catch (Exception e) {
 			logger.error("Deserialisation of quotes hashtable unsuccesfull", e);
 		}
@@ -110,9 +124,10 @@ public class QuoteManager {
 		}
 	}
 
-	private Hashtable<String, Quote> parseXML(String filePath) throws ParserConfigurationException, SAXException, IOException {
+	private Hashtable<String, Quote> parseXML(String filePath) throws ParserConfigurationException, SAXException,
+			IOException {
 		Hashtable<String, Quote> hash = new Hashtable<String, Quote>();
-		
+
 		File fXmlFile = new File(filePath);
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -120,20 +135,20 @@ public class QuoteManager {
 		doc.getDocumentElement().normalize();
 		NodeList nList = doc.getElementsByTagName("entry");
 
-		
 		for (int temp = 0; temp < nList.getLength(); temp++) {
 			Node nNode = nList.item(temp);
 			if (nNode.getNodeType() == Node.ELEMENT_NODE) {
 				Element eElement = (Element) nNode;
 				String key = eElement.getElementsByTagName("key").item(0).getTextContent();
-				
+
 				Element eElement2 = (Element) eElement.getElementsByTagName("value").item(0);
-				
-				Quote quote = new Quote(eElement2.getElementsByTagName("author").item(0).getTextContent(), eElement.getElementsByTagName("quote").item(0).getTextContent());
+
+				Quote quote = new Quote(eElement2.getElementsByTagName("author").item(0).getTextContent(), eElement
+						.getElementsByTagName("quote").item(0).getTextContent());
 				hash.put(key, quote);
 			}
 		}
-		
+
 		return hash;
 	}
 
@@ -141,9 +156,11 @@ public class QuoteManager {
 	 * Saves the quote so that in the future the same quote won't be posted on
 	 * the same social network where it was previously posted.
 	 * 
-	 * @param quotesList is all the quotes posted before on a specific social network.
+	 * @param quotesList
+	 *            is all the quotes posted before on a specific social network.
 	 * 
-	 * @param fileName  String representing the location where previously posted
+	 * @param fileName
+	 *            String representing the location where previously posted
 	 *            quotes on a specific social network were posted.
 	 */
 	private void saveQuote(Hashtable<String, Quote> quotesList, String fileName) {

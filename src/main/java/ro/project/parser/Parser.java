@@ -28,8 +28,6 @@ import ro.project.scheduler.Quote;
 
 /**
  * 
- * @author Caphyon1
- *
  *         Abstract class Parser defines the parsing logic for the application
  *         and forces the subclasses to retrieve the quotes from the web site
  *         and the URL for next/previous page.
@@ -223,9 +221,9 @@ public abstract class Parser {
 			
 
 		} catch (JAXBException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 	}
 
