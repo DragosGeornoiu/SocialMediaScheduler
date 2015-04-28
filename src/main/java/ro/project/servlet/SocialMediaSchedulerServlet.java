@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.Calendar;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
 
@@ -27,8 +28,7 @@ import ro.project.thread.ThreadScheduler;
 
 /**
  * 
- *         Used for retrieving the access token and passing it to the other
- *         servlets.
+ * Used for retrieving the access token and passing it to the other servlets.
  */
 public class SocialMediaSchedulerServlet extends HttpServlet {
 	final static Logger logger = Logger.getLogger(SocialMediaSchedulerServlet.class);
@@ -146,6 +146,7 @@ public class SocialMediaSchedulerServlet extends HttpServlet {
 				prop.setProperty(Constants.WHERE_SIZE, Integer.toString(where.length));
 				for (int i = 0; i < where.length; i++) {
 					prop.setProperty(Constants.WHERE + i, where[i]);
+					prop.setProperty(where[i], request.getParameter(where[i]));
 				}
 				prop.setProperty(Constants.YEAR_DROP_DOWN, request.getParameter(Constants.YEAR_DROP_DOWN));
 				prop.setProperty(Constants.MONTH_DROP_DOWN, request.getParameter(Constants.MONTH_DROP_DOWN));
@@ -195,12 +196,10 @@ public class SocialMediaSchedulerServlet extends HttpServlet {
 
 			request.setAttribute(
 					"message",
-					"Daily posts were set between "
-							+ request.getParameter(Constants.HOUR_DROP_DOWN)
-							+ ":"
+					"Daily posts were set between " + request.getParameter(Constants.HOUR_DROP_DOWN) + ":"
 							+ request.getParameter(Constants.MINUTE_DROP_DOWN) + " - "
-									+ request.getParameter(Constants.HOUR_DROP_DOWN_2) + ":"
-									+ request.getParameter(Constants.MINUTE_DROP_DOWN_2) + ".");
+							+ request.getParameter(Constants.HOUR_DROP_DOWN_2) + ":"
+							+ request.getParameter(Constants.MINUTE_DROP_DOWN_2) + ".");
 			RequestDispatcher view = request.getRequestDispatcher("PostingRandomQuote.jsp");
 			view.forward(request, response);
 		} else if (request.getRequestURI().equals("/SocialMediaScheduler/PendingQuotes")) {

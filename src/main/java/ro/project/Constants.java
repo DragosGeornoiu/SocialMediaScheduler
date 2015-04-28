@@ -95,6 +95,7 @@ public class Constants {
 	public static final String INTERVAL = "interval";
 	public static final String CONFIG_PROPERTIES = "config.properties";
 	public static final String MYFILE = "myfile";
+	public static final String NUMBER = "number";
 	
 	public static final int TWITTER_MAX_CHARC = 140;
 	public static final int FACEBOOK_MAX_CHARC = 500;
@@ -102,4 +103,5 @@ public class Constants {
 	public static final int QUOTE_HISTORY_LIMIT = 1000;
 	public static final int UPDATES_PER_PAGE = 20;
 	public static final int MINUTES_IN_AN_HOUR = 60;
+	
 }

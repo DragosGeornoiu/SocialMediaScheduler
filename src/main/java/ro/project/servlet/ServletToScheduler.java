@@ -205,7 +205,7 @@ public class ServletToScheduler {
 	public String postToSocialMedia(String path2, String radios, String[] where, String yearDropDown,
 			String monthDropDown, String dayDropDown, String hourDropDown, String minuteDropDown, String gmtDropDown,
 			String dayDropDown2, String hourDropDown2, String minuteDropDown2, String numberofQuotes, int hour,
-			int minute, String myFile) {
+			int minute, String myFile, Integer[] numbers) {
 
 		String out = "";
 
@@ -264,7 +264,8 @@ public class ServletToScheduler {
 							minutes += Integer.parseInt(minuteDropDown2) - Integer.parseInt(minuteDropDown);
 						}
 
-						for (int i = 0; i < Integer.parseInt(numberofQuotes); i++) {
+						//for (int i = 0; i < Integer.parseInt(numberofQuotes); i++) {
+						for (int i = 0; i < numbers[j]; i++) {
 							// calculate random
 							int hours = 0;
 							int randomNum = 0;

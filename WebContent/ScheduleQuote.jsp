@@ -117,10 +117,38 @@
 			for (int i = 0; i < allProfiles.size(); i++) {
 				if (i == 0) {
 					out.println("<input type=\"checkbox\" name=\"where\" value=\"" + allProfiles.get(i) + "\" checked=\"checked\">"
-							+ allProfiles.get(i).replaceAll(" ", "") + "<BR> \n");
+							+ allProfiles.get(i).replaceAll(" ", "") + "\n");
+					//out.println("<select name=\"select\">");
+					out.println("<select name=\"" + allProfiles.get(i) + "\">");
+					out.println("<option name =\"one\" value=\"1\">1</option>"); 
+					out.println("<option name =\"two\" value=\"2\">2</option>");
+					out.println("<option name =\"three\" value=\"3\">3</option>");
+					out.println("<option name =\"four\" value=\"4\">4</option>");
+					out.println("<option name =\"five\"value=\"5\">5</option>");
+					out.println("<option name =\"six\"value=\"6\">6</option>");
+					out.println("<option name =\"seven\"value=\"7\">7</option>");
+					out.println("<option name =\"eight\"value=\"8\">8</option>");
+					out.println("<option name =\"nine\"value=\"9\">9</option>");
+					out.println("<option name =\"ten\"value=\"10\">10</option>");
+					out.println("</select>");
+					out.println("<BR> ");
+					
 				} else {
 					out.println("<input type=\"checkbox\" name=\"where\" value=\"" + allProfiles.get(i) + "\">"
-							+ allProfiles.get(i).replaceAll(" ", "") + "<BR> \n");
+							+ allProfiles.get(i).replaceAll(" ", "") + "\n");
+					out.println("<select name=\"" + allProfiles.get(i) + "\">");
+					out.println("<option name =\"one\" value=\"1\">1</option>"); 
+					out.println("<option name =\"two\" value=\"2\">2</option>");
+					out.println("<option name =\"three\" value=\"3\">3</option>");
+					out.println("<option name =\"four\" value=\"4\">4</option>");
+					out.println("<option name =\"five\"value=\"5\">5</option>");
+					out.println("<option name =\"six\"value=\"6\">6</option>");
+					out.println("<option name =\"seven\"value=\"7\">7</option>");
+					out.println("<option name =\"eight\"value=\"8\">8</option>");
+					out.println("<option name =\"nine\"value=\"9\">9</option>");
+					out.println("<option name =\"ten\"value=\"10\">10</option>");
+					out.println("</select>");
+					out.println("<BR> ");
 				}
 			}
 
@@ -146,9 +174,9 @@
 			out.println("<select style=\"visibility:hidden;\" id=\"daydropdown2\" name=\"daydropdown2\"></select> \n");
 			
 
-			out.println("<br> <br> \n");
-			out.println("How many posts? <br>");
-			out.println("<select id=\"numberOfPostsDropDown\" name=\"numberOfPostsDropDown\"></select> \n");
+			//out.println("<br> <br> \n");
+			//out.println("How many posts? <br>");
+			out.println("<select style=\"visibility:hidden;\" id=\"numberOfPostsDropDown\" name=\"numberOfPostsDropDown\"></select> \n");
 			out.println("\n");
 			out.println("<br> <br> \n");
 

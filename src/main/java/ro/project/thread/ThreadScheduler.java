@@ -26,6 +26,7 @@ public class ThreadScheduler implements Runnable{
 	private String path2;
 	private String radios;
 	private String[] where;
+	private Integer[] numbers;
 	private String yearDropDown;
 	private String monthDropDown;
 	private String dayDropDown;
@@ -51,15 +52,6 @@ public class ThreadScheduler implements Runnable{
 		return instance;
 	}
 
-	// public ThreadScheduler() {
-	// }
-
-	// public ThreadScheduler(String pathToFile, Scheduler scheduler) {
-	// this.pathToFile = pathToFile;
-	// servletToScheduler = new ServletToScheduler(scheduler);
-	// }
-
-
 	private void readFromFile() {
 		Properties prop = new Properties();
 		InputStream input = null;
@@ -74,9 +66,14 @@ public class ThreadScheduler implements Runnable{
 			radios = prop.getProperty(Constants.RADIOS);
 			int whereSize = Integer.parseInt(prop.getProperty(Constants.WHERE_SIZE));
 			where = new String[whereSize];
+			numbers = new Integer[whereSize];
+			
 			for (int i = 0; i < whereSize; i++) {
 				where[i] = prop.getProperty(Constants.WHERE + i);
+				System.out.println(where[i]);
+				numbers[i] = Integer.parseInt(prop.getProperty(where[i]));
 			}
+			
 			yearDropDown = prop.getProperty(Constants.YEAR_DROP_DOWN);
 			monthDropDown = prop.getProperty(Constants.MONTH_DROP_DOWN);
 			dayDropDown = prop.getProperty(Constants.DAY_DROP_DOWN);
@@ -110,7 +107,7 @@ public class ThreadScheduler implements Runnable{
 	private void schedulePosts(int hour, int minute) {
 		servletToScheduler.postToSocialMedia(path2, radios, where, yearDropDown, monthDropDown, dayDropDown,
 				hourDropDown, minuteDropDown, gmtDropDown, dayDropDown2, hourDropDown2, minuteDropDown2,
-				numberofQuotes, hour, minute, myFile);
+				numberofQuotes, hour, minute, myFile, numbers);
 	}
 
 	public synchronized void doStop() {
@@ -193,7 +190,6 @@ public class ThreadScheduler implements Runnable{
 					}
 				}
 			} else {
-				// try to make it wait
 				synchronized (this) {
 					try {
 						this.wait();
