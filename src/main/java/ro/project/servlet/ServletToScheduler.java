@@ -212,8 +212,8 @@ public class ServletToScheduler {
 		try {
 			if ((radios == null) || (where == null)) {
 				out += "<br> A problem occured. <br> This could happen if: <br>"
-						+ "- you did not parse a website before trying to schedule a quote to be poste <br>"
-						+ "- you did notselect a website to get the quotes from <br>"
+						+ "- you did not parse a website before trying to schedule a quote to be post <br>"
+						+ "- you did not select a website to get the quotes from <br>"
 						+ "- you did not select a social network to post to <br>" + "";
 				out += "</html>\n</body>";
 			} else if ((Integer.parseInt(yearDropDown) < 2015) || (Integer.parseInt(yearDropDown) > 2034)

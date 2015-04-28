@@ -70,7 +70,6 @@ public class ThreadScheduler implements Runnable{
 			
 			for (int i = 0; i < whereSize; i++) {
 				where[i] = prop.getProperty(Constants.WHERE + i);
-				System.out.println(where[i]);
 				numbers[i] = Integer.parseInt(prop.getProperty(where[i]));
 			}
 			
@@ -160,7 +159,6 @@ public class ThreadScheduler implements Runnable{
 					} else {
 						test = false;
 					}
-
 				}
 
 				if (test) {
