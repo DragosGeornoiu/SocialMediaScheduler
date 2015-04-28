@@ -84,9 +84,9 @@ public class ServletToScheduler {
 		pendingUpdate += "<tr>";
 		pendingUpdate += "<td>" + update.get(Constants.DUE_TIME) + "; " + update.get("day") + "; " + mYear + "</td>";
 		pendingUpdate += "<td>" + update.get(Constants.PROFILE_SERVICE) + "</td>";
-		pendingUpdate += "<td>" + update.get("text") + "</td>";
-		String author = ((String) update.get("text")).split(" - ")[0];
-		String quote = ((String) update.get("text")).split(" - ")[1];
+		pendingUpdate += "<td>" + update.get(Constants.TEXT) + "</td>";
+		String author = ((String) update.get(Constants.TEXT)).split(" - ")[0];
+		String quote = ((String) update.get(Constants.TEXT)).split(" - ")[1];
 		Quote q = new Quote(quote, author);
 
 		pendingUpdate += "<td>" + "<form ACTION=\"DeletePending\">";
@@ -144,7 +144,7 @@ public class ServletToScheduler {
 				Calendar c = Calendar.getInstance();
 				c.setTimeInMillis(new Long(((int) update.getInt(Constants.DUE_AT))) * 1000);
 				int mYear = c.get(Calendar.YEAR);
-				quotesByAuthor += "<tr><td>" + update.get(Constants.DUE_TIME) + "; " + update.get("day") + "; " + mYear
+				quotesByAuthor += "<tr><td>" + update.get(Constants.DUE_TIME) + "; " + update.get(Constants.DAY) + "; " + mYear
 						+ "</td>";
 				quotesByAuthor += "<td>" + update.get(Constants.PROFILE_SERVICE) + "</td>";
 				quotesByAuthor += "<td>" + update.get(Constants.TEXT) + "</td>";
@@ -161,7 +161,7 @@ public class ServletToScheduler {
 
 		if ((link.equals(Constants.PERSDEV_URL)) && (website.startsWith(Constants.PERSDEV_URL))) {
 			parser = new PersdevParser();
-		} else if ((link.equals(Constants.BRAINIQUOTE_URL)) && (website.startsWith(Constants.BRAINIQUOTE_URL))) {
+		} else if ((link.equals(Constants.BRAINIQUOTE_URL)) && (website.startsWith(Constants.BRAINIQUOTE_CATEGORY))) {
 			parser = new BrainyQuoteParser();
 		} else {
 			selectionCorrect = false;
@@ -172,7 +172,7 @@ public class ServletToScheduler {
 				List<String> profiles = scheduler.getAllProfiles();
 				for (int i = 0; i < profiles.size(); i++) {
 					// maybe add here +quotes.txt
-					fileManager.createFileInPath(profiles.get(i).replaceAll(" ", "") + "quotes.txt");
+					fileManager.createFileInPath(profiles.get(i).replaceAll(" ", "") + Constants.QUOTES_TXT);
 				}
 
 				return " <br> <br> The quotes from the given website were retrieved... <br> What do you want to do next? <br>";
@@ -229,7 +229,7 @@ public class ServletToScheduler {
 			} else {
 				String fileName = radios;
 				QuoteManager quoteManager;
-				if (radios.equals("select")) {
+				if (radios.equals(Constants.SELECT)) {
 					quoteManager = new QuoteManager(myFile);
 				} else {
 					quoteManager = new QuoteManager(fileName, path2);

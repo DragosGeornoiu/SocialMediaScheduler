@@ -34,12 +34,11 @@
 <br>
 
 	<form ACTION="ParseWebsite">
-		Please enter a website: <br> <input type="text" name="website"
-			size="20px"> <br> <INPUT TYPE="radio" NAME="radios"
-			VALUE="http://persdev-q.com/"> http://persdev-q.com/; <br>
-		<INPUT TYPE="radio" NAME="radios" VALUE="http://www.brainyquote.com/">
-		http://www.brainyquote.com/; <br> <INPUT TYPE="hidden"
-			NAME="accessToken" VALUE=<%=request.getParameter("accessToken")%>>
+		Please select a parser: <br> 
+		<input type="text" name="website" size="20px"> <br> 
+		<INPUT TYPE="hidden" NAME="radioss"	VALUE="http://persdev-q.com/">
+		<INPUT TYPE="radio"  NAME="radios" VALUE="http://www.brainyquote.com/" checked="checked"> http://www.brainyquote.com/; <br> 
+		<INPUT TYPE="hidden" NAME="accessToken"  VALUE=<%=request.getParameter("accessToken")%>>
 		<input type="submit" value="Submit"> <br> <br>
 	</form>
 

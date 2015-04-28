@@ -89,7 +89,7 @@ public class ThreadScheduler implements Runnable{
 			startMinutes = Integer.parseInt(minuteDropDown);
 			endMinutes = Integer.parseInt(minuteDropDown2);
 
-		} catch (IOException ex) {
+		} catch (Exception ex) {
 			logger.error(ex.getMessage());
 		} finally {
 			if (input != null) {

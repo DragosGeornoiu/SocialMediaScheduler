@@ -38,12 +38,11 @@ public class QuoteManager {
 
 	public QuoteManager(String quotesFile) {
 		this.quotesFile = quotesFile;
-		//this.file = quotesFile.split(Constants.BRAINIQUOTE)[0];
 
 		this.file = "";
 		String[] splitStrings = quotesFile.replace("\\", "/").split("/");
 		for (int i = 0; i < splitStrings.length; i++) {
-			if (!splitStrings[i].contains(".xml")) {
+			if (!splitStrings[i].contains(Constants.XML)) {
 				this.file += splitStrings[i] + "\\";
 			}
 		}
@@ -70,7 +69,7 @@ public class QuoteManager {
 		logger.info("Retrieving a random quote for " + where);
 		Quote quote;
 		do {
-			quote = getRandomQuoteForSocialMedia(file + where.toLowerCase() + "quotes.txt");
+			quote = getRandomQuoteForSocialMedia(file + where.toLowerCase() + Constants.QUOTES_TXT);
 
 			if (quote == null) {
 				return null;
@@ -133,18 +132,18 @@ public class QuoteManager {
 		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 		Document doc = dBuilder.parse(fXmlFile);
 		doc.getDocumentElement().normalize();
-		NodeList nList = doc.getElementsByTagName("entry");
+		NodeList nList = doc.getElementsByTagName(Constants.ENTRY);
 
 		for (int temp = 0; temp < nList.getLength(); temp++) {
 			Node nNode = nList.item(temp);
 			if (nNode.getNodeType() == Node.ELEMENT_NODE) {
 				Element eElement = (Element) nNode;
-				String key = eElement.getElementsByTagName("key").item(0).getTextContent();
+				String key = eElement.getElementsByTagName(Constants.KEY).item(0).getTextContent();
 
-				Element eElement2 = (Element) eElement.getElementsByTagName("value").item(0);
+				Element eElement2 = (Element) eElement.getElementsByTagName(Constants.VALUE).item(0);
 
-				Quote quote = new Quote(eElement2.getElementsByTagName("author").item(0).getTextContent(), eElement
-						.getElementsByTagName("quote").item(0).getTextContent());
+				Quote quote = new Quote(eElement2.getElementsByTagName(Constants.AUTHOR).item(0).getTextContent(), eElement
+						.getElementsByTagName(Constants.QUOTE).item(0).getTextContent());
 				hash.put(key, quote);
 			}
 		}

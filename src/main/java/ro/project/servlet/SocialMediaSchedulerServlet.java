@@ -1,13 +1,9 @@
 package ro.project.servlet;
 
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.util.Calendar;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
 
@@ -16,7 +12,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.swing.SwingUtilities;
 
 import org.apache.log4j.Logger;
 
@@ -56,8 +51,8 @@ public class SocialMediaSchedulerServlet extends HttpServlet {
 			String path = getServletContext().getInitParameter(Constants.PATH_2).replace("/", "\\\\");
 			path += "\\\\quotes\\\\";
 			scheduler.deleteUpdate(request.getParameter(Constants.URL));
-			scheduler.updateWithDeletedPendingUpdate(request.getParameter(Constants.Quote),
-					request.getParameter("service"), request.getParameter("text"), path);
+			scheduler.updateWithDeletedPendingUpdate(request.getParameter(Constants.QUOTE),
+					request.getParameter(Constants.SERVICE), request.getParameter("text"), path);
 
 			response.sendRedirect("http://localhost:8080/SocialMediaScheduler/PendingQuotes");
 		} else if (request.getRequestURI().equals("/SocialMediaScheduler/Search")) {
@@ -75,7 +70,6 @@ public class SocialMediaSchedulerServlet extends HttpServlet {
 			} else {
 				String link = request.getParameter(Constants.RADIOS);
 				String path = getServletContext().getInitParameter(Constants.PATH_2).replace("/", "\\\\");
-				;
 				String website = request.getParameter(Constants.WEBSITE);
 				request.setAttribute(Constants.RESPONSE, servletToScheduler.parseWebsite(link, path, website));
 			}
@@ -126,7 +120,7 @@ public class SocialMediaSchedulerServlet extends HttpServlet {
 					request.setAttribute(Constants.NO_OF_PAGES, noOfPages);
 					request.setAttribute(Constants.CURRENT_PAGE, page);
 					request.setAttribute(Constants.LAST_TYPE, type);
-					request.setAttribute(Constants.ORDER, request.getParameter("order"));
+					request.setAttribute(Constants.ORDER, request.getParameter(Constants.ORDER));
 				}
 			}
 			RequestDispatcher view = request.getRequestDispatcher("displayQuotes.jsp");
@@ -143,10 +137,12 @@ public class SocialMediaSchedulerServlet extends HttpServlet {
 						+ Constants.CONFIG_PROPERTIES);
 				prop.setProperty(Constants.PATH, getServletContext().getInitParameter(Constants.PATH_2));
 				prop.setProperty(Constants.RADIOS, request.getParameter(Constants.RADIOS));
-				prop.setProperty(Constants.WHERE_SIZE, Integer.toString(where.length));
-				for (int i = 0; i < where.length; i++) {
-					prop.setProperty(Constants.WHERE + i, where[i]);
-					prop.setProperty(where[i], request.getParameter(where[i]));
+				if (where != null) {
+					prop.setProperty(Constants.WHERE_SIZE, Integer.toString(where.length));
+					for (int i = 0; i < where.length; i++) {
+						prop.setProperty(Constants.WHERE + i, where[i]);
+						prop.setProperty(where[i], request.getParameter(where[i]));
+					}
 				}
 				prop.setProperty(Constants.YEAR_DROP_DOWN, request.getParameter(Constants.YEAR_DROP_DOWN));
 				prop.setProperty(Constants.MONTH_DROP_DOWN, request.getParameter(Constants.MONTH_DROP_DOWN));
@@ -174,32 +170,45 @@ public class SocialMediaSchedulerServlet extends HttpServlet {
 					}
 				}
 			}
-
-			threadScheduler.setInterval(Integer.parseInt(getServletContext().getInitParameter(Constants.INTERVAL)));
-			threadScheduler.setPath(getServletContext().getInitParameter(Constants.PATH_2));
-			threadScheduler.setScheduler(scheduler);
-			synchronized (threadScheduler) {
-				threadScheduler.notify();
+			
+			String message = "";
+			if(where == null) {
+				message += "<br> You did not select any social networks to post on...";
 			}
-
-			//
-			// threadScheduler.setInterval(Integer.parseInt(getServletContext().getInitParameter(Constants.INTERVAL)));
-			// if (!threadScheduler.isAlive()) {
-			// threadScheduler.setPath(getServletContext().getInitParameter(Constants.PATH_2));
-			// threadScheduler.setScheduler(scheduler);
-			// threadScheduler.start();
-			// } else {
-			// synchronized (threadScheduler) {
-			// threadScheduler.notify();
-			// }
-			// }
-
-			request.setAttribute(
-					"message",
-					"Daily posts were set between " + request.getParameter(Constants.HOUR_DROP_DOWN) + ":"
-							+ request.getParameter(Constants.MINUTE_DROP_DOWN) + " - "
-							+ request.getParameter(Constants.HOUR_DROP_DOWN_2) + ":"
-							+ request.getParameter(Constants.MINUTE_DROP_DOWN_2) + ".");
+			
+			if(request.getParameter(Constants.RADIOS).equals(Constants.SELECT) && request.getParameter(Constants.MYFILE).trim().isEmpty()) {
+				message += "<br> You selected \"Select your own file \" option, but did not choose a path to the file...";
+			}
+			
+			int beginHour = Integer.parseInt(request.getParameter(Constants.HOUR_DROP_DOWN));
+			int endHour = Integer.parseInt(request.getParameter(Constants.HOUR_DROP_DOWN_2));
+			int beginMinutes = Integer.parseInt(request.getParameter(Constants.MINUTE_DROP_DOWN));
+			int endMinutes = Integer.parseInt(request.getParameter(Constants.MINUTE_DROP_DOWN_2));
+			
+			if(beginHour > endHour) {
+				message += "<br> Your 'FROM' hour option of the schedule is after the 'TO' hour of the schedule...";
+			} else if(beginHour == endHour && beginMinutes >= endMinutes) {
+				message += "<br> Your 'FROM' minutes of the schedule is after the 'TO' minutes of the schedule...";
+			}
+			
+			if(message.trim().isEmpty()) {
+				threadScheduler.setInterval(Integer.parseInt(getServletContext().getInitParameter(Constants.INTERVAL)));
+				threadScheduler.setPath(getServletContext().getInitParameter(Constants.PATH_2));
+				threadScheduler.setScheduler(scheduler);
+				synchronized (threadScheduler) {
+					threadScheduler.notify();
+				}
+				
+				request.setAttribute(
+						Constants.MESSAGE,
+						"Daily posts were set between " + request.getParameter(Constants.HOUR_DROP_DOWN) + ":"
+								+ request.getParameter(Constants.MINUTE_DROP_DOWN) + " - "
+								+ request.getParameter(Constants.HOUR_DROP_DOWN_2) + ":"
+								+ request.getParameter(Constants.MINUTE_DROP_DOWN_2) + ".");
+			} else {
+				request.setAttribute(Constants.MESSAGE, new String("The scheduler was not updated <br><br>" + message));
+			}
+			
 			RequestDispatcher view = request.getRequestDispatcher("PostingRandomQuote.jsp");
 			view.forward(request, response);
 		} else if (request.getRequestURI().equals("/SocialMediaScheduler/PendingQuotes")) {
@@ -243,6 +252,5 @@ public class SocialMediaSchedulerServlet extends HttpServlet {
 		scheduler.setAccessTokenWithpath("", path);
 		servletToScheduler = new ServletToScheduler(scheduler);
 		threadScheduler = ThreadScheduler.getInstance();
-		// threadScheduler.start();
 	}
 }

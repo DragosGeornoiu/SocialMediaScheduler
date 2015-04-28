@@ -28,7 +28,7 @@
 		} else {
 			out.println("<script type=\"text/javascript\"> \n");
 			out.println("var monthtext = [ '01', '02', '03', '04', '05', '06', '07', '08', '09','10', '11', '12' ]; \n");
-			out.println("var gmttext = ['-12', '-11', '-10', '-09', '-08', '-07', '-06', '-05', '-04', '-03', '-02', '-01', '00', '+01', '+02', '+03', '+04', '+05', '+06', '+07', '+08', '+09', '+10', '+11', '+12', '+13', '+14' ]; \n");
+			out.println("var gmttext = ['-12', '-11', '-10', '-09', '-08', '-07', '-06', '-05', '-04', '-03', '-02', '-01', '00', '+01', '+02', '+03', '+04', '+05', '+06', '+07', '+08', '+09', '+10', '+11', '+12', '+13', '+14', '+15', '+16', '+17', '+18' ]; \n");
 			out.println("var hourtext = ['00', '01', '02', '03', '04', '05', '06', '07', '08','09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20','21', '22', '23' ]; \n");
 			
 		out.println("function populatedropdown(dayfield, monthfield, yearfield, hourfield, minutefield, gmtfield, dayfield2, hourfield2, numberOfPosts, minutefield2) { \n");
@@ -59,7 +59,7 @@
 			out.println("for(var m = 0; m<27;m++) \n");
 			out.println("gmtfield.options[m] = new Option(gmttext[m], gmttext[m+3]) \n");
 			out.println(" \n");
-			out.println("gmtfield.options[15] = new Option(gmttext[15], gmttext[15], true, true) \n");
+			out.println("gmtfield.options[15] = new Option(gmttext[15], gmttext[15+3], true, true) \n");
 			
 			out.println("var thisyear = today.getFullYear() \n");
 			out.println("for (var y = 0; y < 20; y++) { \n");

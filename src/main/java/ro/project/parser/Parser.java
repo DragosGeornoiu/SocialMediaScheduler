@@ -65,7 +65,7 @@ public abstract class Parser {
 		fileManager = new FileManager(optionPath);
 		String fileName = fileManager.createFileNameFromUrl(website);
 
-		path = fileManager.createFileInPath(fileName + ".xml");
+		path = fileManager.createFileInPath(fileName + Constants.XML);
 		if (path.trim().isEmpty()) {
 			return false;
 		}
@@ -235,7 +235,7 @@ public abstract class Parser {
 	 */
 	protected void saveWebsiteAsOption(String website) {
 		try {
-			PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(optionPath + "\\\\" + "parser.txt",
+			PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(optionPath + "\\\\" + Constants.PARSER_TXT,
 					true)));
 			out.println(website);
 			out.close();

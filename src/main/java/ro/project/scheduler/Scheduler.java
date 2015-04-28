@@ -282,8 +282,8 @@ public class Scheduler {
 		try {
 			URL obj = new URL(url);
 			HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-			con.setRequestMethod("GET");
-			con.setRequestProperty("User-Agent", Constants.MOZILLA);
+			con.setRequestMethod(Constants.GET);
+			con.setRequestProperty(Constants.USER_AGENT, Constants.MOZILLA);
 
 			BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
 			String inputLine;
@@ -360,7 +360,7 @@ public class Scheduler {
 			JSONArray updates = new JSONArray(jsonResponse);
 			for (int i = 0; i < updates.length(); i++) {
 				JSONObject update = updates.getJSONObject(i);
-				allProfilesList.add(((String) update.get("formatted_service")).toLowerCase().replace(" ", ""));
+				allProfilesList.add(((String) update.get(Constants.FORMATED_SERVICE)).toLowerCase().replace(" ", ""));
 			}
 		} catch (JSONException e) {
 			logger.error("Something went wrong when trying to parse the name of the user's profiles", e);
@@ -442,7 +442,7 @@ public class Scheduler {
 
 			// open text file for that service
 			Hashtable<String, Quote> quotesList = new Hashtable<String, Quote>();
-			String servicePath = path + service.replace(" ", "") + "quotes.txt";
+			String servicePath = path + service.replace(" ", "") + Constants.QUOTES_TXT;
 			
 			ObjectInputStream in = new ObjectInputStream(new FileInputStream(servicePath));
 			quotesList.putAll((Hashtable<String, Quote>) in.readObject());

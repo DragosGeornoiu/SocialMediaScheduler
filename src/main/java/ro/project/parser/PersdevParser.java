@@ -93,7 +93,7 @@ public class PersdevParser extends Parser {
 					.ignoreHttpErrors(true).get();
 			elements = document.getElementsByTag(Constants.NAV).select(Constants.HREF_A);
 			for (Element element : elements) {
-				if (element.text().contains("Previous")) {
+				if (element.text().contains(Constants.PREVIOUS)) {
 					return element.attr(Constants.HREF).toString();
 				}
 			}

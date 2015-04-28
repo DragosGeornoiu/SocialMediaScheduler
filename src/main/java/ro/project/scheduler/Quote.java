@@ -6,6 +6,7 @@ import java.security.NoSuchAlgorithmException;
 
 import org.apache.log4j.Logger;
 
+import ro.project.Constants;
 import ro.project.parser.PersdevParser;
 
 /**
@@ -65,7 +66,7 @@ public class Quote implements Serializable {
 
 		MessageDigest md = null;
 		try {
-			md = MessageDigest.getInstance("MD5");
+			md = MessageDigest.getInstance(Constants.MD5);
 		} catch (NoSuchAlgorithmException e) {
 			logger.error(e.getMessage());
 		}

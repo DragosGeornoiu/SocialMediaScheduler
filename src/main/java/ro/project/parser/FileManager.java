@@ -34,8 +34,8 @@ public class FileManager {
 		List<String> files = splitUrlToFileNames(url);
 		String dir = "";
 		int i=0;
-		if (url.contains("brainyquote")) {
-			while(!files.get(i).equals("quotes")) {
+		if (url.contains(Constants.BRAINY_QUOTE_STRING)) {
+			while(!files.get(i).equals(Constants.QUOTES)) {
 				dir += files.get(i);
 				i++;
 			}
@@ -44,10 +44,10 @@ public class FileManager {
 
 			dir += " - ";
 			
-			if(files.get(i).equals("topics")) {
+			if(files.get(i).equals(Constants.TOPICS)) {
 
 				dir += files.get(i+1).split("_")[1];
-			} else if(files.get(i).equals("authors")) {
+			} else if(files.get(i).equals(Constants.AUTHORS)) {
 				dir += files.get(i+2);
 			}
 		} else {

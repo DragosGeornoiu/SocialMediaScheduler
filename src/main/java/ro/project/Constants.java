@@ -90,12 +90,28 @@ public class Constants {
 	public static final String ALL_PROFILES = "allProfiles";
 	public static final String SIZE = "size";
 	public static final String GMT = "GMT";
-	public static final String Quote = "quote";
+	public static final String QUOTE = "quote";
 	public static final String WHERE_SIZE = "whereSize";
 	public static final String INTERVAL = "interval";
 	public static final String CONFIG_PROPERTIES = "config.properties";
 	public static final String MYFILE = "myfile";
 	public static final String NUMBER = "number";
+	public static final Object SELECT = "select";
+	public static final String BRAINIQUOTE_CATEGORY = "http://www.brainyquote.com/quotes/topics/topic";
+	public static final String BRAINY_QUOTE_STRING = "brainyquote";
+	public static final String QUOTES = "quotes";
+	public static final String TOPICS = "topics";
+	public static final String AUTHORS = "authors";
+	public static final String XML = ".xml";
+	public static final String PREVIOUS = "Previous";
+	public static final String MD5 = "MD5";
+	public static final String QUOTES_TXT = "quotes.txt";
+	public static final String ENTRY = "entry";
+	public static final String KEY = "key";
+	public static final String VALUE = "value";
+	public static final String DAY = "day";
+	public static final String SERVICE = "service";
+	public static final String MESSAGE = "message";
 	
 	public static final int TWITTER_MAX_CHARC = 140;
 	public static final int FACEBOOK_MAX_CHARC = 500;
@@ -103,5 +119,6 @@ public class Constants {
 	public static final int QUOTE_HISTORY_LIMIT = 1000;
 	public static final int UPDATES_PER_PAGE = 20;
 	public static final int MINUTES_IN_AN_HOUR = 60;
+	
 	
 }
