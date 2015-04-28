@@ -390,7 +390,7 @@ public class Scheduler {
 			return Constants.GOOGLE_MAX_CHARC;
 		}
 
-		return 0;
+		return 500;
 	}
 
 	public String getUserId() {
