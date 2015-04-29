@@ -19,7 +19,7 @@ import ro.project.Constants;
 import ro.project.parser.FileManager;
 import ro.project.parser.Parser;
 import ro.project.scheduler.Scheduler;
-import ro.project.thread.ThreadScheduler;
+import ro.project.thread.SchedulerThread;
 
 /**
  * 
@@ -33,7 +33,7 @@ public class SocialMediaSchedulerServlet extends HttpServlet {
 	Parser parser;
 	FileManager fileManager;
 	PrintWriter out = null;
-	ThreadScheduler threadScheduler;
+	SchedulerThread threadScheduler;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		out = response.getWriter();
@@ -154,6 +154,7 @@ public class SocialMediaSchedulerServlet extends HttpServlet {
 				prop.setProperty(Constants.HOUR_DROP_DOWN_2, request.getParameter(Constants.HOUR_DROP_DOWN_2));
 				prop.setProperty(Constants.MINUTE_DROP_DOWN_2, request.getParameter(Constants.MINUTE_DROP_DOWN_2));
 				prop.setProperty(Constants.NUMBER_OF_POSTS, request.getParameter(Constants.NUMBER_OF_POSTS));
+				prop.setProperty(Constants.WHEN, request.getParameter(Constants.WHEN));
 				prop.setProperty(Constants.MYFILE, request.getParameter(Constants.MYFILE));
 
 				// save properties to project root folder
@@ -199,12 +200,19 @@ public class SocialMediaSchedulerServlet extends HttpServlet {
 					threadScheduler.notify();
 				}
 				
+				message = "";
+				if(request.getParameter(Constants.WHEN).equals(Constants.Workdays)) {
+					message += Constants.MESSAGE_WORKDAYS;
+				} else {
+					message += Constants.MESSAGE_WEEKDAYS;
+				}
+				
 				request.setAttribute(
 						Constants.MESSAGE,
 						"Daily posts were set between " + request.getParameter(Constants.HOUR_DROP_DOWN) + ":"
 								+ request.getParameter(Constants.MINUTE_DROP_DOWN) + " - "
 								+ request.getParameter(Constants.HOUR_DROP_DOWN_2) + ":"
-								+ request.getParameter(Constants.MINUTE_DROP_DOWN_2) + ".");
+								+ request.getParameter(Constants.MINUTE_DROP_DOWN_2) + message + " .");
 			} else {
 				request.setAttribute(Constants.MESSAGE, new String("The scheduler was not updated <br><br>" + message));
 			}
@@ -251,6 +259,6 @@ public class SocialMediaSchedulerServlet extends HttpServlet {
 		scheduler = Scheduler.getInstance();
 		scheduler.setAccessTokenWithpath("", path);
 		servletToScheduler = new ServletToScheduler(scheduler);
-		threadScheduler = ThreadScheduler.getInstance();
+		threadScheduler = SchedulerThread.getInstance();
 	}
 }

@@ -112,6 +112,10 @@ public class Constants {
 	public static final String DAY = "day";
 	public static final String SERVICE = "service";
 	public static final String MESSAGE = "message";
+	public static final String WHEN = "when";
+	public static final String Workdays = "Workdays";
+	public static final String MESSAGE_WORKDAYS = " from Monday to Friday";
+	public static final String MESSAGE_WEEKDAYS = " from Monday to Sunday";
 	
 	public static final int TWITTER_MAX_CHARC = 140;
 	public static final int FACEBOOK_MAX_CHARC = 500;
@@ -119,6 +123,4 @@ public class Constants {
 	public static final int QUOTE_HISTORY_LIMIT = 1000;
 	public static final int UPDATES_PER_PAGE = 20;
 	public static final int MINUTES_IN_AN_HOUR = 60;
-	
-	
 }

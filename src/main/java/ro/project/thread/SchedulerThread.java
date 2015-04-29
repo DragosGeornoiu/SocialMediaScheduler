@@ -13,8 +13,8 @@ import ro.project.Constants;
 import ro.project.scheduler.Scheduler;
 import ro.project.servlet.ServletToScheduler;
 
-public class ThreadScheduler implements Runnable{
-	final static Logger logger = Logger.getLogger(ThreadScheduler.class);
+public class SchedulerThread implements Runnable {
+	final static Logger logger = Logger.getLogger(SchedulerThread.class);
 	private volatile boolean isStopped = false;
 
 	private int intervalToCheckToPost = 1;
@@ -39,15 +39,16 @@ public class ThreadScheduler implements Runnable{
 	private String numberofQuotes;
 	private String myFile;
 	private ServletToScheduler servletToScheduler;
+	private String when;
 
-	private static ThreadScheduler instance = null;
+	private static SchedulerThread instance = null;
 
-	protected ThreadScheduler() {
+	protected SchedulerThread() {
 	}
 
-	public static ThreadScheduler getInstance() {
+	public static SchedulerThread getInstance() {
 		if (instance == null) {
-			instance = new ThreadScheduler();
+			instance = new SchedulerThread();
 		}
 		return instance;
 	}
@@ -67,12 +68,12 @@ public class ThreadScheduler implements Runnable{
 			int whereSize = Integer.parseInt(prop.getProperty(Constants.WHERE_SIZE));
 			where = new String[whereSize];
 			numbers = new Integer[whereSize];
-			
+
 			for (int i = 0; i < whereSize; i++) {
 				where[i] = prop.getProperty(Constants.WHERE + i);
 				numbers[i] = Integer.parseInt(prop.getProperty(where[i]));
 			}
-			
+
 			yearDropDown = prop.getProperty(Constants.YEAR_DROP_DOWN);
 			monthDropDown = prop.getProperty(Constants.MONTH_DROP_DOWN);
 			dayDropDown = prop.getProperty(Constants.DAY_DROP_DOWN);
@@ -83,6 +84,7 @@ public class ThreadScheduler implements Runnable{
 			hourDropDown2 = prop.getProperty(Constants.HOUR_DROP_DOWN_2);
 			minuteDropDown2 = prop.getProperty(Constants.MINUTE_DROP_DOWN_2);
 			numberofQuotes = prop.getProperty(Constants.NUMBER_OF_POSTS);
+			when = prop.getProperty(Constants.WHEN);
 			myFile = prop.getProperty(Constants.MYFILE);
 			startHour = Integer.parseInt(hourDropDown);
 			endHour = Integer.parseInt(hourDropDown2);
@@ -161,6 +163,13 @@ public class ThreadScheduler implements Runnable{
 					}
 				}
 
+				int dayOfWeek = now.get(Calendar.DAY_OF_WEEK);
+				if (when.equals(Constants.Workdays)) {
+					if (dayOfWeek == 1 || dayOfWeek == 7) {
+						test = false;
+					}
+				}
+				
 				if (test) {
 					schedulePosts(hour, minute);
 					int h = Integer.parseInt(hourDropDown2) - Integer.parseInt(hourDropDown);
@@ -197,7 +206,6 @@ public class ThreadScheduler implements Runnable{
 				}
 			}
 		}
-		
-	}
 
+	}
 }

@@ -13,13 +13,13 @@ import ro.project.servlet.ServletToScheduler;
 public class SchedulerContextListener implements ServletContextListener {
 	final static Logger logger = Logger.getLogger(SchedulerContextListener.class);
 	
-	private ThreadScheduler threadScheduler = null;
+	private SchedulerThread threadScheduler = null;
 	ExecutorService executor = null;
 
 	@Override
 	public void contextInitialized(ServletContextEvent sce) {
 		if ((threadScheduler == null)) {
-			threadScheduler = ThreadScheduler.getInstance();
+			threadScheduler = SchedulerThread.getInstance();
 			ExecutorService executor = Executors.newFixedThreadPool(1);
 			executor.execute(threadScheduler);
 		}

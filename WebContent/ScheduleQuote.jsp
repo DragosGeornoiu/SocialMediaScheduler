@@ -88,8 +88,6 @@
 			out.println("minutefield2.options[today.getMinutes()] = new Option(today.getMinutes(), today.getMinutes(), true, true) \n");
 			out.println("} \n");
 			
-			
-			
 			out.println("</script> \n");
 			out.println(" \n");
 			out.println(" \n");
@@ -110,6 +108,12 @@
 			out.println("<body> \n");
 			out.println("<form action=\"HelloServlet\"> \n");
 			out.println(" \n");
+			
+			
+			out.println("When to post: <br>");
+			out.println("<INPUT TYPE=\"radio\" NAME=\"when\" VALUE=\"Workdays\" checked=\"checked\">Mo-Fr <BR> \n");
+			out.println("<INPUT TYPE=\"radio\" NAME=\"when\" VALUE=\"Everyday\" >Mo-Su<BR> \n");
+			out.println("<br><br>");
 			out.println("Where to post: <br> \n");
 			for (int i = 0; i < allProfiles.size(); i++) {
 				if (i == 0) {
@@ -148,6 +152,7 @@
 					out.println("<BR> ");
 				}
 			}
+			
 			out.println("<br> <br> \n");
 			out.println("&nbsp;&nbsp;&nbsp;");
 			out.println("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp&nbsp&nbsp &nbsp;&nbsp;Hour&nbsp;&nbsp; Minute&nbsp;&nbsp;GMT<br>  \n");
