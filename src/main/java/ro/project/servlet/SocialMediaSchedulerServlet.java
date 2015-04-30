@@ -1,9 +1,11 @@
 package ro.project.servlet;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.List;
@@ -54,7 +56,7 @@ public class SocialMediaSchedulerServlet extends HttpServlet {
 			path += "\\\\quotes\\\\";
 			scheduler.deleteUpdate(request.getParameter(Constants.URL));
 			scheduler.updateWithDeletedPendingUpdate(request.getParameter(Constants.QUOTE),
-					request.getParameter(Constants.SERVICE), request.getParameter("text"), path);
+					request.getParameter(Constants.SERVICE), request.getParameter(Constants.TEXT), path);
 
 			response.sendRedirect("http://localhost:8080/SocialMediaScheduler/PendingQuotes");
 		} else if (request.getRequestURI().equals("/SocialMediaScheduler/Search")) {
@@ -85,6 +87,34 @@ public class SocialMediaSchedulerServlet extends HttpServlet {
 			request.setAttribute(Constants.OPTIONS_LIST, servletToScheduler.getOptionsList(path));
 			request.setAttribute(Constants.ALL_PROFILES, scheduler.getAllProfiles());
 
+			
+			
+			// read from properties file last hours set
+			Properties prop = new Properties();
+			InputStream input = null;
+			String fromHourToSet = "";
+			String toHourToSet = "";
+			try {
+
+				input = new FileInputStream(getServletContext().getInitParameter(Constants.PATH_2) + Constants.CONFIG_PROPERTIES);
+				prop.load(input);
+
+				fromHourToSet = prop.getProperty(Constants.HOUR_DROP_DOWN);
+				toHourToSet = prop.getProperty(Constants.HOUR_DROP_DOWN_2);
+			} catch (Exception ex) {
+				logger.error(ex.getMessage());
+			} finally {
+				if (input != null) {
+					try {
+						input.close();
+					} catch (IOException e) {
+						logger.error(e.getMessage());
+					}
+				}
+			}
+
+			request.setAttribute(Constants.FROM_HOUR_TO_SET, fromHourToSet);
+			request.setAttribute(Constants.TO_HOUR_TO_SET, toHourToSet);
 			RequestDispatcher view = request.getRequestDispatcher("ScheduleQuote.jsp");
 			view.forward(request, response);
 		} else if (request.getRequestURI().equals("/SocialMediaScheduler/QuoteHistory")) {
@@ -250,8 +280,10 @@ public class SocialMediaSchedulerServlet extends HttpServlet {
 						+ Constants.RESPONSE + Constants.TXT));
 				String line;
 				while ((line = br.readLine()) != null) {
-					if (!line.trim().isEmpty()) {
+					if (!line.trim().isEmpty() && line.startsWith(" ")) {
 						message += Constants.LI_OPEN + line + Constants.LI_CLOSE;
+					} else if(!line.trim().isEmpty()) {
+						message += line + Constants.BR;
 					}
 				}
 			} catch (Exception e) {

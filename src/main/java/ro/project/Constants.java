@@ -125,6 +125,8 @@ public class Constants {
 	public static final String BR = " <br>";
 	public static final String LI_OPEN = "<li>";
 	public static final String LI_CLOSE = "</li>";
+	public static final String FROM_HOUR_TO_SET = "fromHourToSet";
+	public static final String TO_HOUR_TO_SET = "toHourToSet";
 	
 	public static final int TWITTER_MAX_CHARC = 140;
 	public static final int FACEBOOK_MAX_CHARC = 500;
@@ -132,4 +134,5 @@ public class Constants {
 	public static final int QUOTE_HISTORY_LIMIT = 1000;
 	public static final int UPDATES_PER_PAGE = 20;
 	public static final int MINUTES_IN_AN_HOUR = 60;
+	public static final String TEMP = "temp.txt";
 }

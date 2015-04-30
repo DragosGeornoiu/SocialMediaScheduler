@@ -29,7 +29,7 @@
 			out.println("<script type=\"text/javascript\"> \n");
 			out.println("var monthtext = [ '01', '02', '03', '04', '05', '06', '07', '08', '09','10', '11', '12' ]; \n");
 			out.println("var gmttext = ['-12', '-11', '-10', '-09', '-08', '-07', '-06', '-05', '-04', '-03', '-02', '-01', '00', '+01', '+02', '+03', '+04', '+05', '+06', '+07', '+08', '+09', '+10', '+11', '+12', '+13', '+14', '+15', '+16', '+17', '+18' ]; \n");
-			out.println("var hourtext = ['00', '01', '02', '03', '04', '05', '06', '07', '08','09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20','21', '22', '23' ]; \n");
+			out.println("var hourtext = ['0', '1', '2', '3', '4', '5', '6', '7', '8','9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20','21', '22', '23' ]; \n");
 
 			out.println("function populatedropdown(dayfield, monthfield, yearfield, hourfield, minutefield, gmtfield, dayfield2, hourfield2, numberOfPosts, minutefield2) { \n");
 			out.println("var today = new Date() \n");
@@ -74,9 +74,16 @@
 			out.println("for (i = 0; i <= 23; i++) \n");
 			out.println("hourfield2.options[i] = new Option(i, i) \n");
 			out.println(" \n");
-			out.println("hourfield.options[today.getHours()] = new Option(hourtext[today.getHours()], hourtext[today.getHours()], true, true) \n");
-			out.println("hourfield2.options[today.getHours()] = new Option(hourtext[today.getHours()], hourtext[today.getHours()], true, true) \n");
+			//out.println("hourfield.options[today.getHours()] = new Option(hourtext[today.getHours()], hourtext[today.getHours()], true, true) \n");
+			out.println("hourfield.options[" + request.getAttribute("fromHourToSet") + "] = new Option(hourtext["
+					+ request.getAttribute("fromHourToSet") + "], hourtext["
+					+ request.getAttribute("fromHourToSet") + "], true, true) \n");
 
+			//out.println("hourfield2.options[today.getHours()] = new Option(hourtext[today.getHours()], hourtext[today.getHours()], true, true) \n");
+			out.println("hourfield2.options[" + request.getAttribute("toHourToSet") + "] = new Option(hourtext["
+					+ request.getAttribute("toHourToSet") + "], hourtext["
+					+ request.getAttribute("toHourToSet") + "], true, true) \n");
+	
 			out.println("for (var i = 0; i < 10; i++) \n");
 			out.println("numberOfPosts.options[i] = new Option(i+1, i+1) \n");
 			out.println(" \n");
@@ -153,22 +160,16 @@
 			}
 
 			out.println("<br> <br> \n");
-			out.println("&nbsp;&nbsp;&nbsp;");
-			out.println("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp&nbsp&nbsp &nbsp;&nbsp;Hour&nbsp;&nbsp; Minute&nbsp;&nbsp;GMT<br>  \n");
-			out.println("FROM :");
-			out.println("<select id=\"hourdropdown\" name=\"hourdropdown\"></select> \n");
-			out.println("<select id=\"minutedropdown\" name=\"minutedropdown\"></select> \n");
+			out.println("Interval : <br>");
+
+			out.println("<select id=\"hourdropdown\" name=\"hourdropdown\"></select> -");
+			out.println("<select id=\"hourdropdown2\" name=\"hourdropdown2\"></select> \n");
 			out.println("<select id=\"gmtdropdown\" name=\"gmtdropdown\"></select> \n");
 			out.println("<select style=\"visibility:hidden;\" id=\"yeardropdown\" name=\"yeardropdown\"></select> \n");
 			out.println("<select style=\"visibility:hidden;\" id=\"monthdropdown\" name=\"monthdropdown\"></select> \n");
 			out.println("<select style=\"visibility:hidden;\" id=\"daydropdown\" name=\"daydropdown\"></select> \n");
-
-			out.println("\n");
-			out.println("<br> <br> \n");
-			out.println("TO: ");
-			out.print("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
-			out.println("<select id=\"hourdropdown2\" name=\"hourdropdown2\"></select> \n");
-			out.println("<select id=\"minutedropdown2\" name=\"minutedropdown2\"></select> \n");
+			out.println("<select style=\"visibility:hidden;\" value =\"0\" id=\"minutedropdown\" name=\"minutedropdown\"></select>");
+			out.println("<select style=\"visibility:hidden;\" value =\"0\" id=\"minutedropdown2\" name=\"minutedropdown2\"></select> \n");
 			out.println("<select style=\"visibility:hidden;\" id=\"daydropdown2\" name=\"daydropdown2\"></select> \n");
 
 			//out.println("<br> <br> \n");
@@ -191,7 +192,6 @@
 			} else {
 				out.println("<INPUT TYPE=\"radio\" NAME=\"radios\" VALUE=\"select\" checked=\"checked\"> Select your own file <BR> \n");
 			}
-			
 
 			out.println("<input type=\"file\" name=\"myfile\"> <BR><BR>");
 			out.println("<input type=\"submit\" value=\"Submit\"> <br> <br> \n");

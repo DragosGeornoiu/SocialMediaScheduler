@@ -441,7 +441,7 @@ public class Scheduler {
 
 			// open text file for that service
 			Hashtable<String, Quote> quotesList = new Hashtable<String, Quote>();
-			String servicePath = path + service.replace(" ", "") + Constants.QUOTES_TXT;
+			String servicePath = path + Constants.QUOTES_TXT;
 			
 			ObjectInputStream in = new ObjectInputStream(new FileInputStream(servicePath));
 			quotesList.putAll((Hashtable<String, Quote>) in.readObject());

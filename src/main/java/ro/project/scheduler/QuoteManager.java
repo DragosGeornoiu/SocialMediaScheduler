@@ -68,13 +68,13 @@ public class QuoteManager {
 	public Quote getRandomQuote(String where, int max) {
 		logger.info("Retrieving a random quote for " + where);
 		Quote quote;
-		do {
-			quote = getRandomQuoteForSocialMedia(file + where.toLowerCase() + Constants.QUOTES_TXT);
+		//do {
+			quote = getRandomQuoteForSocialMedia(file + Constants.QUOTES_TXT, max);
 
 			if (quote == null) {
 				return null;
 			}
-		} while (quote.toString().length() > max);
+	//	} while (quote.toString().length() > max);
 
 		return quote;
 	}
@@ -84,9 +84,10 @@ public class QuoteManager {
 	 * 
 	 * @param fileName
 	 *            the name of the file from which the quote is retrieved.
+	 * @param max
 	 * @return the Quote to be posted on the social network.
 	 */
-	private Quote getRandomQuoteForSocialMedia(String fileName) {
+	private Quote getRandomQuoteForSocialMedia(String fileName, int max) {
 		Quote quote = null;
 		Hashtable<String, Quote> quoteHash = new Hashtable<String, Quote>();
 		try {
@@ -113,7 +114,7 @@ public class QuoteManager {
 			randomQuotesList.remove(randomNum);
 
 			randomQuotesList.remove(quote.getMD5());
-		} while ((endCondition = checkIfQuotePostedBefore(quote, fileName)));
+		} while ((endCondition = checkIfQuotePostedBefore(quote, fileName, max)));
 
 		if ((endCondition) || (quote.getQuote().trim().isEmpty())) {
 			return null;
@@ -142,8 +143,8 @@ public class QuoteManager {
 
 				Element eElement2 = (Element) eElement.getElementsByTagName(Constants.VALUE).item(0);
 
-				Quote quote = new Quote(eElement2.getElementsByTagName(Constants.AUTHOR).item(0).getTextContent(), eElement
-						.getElementsByTagName(Constants.QUOTE).item(0).getTextContent());
+				Quote quote = new Quote(eElement2.getElementsByTagName(Constants.AUTHOR).item(0).getTextContent(),
+						eElement.getElementsByTagName(Constants.QUOTE).item(0).getTextContent());
 				hash.put(key, quote);
 			}
 		}
@@ -185,7 +186,7 @@ public class QuoteManager {
 	 *            quotes on the specific social network were posted.
 	 * @return true if it was posted previously, false if not.
 	 */
-	private boolean checkIfQuotePostedBefore(Quote quote, String fileName) {
+	private boolean checkIfQuotePostedBefore(Quote quote, String fileName, int max) {
 		Hashtable<String, Quote> quotes = new Hashtable<String, Quote>();
 		try {
 			ObjectInputStream in = new ObjectInputStream(new FileInputStream(fileName));
@@ -198,8 +199,12 @@ public class QuoteManager {
 		if (quotes.containsKey(quote.getMD5())) {
 			return true;
 		} else {
-			quotes.put(quote.getMD5(), quote);
-			saveQuote(quotes, fileName);
+			if (!(quote.toString().length() > max)) {
+				quotes.put(quote.getMD5(), quote);
+				saveQuote(quotes, fileName);
+			} else {
+				return true;
+			}
 			return false;
 		}
 	}
