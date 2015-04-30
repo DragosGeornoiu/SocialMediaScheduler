@@ -27,10 +27,7 @@
 	<br>
 	<br>
 	
-	<%
-		//out.println("Posted the following: <br>" + request.getAttribute("postToSocialMedia"));
-		out.println(request.getAttribute("message"));
-	%>
+	<% out.println(request.getAttribute("message"));%>
 
 </body>
 </html>

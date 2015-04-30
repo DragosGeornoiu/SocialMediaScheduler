@@ -8,8 +8,6 @@ import javax.servlet.ServletContextListener;
 
 import org.apache.log4j.Logger;
 
-import ro.project.servlet.ServletToScheduler;
-
 public class SchedulerContextListener implements ServletContextListener {
 	final static Logger logger = Logger.getLogger(SchedulerContextListener.class);
 	

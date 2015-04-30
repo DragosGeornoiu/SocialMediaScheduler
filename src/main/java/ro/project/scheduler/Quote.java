@@ -7,7 +7,6 @@ import java.security.NoSuchAlgorithmException;
 import org.apache.log4j.Logger;
 
 import ro.project.Constants;
-import ro.project.parser.PersdevParser;
 
 /**
  * 

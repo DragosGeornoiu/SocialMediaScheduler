@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
+	pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -25,10 +25,9 @@
 	<br>
 	<a href="http://localhost:8080/SocialMediaScheduler/Edit">Edit</a>
 	<br>
+	<a href="http://localhost:8080/SocialMediaScheduler/Updates">Last Updates</a>
 	<br>
-	
-	<%
-		out.println("Your accessToken is:  " + request.getAttribute("accessToken"));
-	%>
+	<br> Your accessToken is inserted...
+	<br> If you want, you can change it by going in 'Edit'. 
 </body>
 </html>

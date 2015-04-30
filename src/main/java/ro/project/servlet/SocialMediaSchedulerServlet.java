@@ -1,6 +1,8 @@
 package ro.project.servlet;
 
+import java.io.BufferedReader;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
@@ -81,7 +83,6 @@ public class SocialMediaSchedulerServlet extends HttpServlet {
 			request.setAttribute(Constants.PATH, path);
 			// out.print(servletToScheduler.postToSocialMediaView(path));
 			request.setAttribute(Constants.OPTIONS_LIST, servletToScheduler.getOptionsList(path));
-			List<String> a = servletToScheduler.getOptionsList(path);
 			request.setAttribute(Constants.ALL_PROFILES, scheduler.getAllProfiles());
 
 			RequestDispatcher view = request.getRequestDispatcher("ScheduleQuote.jsp");
@@ -171,42 +172,43 @@ public class SocialMediaSchedulerServlet extends HttpServlet {
 					}
 				}
 			}
-			
+
 			String message = "";
-			if(where == null) {
+			if (where == null) {
 				message += "<br> You did not select any social networks to post on...";
 			}
-			
-			if(request.getParameter(Constants.RADIOS).equals(Constants.SELECT) && request.getParameter(Constants.MYFILE).trim().isEmpty()) {
+
+			if (request.getParameter(Constants.RADIOS).equals(Constants.SELECT)
+					&& request.getParameter(Constants.MYFILE).trim().isEmpty()) {
 				message += "<br> You selected \"Select your own file \" option, but did not choose a path to the file...";
 			}
-			
+
 			int beginHour = Integer.parseInt(request.getParameter(Constants.HOUR_DROP_DOWN));
 			int endHour = Integer.parseInt(request.getParameter(Constants.HOUR_DROP_DOWN_2));
 			int beginMinutes = Integer.parseInt(request.getParameter(Constants.MINUTE_DROP_DOWN));
 			int endMinutes = Integer.parseInt(request.getParameter(Constants.MINUTE_DROP_DOWN_2));
-			
-			if(beginHour > endHour) {
+
+			if (beginHour > endHour) {
 				message += "<br> Your 'FROM' hour option of the schedule is after the 'TO' hour of the schedule...";
-			} else if(beginHour == endHour && beginMinutes >= endMinutes) {
+			} else if (beginHour == endHour && beginMinutes >= endMinutes) {
 				message += "<br> Your 'FROM' minutes of the schedule is after the 'TO' minutes of the schedule...";
 			}
-			
-			if(message.trim().isEmpty()) {
+
+			if (message.trim().isEmpty()) {
 				threadScheduler.setInterval(Integer.parseInt(getServletContext().getInitParameter(Constants.INTERVAL)));
 				threadScheduler.setPath(getServletContext().getInitParameter(Constants.PATH_2));
 				threadScheduler.setScheduler(scheduler);
 				synchronized (threadScheduler) {
 					threadScheduler.notify();
 				}
-				
+
 				message = "";
-				if(request.getParameter(Constants.WHEN).equals(Constants.Workdays)) {
+				if (request.getParameter(Constants.WHEN).equals(Constants.Workdays)) {
 					message += Constants.MESSAGE_WORKDAYS;
 				} else {
 					message += Constants.MESSAGE_WEEKDAYS;
 				}
-				
+
 				request.setAttribute(
 						Constants.MESSAGE,
 						"Daily posts were set between " + request.getParameter(Constants.HOUR_DROP_DOWN) + ":"
@@ -216,7 +218,7 @@ public class SocialMediaSchedulerServlet extends HttpServlet {
 			} else {
 				request.setAttribute(Constants.MESSAGE, new String("The scheduler was not updated <br><br>" + message));
 			}
-			
+
 			RequestDispatcher view = request.getRequestDispatcher("PostingRandomQuote.jsp");
 			view.forward(request, response);
 		} else if (request.getRequestURI().equals("/SocialMediaScheduler/PendingQuotes")) {
@@ -239,6 +241,31 @@ public class SocialMediaSchedulerServlet extends HttpServlet {
 			}
 
 			RequestDispatcher view = request.getRequestDispatcher("displayPending.jsp");
+			view.forward(request, response);
+		} else if (request.getRequestURI().equals("/SocialMediaScheduler/Updates")) {
+			String message = "";
+			BufferedReader br = null;
+			try {
+				br = new BufferedReader(new FileReader(getServletContext().getInitParameter(Constants.PATH_2)
+						+ Constants.RESPONSE + Constants.TXT));
+				String line;
+				while ((line = br.readLine()) != null) {
+					if (!line.trim().isEmpty()) {
+						message += Constants.LI_OPEN + line + Constants.LI_CLOSE;
+					}
+				}
+			} catch (Exception e) {
+				logger.error(e.getMessage());
+			} finally {
+				try {
+					br.close();
+				} catch (Exception e) {
+					logger.error(e.getMessage());
+				}
+			}
+
+			request.setAttribute(Constants.MESSAGE, message);
+			RequestDispatcher view = request.getRequestDispatcher("Updates.jsp");
 			view.forward(request, response);
 		}
 	}

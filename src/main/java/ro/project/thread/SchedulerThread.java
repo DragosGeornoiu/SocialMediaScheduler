@@ -1,13 +1,15 @@
 package ro.project.thread;
 
+import java.io.BufferedWriter;
 import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintWriter;
 import java.util.Calendar;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
-import org.apache.log4j.pattern.IntegerPatternConverter;
 
 import ro.project.Constants;
 import ro.project.scheduler.Scheduler;
@@ -105,8 +107,8 @@ public class SchedulerThread implements Runnable {
 
 	}
 
-	private void schedulePosts(int hour, int minute) {
-		servletToScheduler.postToSocialMedia(path2, radios, where, yearDropDown, monthDropDown, dayDropDown,
+	private String schedulePosts(int hour, int minute) {
+		return servletToScheduler.postToSocialMedia(path2, radios, where, yearDropDown, monthDropDown, dayDropDown,
 				hourDropDown, minuteDropDown, gmtDropDown, dayDropDown2, hourDropDown2, minuteDropDown2,
 				numberofQuotes, hour, minute, myFile, numbers);
 	}
@@ -169,9 +171,27 @@ public class SchedulerThread implements Runnable {
 						test = false;
 					}
 				}
-				
+
 				if (test) {
-					schedulePosts(hour, minute);
+					String result = schedulePosts(hour, minute);
+					// write to file result
+					PrintWriter out = null;
+					try {
+						out = new PrintWriter(pathToFile + "/" + Constants.RESPONSE + Constants.TXT);
+					    out.println(now.getTime() + " : \n " + result);
+					    out.close();
+					} catch (Exception e) {
+						logger.error(e.getMessage());
+					} finally {
+						try {
+							if (out != null) {
+								out.close();
+							}
+						} catch (Exception e) {
+							logger.error(e.getMessage());
+						}
+					}
+
 					int h = Integer.parseInt(hourDropDown2) - Integer.parseInt(hourDropDown);
 					int m = Integer.parseInt(minuteDropDown2) - Integer.parseInt(minuteDropDown);
 					if (m < 0) {

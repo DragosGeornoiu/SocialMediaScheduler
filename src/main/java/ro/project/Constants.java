@@ -116,6 +116,15 @@ public class Constants {
 	public static final String Workdays = "Workdays";
 	public static final String MESSAGE_WORKDAYS = " from Monday to Friday";
 	public static final String MESSAGE_WEEKDAYS = " from Monday to Sunday";
+	public static final String PROBLEM = "Problem trying to post quote.";
+	public static final String INVALID_DATE = "Invalid Date when trying to post";
+	public static final String SUCCESS = "Success";
+	public static final String TXT = ".txt";
+	public static final String NOTHING_TO_PRINT = "Found nothing to print on ";
+	public static final String NEW_LINE = " \n ";
+	public static final String BR = " <br>";
+	public static final String LI_OPEN = "<li>";
+	public static final String LI_CLOSE = "</li>";
 	
 	public static final int TWITTER_MAX_CHARC = 140;
 	public static final int FACEBOOK_MAX_CHARC = 500;

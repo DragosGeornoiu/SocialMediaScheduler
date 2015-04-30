@@ -10,7 +10,6 @@
 </head>
 <body>
 
-
 	<a href="http://localhost:8080/SocialMediaScheduler">Home</a>
 	<br>
 	<a href="http://localhost:8080/SocialMediaScheduler/parse">Parse</a>

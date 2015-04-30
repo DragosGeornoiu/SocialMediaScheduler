@@ -47,7 +47,6 @@ public class ServletToScheduler {
 			}
 
 			if (totalFromAllSocialNetworks == 0) {
-				// out.add("<BR> There are no pending quotes...");
 				return null;
 			} else {
 				for (int k = 0; k < profiles.size(); k++) {
@@ -171,7 +170,6 @@ public class ServletToScheduler {
 			if (parser.parseWebsite(website, path)) {
 				List<String> profiles = scheduler.getAllProfiles();
 				for (int i = 0; i < profiles.size(); i++) {
-					// maybe add here +quotes.txt
 					fileManager.createFileInPath(profiles.get(i).replaceAll(" ", "") + Constants.QUOTES_TXT);
 				}
 
@@ -211,11 +209,7 @@ public class ServletToScheduler {
 
 		try {
 			if ((radios == null) || (where == null)) {
-				out += "<br> A problem occured. <br> This could happen if: <br>"
-						+ "- you did not parse a website before trying to schedule a quote to be post <br>"
-						+ "- you did not select a website to get the quotes from <br>"
-						+ "- you did not select a social network to post to <br>" + "";
-				out += "</html>\n</body>";
+				out += Constants.PROBLEM + Constants.NEW_LINE;
 			} else if ((Integer.parseInt(yearDropDown) < 2015) || (Integer.parseInt(yearDropDown) > 2034)
 					|| (Integer.parseInt(monthDropDown) < 1) || (Integer.parseInt(monthDropDown) > 12)
 					|| (Integer.parseInt(dayDropDown) < 1) || (Integer.parseInt(dayDropDown) > 31)
@@ -224,8 +218,7 @@ public class ServletToScheduler {
 					|| (Integer.parseInt(dayDropDown2) < 1) || (Integer.parseInt(dayDropDown2) > 31)
 					|| (Integer.parseInt(hourDropDown2) < 0) || (Integer.parseInt(hourDropDown2) > 23)
 					|| (Integer.parseInt(dayDropDown) > (Integer.parseInt(dayDropDown2)))) {
-				out += "<br> A problem occured. <br> This could happen if you did no pick a valid date for the quote to be scheduled <br>";
-				out += "</html>\n</body>";
+				out += Constants.INVALID_DATE + Constants.NEW_LINE;
 			} else {
 				String fileName = radios;
 				QuoteManager quoteManager;
@@ -264,9 +257,7 @@ public class ServletToScheduler {
 							minutes += Integer.parseInt(minuteDropDown2) - Integer.parseInt(minuteDropDown);
 						}
 
-						//for (int i = 0; i < Integer.parseInt(numberofQuotes); i++) {
 						for (int i = 0; i < numbers[j]; i++) {
-							// calculate random
 							int hours = 0;
 							int randomNum = 0;
 							int days = 0;
@@ -286,17 +277,15 @@ public class ServletToScheduler {
 							int max = scheduler.getMaxCharacters(where[j]);
 							Quote quote = quoteManager.getRandomQuote(where[j], max);
 							if ((quote == null) || (quote.getQuote().trim().isEmpty())) {
-								out += "<br> <br> Found nothing to print on " + where + " \n";
+								out += Constants.NOTHING_TO_PRINT + where[j] + Constants.NEW_LINE;
 							} else {
 								int code = scheduler.sendMessage(quote.toString(), date);
 								if (code == 200) {
-									out += " <br> <br> Quote \"" + quote.toString().replaceAll("\\+", " ")
-											+ "\" was schedulet to be posted on " + date + " on " + where + " \n ";
+									out += Constants.SUCCESS + " posting to " + where[j] + Constants.NEW_LINE;
 								} else if (code == 0) {
-									out += "<br> <br>  Something went wrong. Probably the access token is not good..."
-											+ "\n";
+									out += Constants.PROBLEM + Constants.NEW_LINE;
 								} else {
-									out += "<br> <br>  Something went wrong when trying to post on " + where + " \n ";
+									out += Constants.PROBLEM + Constants.NEW_LINE;
 								}
 							}
 						}
@@ -305,8 +294,9 @@ public class ServletToScheduler {
 			}
 		} catch (Exception e) {
 			logger.error("Parameters not valid to schedule post");
-			out += "Parameters not valid to schedule post";
+			out += Constants.PROBLEM + Constants.NEW_LINE;
 		}
+		
 		return out;
 	}
 }
