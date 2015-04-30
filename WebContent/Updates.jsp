@@ -7,6 +7,8 @@
 <title>Insert title here</title>
 </head>
 <body>
+<a href="http://localhost:8080/SocialMediaScheduler\">Return to Home</a>
+<br><br>
 <b> Your last time scheduling quotes:  </b><br><br>
 <ul>
 <%

@@ -8,7 +8,7 @@
 <br>
 <form ACTION="AccessToken" method="post" autocomplete="off">
 	Insert access token: <INPUT TYPE="text" name="accessToken"> 
-	<input type="submit">;
+	<input value="Submit" type="submit">
 </form>
 
 <br><br>
