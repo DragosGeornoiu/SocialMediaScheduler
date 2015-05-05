@@ -91,8 +91,10 @@
 			out.println("minutefield2.options[i] = new Option(i, i) \n");
 			out.println("minutefield.options[i] = new Option(i, i) \n");
 			out.println("}");
-			out.println("minutefield.options[today.getMinutes()] = new Option(today.getMinutes(), today.getMinutes(), true, true) \n");
-			out.println("minutefield2.options[today.getMinutes()] = new Option(today.getMinutes(), today.getMinutes(), true, true) \n");
+			out.println("minutefield.options[today.getMinutes()] = new Option(0, 0, true, true) \n");
+			out.println("minutefield2.options[today.getMinutes()] = new Option(0, 0, true, true) \n");
+			//out.println("minutefield.options[today.getMinutes()] = new Option(today.getMinutes(), today.getMinutes(), true, true) \n");
+			//out.println("minutefield2.options[today.getMinutes()] = new Option(today.getMinutes(), today.getMinutes(), true, true) \n");
 			out.println("} \n");
 
 			out.println("</script> \n");

@@ -46,7 +46,6 @@ public class QuoteManager {
 				this.file += splitStrings[i] + "\\";
 			}
 		}
-
 	}
 
 	public QuoteManager(String quotesFile, String file) {
@@ -112,7 +111,6 @@ public class QuoteManager {
 			int randomNum = rand.nextInt(randomQuotesList.size());
 			quote = randomQuotesList.get(randomNum);
 			randomQuotesList.remove(randomNum);
-
 			randomQuotesList.remove(quote.getMD5());
 		} while ((endCondition = checkIfQuotePostedBefore(quote, fileName, max)));
 
@@ -134,13 +132,11 @@ public class QuoteManager {
 		Document doc = dBuilder.parse(fXmlFile);
 		doc.getDocumentElement().normalize();
 		NodeList nList = doc.getElementsByTagName(Constants.ENTRY);
-
 		for (int temp = 0; temp < nList.getLength(); temp++) {
 			Node nNode = nList.item(temp);
 			if (nNode.getNodeType() == Node.ELEMENT_NODE) {
 				Element eElement = (Element) nNode;
 				String key = eElement.getElementsByTagName(Constants.KEY).item(0).getTextContent();
-
 				Element eElement2 = (Element) eElement.getElementsByTagName(Constants.VALUE).item(0);
 
 				Quote quote = new Quote(eElement2.getElementsByTagName(Constants.AUTHOR).item(0).getTextContent(),
@@ -189,7 +185,8 @@ public class QuoteManager {
 	private boolean checkIfQuotePostedBefore(Quote quote, String fileName, int max) {
 		Hashtable<String, Quote> quotes = new Hashtable<String, Quote>();
 		try {
-			ObjectInputStream in = new ObjectInputStream(new FileInputStream(fileName));
+			File file = new File(fileName);
+			ObjectInputStream in = new ObjectInputStream(new FileInputStream(file));
 			quotes = (Hashtable<String, Quote>) in.readObject();
 			in.close();
 		} catch (Exception e) {
@@ -208,5 +205,4 @@ public class QuoteManager {
 			return false;
 		}
 	}
-
 }

@@ -1,6 +1,7 @@
 package ro.project.servlet;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
@@ -8,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Properties;
 
@@ -87,8 +89,6 @@ public class SocialMediaSchedulerServlet extends HttpServlet {
 			request.setAttribute(Constants.OPTIONS_LIST, servletToScheduler.getOptionsList(path));
 			request.setAttribute(Constants.ALL_PROFILES, scheduler.getAllProfiles());
 
-			
-			
 			// read from properties file last hours set
 			Properties prop = new Properties();
 			InputStream input = null;
@@ -96,7 +96,8 @@ public class SocialMediaSchedulerServlet extends HttpServlet {
 			String toHourToSet = "";
 			try {
 
-				input = new FileInputStream(getServletContext().getInitParameter(Constants.PATH_2) + Constants.CONFIG_PROPERTIES);
+				input = new FileInputStream(getServletContext().getInitParameter(Constants.PATH_2)
+						+ Constants.CONFIG_PROPERTIES);
 				prop.load(input);
 
 				fromHourToSet = prop.getProperty(Constants.HOUR_DROP_DOWN);
@@ -161,18 +162,43 @@ public class SocialMediaSchedulerServlet extends HttpServlet {
 
 			Properties prop = new Properties();
 			OutputStream output = null;
-
+			InputStream input = null;
 			try {
 
-				output = new FileOutputStream(getServletContext().getInitParameter(Constants.PATH_2)
+				File file = new File(getServletContext().getInitParameter(Constants.PATH_2)
 						+ Constants.CONFIG_PROPERTIES);
+				input = new FileInputStream(file);
+
+				prop.load(input);
+				String year = prop.getProperty(Constants.CALENDAR_YEAR);
+				String month = prop.getProperty(Constants.CALENDAR_MONTH);
+				String day = prop.getProperty(Constants.CALENDAR_DAY);
+
+				output = new FileOutputStream(file);
 				prop.setProperty(Constants.PATH, getServletContext().getInitParameter(Constants.PATH_2));
 				prop.setProperty(Constants.RADIOS, request.getParameter(Constants.RADIOS));
 				if (where != null) {
+					List<String> allProfiles = scheduler.getAllProfiles();
+					prop.setProperty(Constants.PROFILESIZES, Integer.toString(allProfiles.size()));
+					for(int i=0 ;i<allProfiles.size(); i++) {
+						prop.setProperty(Constants.PROFILES + i, allProfiles.get(i));
+						if(prop.getProperty(allProfiles.get(i)) != null) {
+							prop.setProperty(allProfiles.get(i), "0");
+						}
+					}
+					
+					
 					prop.setProperty(Constants.WHERE_SIZE, Integer.toString(where.length));
 					for (int i = 0; i < where.length; i++) {
 						prop.setProperty(Constants.WHERE + i, where[i]);
-						prop.setProperty(where[i], request.getParameter(where[i]));
+						String whereTemp = prop.getProperty(where[i]);
+						if (whereTemp != null) {
+							int temp = Integer.parseInt(prop.getProperty(where[i]));
+							int temp2 = Integer.parseInt(request.getParameter(where[i]));
+								prop.setProperty(where[i], request.getParameter(where[i]));
+						} else {
+							prop.setProperty(where[i], request.getParameter(where[i]));
+						}
 					}
 				}
 				prop.setProperty(Constants.YEAR_DROP_DOWN, request.getParameter(Constants.YEAR_DROP_DOWN));
@@ -188,6 +214,11 @@ public class SocialMediaSchedulerServlet extends HttpServlet {
 				prop.setProperty(Constants.WHEN, request.getParameter(Constants.WHEN));
 				prop.setProperty(Constants.MYFILE, request.getParameter(Constants.MYFILE));
 
+				if (year != null && month != null && day != null) {
+					prop.setProperty(Constants.CALENDAR_YEAR, year);
+					prop.setProperty(Constants.CALENDAR_MONTH, month);
+					prop.setProperty(Constants.CALENDAR_DAY, day);
+				}
 				// save properties to project root folder
 				prop.store(output, null);
 
@@ -282,7 +313,7 @@ public class SocialMediaSchedulerServlet extends HttpServlet {
 				while ((line = br.readLine()) != null) {
 					if (!line.trim().isEmpty() && line.startsWith(" ")) {
 						message += Constants.LI_OPEN + line + Constants.LI_CLOSE;
-					} else if(!line.trim().isEmpty()) {
+					} else if (!line.trim().isEmpty()) {
 						message += line + Constants.BR;
 					}
 				}

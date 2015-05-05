@@ -135,4 +135,13 @@ public class Constants {
 	public static final int UPDATES_PER_PAGE = 20;
 	public static final int MINUTES_IN_AN_HOUR = 60;
 	public static final String TEMP = "temp.txt";
+	public static final String NUMBER_OF_ALREADY_POSTED_QUOTES = "alreadyPostedQuotes";
+	public static final String REMAINING = "remaining";
+	public static final String POSTED = "posted";
+	public static final String CALENDAR_YEAR = "calendarYear";
+	public static final String CALENDAR_MONTH = "calendarMonth";
+	public static final String CALENDAR_DAY = "calendarDay";
+	public static final String CALENDAR_HOUR = "calendarHour";
+	public static final String PROFILESIZES = "profileSizes";
+	public static final String PROFILES = "profiles";
 }

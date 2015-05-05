@@ -1,10 +1,13 @@
 package ro.project.thread;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.Calendar;
 import java.util.Properties;
@@ -29,6 +32,7 @@ public class SchedulerThread implements Runnable {
 	private String radios;
 	private String[] where;
 	private Integer[] numbers;
+	private Integer[] posted;
 	private String yearDropDown;
 	private String monthDropDown;
 	private String dayDropDown;
@@ -42,6 +46,11 @@ public class SchedulerThread implements Runnable {
 	private String myFile;
 	private ServletToScheduler servletToScheduler;
 	private String when;
+	private int whereSize;
+
+	private String calendarYear;
+	private String calendarMonth;
+	private String calendarDay;
 
 	private static SchedulerThread instance = null;
 
@@ -64,15 +73,19 @@ public class SchedulerThread implements Runnable {
 			input = new FileInputStream(pathToFile + Constants.CONFIG_PROPERTIES);
 
 			prop.load(input);
-
 			path2 = prop.getProperty(Constants.PATH);
 			radios = prop.getProperty(Constants.RADIOS);
-			int whereSize = Integer.parseInt(prop.getProperty(Constants.WHERE_SIZE));
+			whereSize = Integer.parseInt(prop.getProperty(Constants.WHERE_SIZE));
 			where = new String[whereSize];
 			numbers = new Integer[whereSize];
+			posted = new Integer[whereSize];
 
 			for (int i = 0; i < whereSize; i++) {
 				where[i] = prop.getProperty(Constants.WHERE + i);
+				String post = prop.getProperty("posted" + where[i]);
+				if (post != null) {
+					posted[i] = Integer.parseInt(post);
+				}
 				numbers[i] = Integer.parseInt(prop.getProperty(where[i]));
 			}
 
@@ -86,21 +99,27 @@ public class SchedulerThread implements Runnable {
 			hourDropDown2 = prop.getProperty(Constants.HOUR_DROP_DOWN_2);
 			minuteDropDown2 = prop.getProperty(Constants.MINUTE_DROP_DOWN_2);
 			numberofQuotes = prop.getProperty(Constants.NUMBER_OF_POSTS);
+			calendarYear = prop.getProperty(Constants.CALENDAR_YEAR);
+			calendarMonth = prop.getProperty(Constants.CALENDAR_MONTH);
+			calendarDay = prop.getProperty(Constants.CALENDAR_DAY);
 			when = prop.getProperty(Constants.WHEN);
 			myFile = prop.getProperty(Constants.MYFILE);
 			startHour = Integer.parseInt(hourDropDown);
 			endHour = Integer.parseInt(hourDropDown2);
 			startMinutes = Integer.parseInt(minuteDropDown);
 			endMinutes = Integer.parseInt(minuteDropDown2);
+			whereSize = Integer.parseInt(prop.getProperty(Constants.WHERE_SIZE));
 
 		} catch (Exception ex) {
-			logger.error(ex.getMessage());
+			// logger.error(ex.getMessage());
+			ex.printStackTrace();
 		} finally {
 			if (input != null) {
 				try {
 					input.close();
 				} catch (IOException e) {
-					logger.error(e.getMessage());
+					// logger.error(e.getMessage());
+					e.printStackTrace();
 				}
 			}
 		}
@@ -108,9 +127,65 @@ public class SchedulerThread implements Runnable {
 	}
 
 	private String schedulePosts(int hour, int minute) {
-		return servletToScheduler.postToSocialMedia(path2, radios, where, yearDropDown, monthDropDown, dayDropDown,
-				hourDropDown, minuteDropDown, gmtDropDown, dayDropDown2, hourDropDown2, minuteDropDown2,
-				numberofQuotes, hour, minute, myFile, numbers);
+		Integer[] finals = new Integer[whereSize];
+		if (calendarYear != null && calendarMonth != null && calendarDay != null) {
+			Calendar now = Calendar.getInstance();
+			if (Integer.parseInt(calendarDay) == now.get(Calendar.DAY_OF_MONTH)
+					&& Integer.parseInt(calendarMonth) == now.get(Calendar.MONTH)
+					&& Integer.parseInt(calendarYear) == now.get(Calendar.YEAR)) {
+
+				for (int i = 0; i < whereSize; i++) {
+					finals[i] = numbers[i] - posted[i];
+				}
+
+				return servletToScheduler.postToSocialMedia(path2, radios, where, yearDropDown, monthDropDown,
+						dayDropDown, hourDropDown, minuteDropDown, gmtDropDown, dayDropDown2, hourDropDown2,
+						minuteDropDown2, numberofQuotes, hour, minute, myFile, finals);
+
+			} else {
+				emptyPostedQuotes();
+				return servletToScheduler.postToSocialMedia(path2, radios, where, yearDropDown, monthDropDown,
+						dayDropDown, hourDropDown, minuteDropDown, gmtDropDown, dayDropDown2, hourDropDown2,
+						minuteDropDown2, numberofQuotes, hour, minute, myFile, numbers);
+			}
+
+		} else {
+			return servletToScheduler.postToSocialMedia(path2, radios, where, yearDropDown, monthDropDown, dayDropDown,
+					hourDropDown, minuteDropDown, gmtDropDown, dayDropDown2, hourDropDown2, minuteDropDown2,
+					numberofQuotes, hour, minute, myFile, numbers);
+		}
+	}
+
+	private void emptyPostedQuotes() {
+		Properties prop = new Properties();
+		OutputStream output = null;
+		InputStream input = null;
+
+		try {
+			File file = new File(path2 + Constants.CONFIG_PROPERTIES);
+			input = new FileInputStream(file);
+			prop.load(input);
+
+			int size = Integer.parseInt(prop.getProperty(Constants.PROFILESIZES));
+			String[] temp = new String[size];
+			for (int i = 0; i < size; i++) {
+				temp[i] = prop.getProperty(Constants.PROFILES + i);
+			}
+
+			String social = "";
+			for (int i = 0; i < size; i++) {
+				if ((social = prop.getProperty(temp[i])) != null) {
+					prop.setProperty(Constants.POSTED + temp[i], "0");
+					prop.setProperty(temp[i], "0");
+				}
+			}
+
+			output = new FileOutputStream(file);
+			prop.store(output, null);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 	}
 
 	public synchronized void doStop() {
@@ -166,9 +241,11 @@ public class SchedulerThread implements Runnable {
 				}
 
 				int dayOfWeek = now.get(Calendar.DAY_OF_WEEK);
-				if (when.equals(Constants.Workdays)) {
-					if (dayOfWeek == 1 || dayOfWeek == 7) {
-						test = false;
+				if (when != null) {
+					if (when.equals(Constants.Workdays)) {
+						if (dayOfWeek == 1 || dayOfWeek == 7) {
+							test = false;
+						}
 					}
 				}
 
@@ -178,17 +255,19 @@ public class SchedulerThread implements Runnable {
 					PrintWriter out = null;
 					try {
 						out = new PrintWriter(pathToFile + "/" + Constants.RESPONSE + Constants.TXT);
-					    out.println(now.getTime() + " : \n " + result);
-					    out.close();
+						out.println(now.getTime() + " : \n " + result);
+						out.close();
 					} catch (Exception e) {
-						logger.error(e.getMessage());
+						// logger.error(e.getMessage());
+						e.printStackTrace();
 					} finally {
 						try {
 							if (out != null) {
 								out.close();
 							}
 						} catch (Exception e) {
-							logger.error(e.getMessage());
+							// logger.error(e.getMessage());
+							e.printStackTrace();
 						}
 					}
 
@@ -205,7 +284,8 @@ public class SchedulerThread implements Runnable {
 							this.wait(t * 60 * 1000);
 						}
 					} catch (InterruptedException e) {
-						logger.error(e.getMessage());
+						// logger.error(e.getMessage());
+						e.printStackTrace();
 					}
 				} else {
 					try {
@@ -213,7 +293,8 @@ public class SchedulerThread implements Runnable {
 							this.wait(intervalToCheckToPost * 60 * 1000);
 						}
 					} catch (InterruptedException e) {
-						logger.error(e.getMessage());
+						// logger.error(e.getMessage());
+						e.printStackTrace();
 					}
 				}
 			} else {
@@ -221,7 +302,8 @@ public class SchedulerThread implements Runnable {
 					try {
 						this.wait();
 					} catch (InterruptedException e) {
-						logger.error(e.getMessage());
+						// logger.error(e.getMessage());
+						e.printStackTrace();
 					}
 				}
 			}

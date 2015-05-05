@@ -48,6 +48,7 @@
          <fileset dir="D:\workspace\SocialMediaScheduler">
             <include name="**/*.log"/>
 			<include name="**/accessToken.txt" />
+			<include name="**/*.properties" />
          </fileset>
       </copy>
       

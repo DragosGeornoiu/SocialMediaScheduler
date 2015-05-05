@@ -1,10 +1,15 @@
 package ro.project.servlet;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Properties;
 import java.util.Random;
 
 import org.apache.log4j.Logger;
@@ -143,8 +148,8 @@ public class ServletToScheduler {
 				Calendar c = Calendar.getInstance();
 				c.setTimeInMillis(new Long(((int) update.getInt(Constants.DUE_AT))) * 1000);
 				int mYear = c.get(Calendar.YEAR);
-				quotesByAuthor += "<tr><td>" + update.get(Constants.DUE_TIME) + "; " + update.get(Constants.DAY) + "; " + mYear
-						+ "</td>";
+				quotesByAuthor += "<tr><td>" + update.get(Constants.DUE_TIME) + "; " + update.get(Constants.DAY) + "; "
+						+ mYear + "</td>";
 				quotesByAuthor += "<td>" + update.get(Constants.PROFILE_SERVICE) + "</td>";
 				quotesByAuthor += "<td>" + update.get(Constants.TEXT) + "</td>";
 				quotesByAuthor += "</tr> ";
@@ -258,6 +263,37 @@ public class ServletToScheduler {
 						}
 
 						for (int i = 0; i < numbers[j]; i++) {
+							Properties configProperty = new Properties();
+							File file = new File(path2 + Constants.CONFIG_PROPERTIES);
+							FileInputStream fileIn = new FileInputStream(file);
+							configProperty.load(fileIn);
+							String posted = configProperty.getProperty(Constants.POSTED + where[j]);
+							String whereSocial = configProperty.getProperty(where[j]);
+
+							FileOutputStream fileOut = new FileOutputStream(file);
+
+							if (posted != null && whereSocial != null) {
+								int t1 = Integer.parseInt(whereSocial);
+								int t2 = Integer.parseInt(posted);
+
+								if (t1 > t2) {
+									configProperty.setProperty(Constants.POSTED + where[j],
+											Integer.toString(t2 + numbers[j]));
+								}
+							} else {
+								configProperty.setProperty(Constants.POSTED + where[j], Integer.toString(numbers[j]));
+							}
+							Calendar now = Calendar.getInstance();
+							configProperty.setProperty(Constants.CALENDAR_YEAR,
+									Integer.toString(now.get(Calendar.YEAR)));
+							configProperty.setProperty(Constants.CALENDAR_MONTH,
+									Integer.toString(now.get(Calendar.MONTH)));
+							configProperty.setProperty(Constants.CALENDAR_DAY,
+									Integer.toString(now.get(Calendar.DAY_OF_MONTH)));
+							// configProperty.setProperty(Constants.POSTED +
+							// where[j], Integer.toString(postedAfter));
+							configProperty.store(fileOut, "sample properties");
+
 							int hours = 0;
 							int randomNum = 0;
 							int days = 0;
@@ -296,7 +332,7 @@ public class ServletToScheduler {
 			logger.error("Parameters not valid to schedule post");
 			out += Constants.PROBLEM + Constants.NEW_LINE;
 		}
-		
+
 		return out;
 	}
 }
