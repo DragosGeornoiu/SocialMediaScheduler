@@ -81,7 +81,7 @@ public abstract class Parser {
 			logger.info("Saving the quotes retrieved from " + website);
 			saveQuotesFromWebsite(website);
 			logger.info("Saving the website as parsed for future usage. " + website);
-			saveWebsiteAsOption(fileName + ".xml");
+			saveWebsiteAsOption(fileName + Constants.XML);
 		} else {
 			boolean endCondition = false;
 			while (!endCondition) {
@@ -198,12 +198,6 @@ public abstract class Parser {
 	 */
 	protected void saveQuotesToFile(Hashtable<String, Quote> quotesList) {
 		try {
-			// FileOutputStream fileOut = new FileOutputStream(path);
-			// ObjectOutputStream out = new ObjectOutputStream(fileOut);
-			// out.writeObject(quotesList);
-			// out.close();
-			// fileOut.close();
-
 			JAXBContext jc = JAXBContext.newInstance(QuoteHashWrapper.class);
 			QuoteHashWrapper wrapper = new QuoteHashWrapper();
 			wrapper.setHashtable(quotesList);

@@ -137,7 +137,16 @@ public class Constants {
 	public static final String NUMBER_OF_ALREADY_POSTED_QUOTES = "alreadyPostedQuotes";
 	public static final String GMT_SET = "gmtSet";
 	public static final String PREVIOUS_SELECTED = "previousSelected";
-	
+	public static final String NEXT = "Next";
+	public static final String ACCEPTED_LANGUAGE = "Accept-Language";
+	public static final String EN_US = "en-US,en;q=0.5";
+	public static final String ID = "id";
+	public static final String WARNING = "<font color=\"red\">WARNING!!! </font>";
+	public static final String MESSAGE_PROVIDE_OTHER_XML = "Try to provide another xml file to extract the quotes from. <br> Nothing to print for: <br> ";
+	public static final String HTML_OL_OPEN = "<ol>";
+	public static final String HTML_LI_OPEN = "<li>";
+	public static final String HTML_OL_CLOSE = "</ol>";
+	public static final String HTML_LI_CLOSE = "</li>";
 	public static final int TWITTER_MAX_CHARC = 140;
 	public static final int FACEBOOK_MAX_CHARC = 500;
 	public static final int GOOGLE_MAX_CHARC = 500;
@@ -148,7 +157,4 @@ public class Constants {
 	public static final int HOUR_25 = 25;
 	public static final int HOUR_0 = 0;
 	public static final int HOUR_1 = 1;
-	
-	
-	
 }

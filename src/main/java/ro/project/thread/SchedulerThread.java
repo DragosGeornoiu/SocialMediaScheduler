@@ -77,7 +77,6 @@ public class SchedulerThread implements Runnable {
 			whereSize = Integer.parseInt(size);
 			where = new String[whereSize];
 
-			// de ce wheresize??? not good
 			numbers = new Integer[whereSize];
 			posted = new Integer[whereSize];
 
@@ -109,7 +108,7 @@ public class SchedulerThread implements Runnable {
 				calendarMonth = date.split(" - ")[1];
 				calendarDay = date.split(" - ")[2];
 			}
-			
+
 			when = prop.getProperty(Constants.WHEN);
 			myFile = prop.getProperty(Constants.MYFILE);
 			startHour = Integer.parseInt(hourDropDown);
@@ -119,15 +118,13 @@ public class SchedulerThread implements Runnable {
 			whereSize = Integer.parseInt(prop.getProperty(Constants.WHERE_SIZE));
 
 		} catch (Exception ex) {
-			// logger.error(ex.getMessage());
-			ex.printStackTrace();
+			logger.error(ex.getMessage());
 		} finally {
 			if (input != null) {
 				try {
 					input.close();
 				} catch (IOException e) {
-					// logger.error(e.getMessage());
-					e.printStackTrace();
+					logger.error(e.getMessage());
 				}
 			}
 		}
@@ -192,7 +189,7 @@ public class SchedulerThread implements Runnable {
 			output = new FileOutputStream(file);
 			prop.store(output, null);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 
 	}
@@ -257,26 +254,25 @@ public class SchedulerThread implements Runnable {
 						}
 					}
 				}
-				
+
 				if (test) {
 					String result = schedulePosts(hour, minute);
-					// write to file result
 					PrintWriter out = null;
-					try {
-						out = new PrintWriter(pathToFile + "/" + Constants.RESPONSE + Constants.TXT);
-						out.println(now.getTime() + " : \n " + result);
-						out.close();
-					} catch (Exception e) {
-						// logger.error(e.getMessage());
-						e.printStackTrace();
-					} finally {
+					if (!result.trim().isEmpty()) {
 						try {
-							if (out != null) {
-								out.close();
-							}
+							out = new PrintWriter(pathToFile + "/" + Constants.RESPONSE + Constants.TXT);
+							out.println(now.getTime() + " : \n " + result);
+							out.close();
 						} catch (Exception e) {
-							// logger.error(e.getMessage());
-							e.printStackTrace();
+							logger.error(e.getMessage());
+						} finally {
+							try {
+								if (out != null) {
+									out.close();
+								}
+							} catch (Exception e) {
+								logger.error(e.getMessage());
+							}
 						}
 					}
 
@@ -293,8 +289,7 @@ public class SchedulerThread implements Runnable {
 							this.wait(t * 60 * 1000);
 						}
 					} catch (InterruptedException e) {
-						// logger.error(e.getMessage());
-						e.printStackTrace();
+						logger.error(e.getMessage());
 					}
 				} else {
 					try {
@@ -302,8 +297,7 @@ public class SchedulerThread implements Runnable {
 							this.wait(intervalToCheckToPost * 60 * 1000);
 						}
 					} catch (InterruptedException e) {
-						// logger.error(e.getMessage());
-						e.printStackTrace();
+						logger.error(e.getMessage());
 					}
 				}
 			} else {
@@ -311,12 +305,10 @@ public class SchedulerThread implements Runnable {
 					try {
 						this.wait();
 					} catch (InterruptedException e) {
-						// logger.error(e.getMessage());
-						e.printStackTrace();
+						logger.error(e.getMessage());
 					}
 				}
 			}
 		}
-
 	}
 }

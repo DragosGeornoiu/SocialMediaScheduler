@@ -234,7 +234,6 @@ public class ServletToScheduler {
 				if (where != null && numberofQuotes != null) {
 
 					for (int j = 0; j < where.length; j++) {
-						// calculate number of minutes to random from.
 						int minutes = 0;
 						if (Integer.parseInt(hourDropDown) > Integer.parseInt(hourDropDown2)) {
 							minutes += (Integer.parseInt(dayDropDown2) - Integer.parseInt(dayDropDown) - 1) * 1440;
@@ -289,14 +288,6 @@ public class ServletToScheduler {
 									Integer.toString(now.get(Calendar.YEAR)) + " - "
 											+ Integer.toString(now.get(Calendar.MONTH)) + " - "
 											+ Integer.toString(now.get(Calendar.DAY_OF_MONTH)));
-							// configProperty.setProperty(Constants.CALENDAR_YEAR,
-							// Integer.toString(now.get(Calendar.YEAR)));
-							// configProperty.setProperty(Constants.CALENDAR_MONTH,
-							// Integer.toString(now.get(Calendar.MONTH)));
-							// configProperty.setProperty(Constants.CALENDAR_DAY,
-							// Integer.toString(now.get(Calendar.DAY_OF_MONTH)));
-							// configProperty.setProperty(Constants.POSTED +
-							// where[j], Integer.toString(postedAfter));
 							configProperty.store(fileOut, "sample properties");
 
 							int hours = 0;

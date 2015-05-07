@@ -67,14 +67,10 @@ public class QuoteManager {
 	public Quote getRandomQuote(String where, int max) {
 		logger.info("Retrieving a random quote for " + where);
 		Quote quote;
-		//do {
 			quote = getRandomQuoteForSocialMedia(file + Constants.QUOTES_TXT, max);
-
 			if (quote == null) {
 				return null;
 			}
-	//	} while (quote.toString().length() > max);
-
 		return quote;
 	}
 
@@ -91,11 +87,6 @@ public class QuoteManager {
 		Hashtable<String, Quote> quoteHash = new Hashtable<String, Quote>();
 		try {
 			quoteHash = parseXML(quotesFile);
-
-			// ObjectInputStream in = new ObjectInputStream(new
-			// FileInputStream(quotesFile));
-			// quotesList.putAll((Hashtable<String, Quote>) in.readObject());
-			// in.close();
 		} catch (Exception e) {
 			logger.error("Deserialisation of quotes hashtable unsuccesfull", e);
 		}
@@ -125,7 +116,6 @@ public class QuoteManager {
 	private Hashtable<String, Quote> parseXML(String filePath) throws ParserConfigurationException, SAXException,
 			IOException {
 		Hashtable<String, Quote> hash = new Hashtable<String, Quote>();
-
 		File fXmlFile = new File(filePath);
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();

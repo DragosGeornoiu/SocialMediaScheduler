@@ -79,17 +79,14 @@ public class PostedQuotesRetriever {
 		int end;
 
 		for (int i = 0; i < profiles.size(); i++) {
-			// se calculeaza nr. total de update-uri si nr. total de update-uri pt. fiecare profil.
 			jString = scheduler
 					.getUpdatesFor(1, scheduler.getProfileId(profiles.get(i).toLowerCase().replace(" ", "")));
 			jsonObject = new JSONObject(jString);
 			total.set(i, new Integer(jsonObject.getInt(Constants.TOTAL)));
 			totalSocialNetwork += total.get(i);
 		
-			// se initiaza cu 1 nr-ul paginii de json.
 			iSocialNetworkList.set(i, 1);
 			
-			// se ia primul jstring pt. fiecare profil.
 			if (total.get(i) > 0) {
 				if (total.get(i) >= Constants.UPDATES_PER_PAGE) {
 					end = Constants.UPDATES_PER_PAGE;
@@ -103,12 +100,9 @@ public class PostedQuotesRetriever {
 		}
 
 		while (quotes.size() < Constants.QUOTE_HISTORY_LIMIT && totalSocialNetwork > 0) {
-			// verific care e cel mai recent
 			Comparator<OrderObject> comparator = new OrderObjectComparator(Constants.BY_DATE, false);
 			Collections.sort(orderObjectList, comparator);
 
-			// se gaseste index-ul din liste al profilului cu cel mai recent
-			// ultim update de pe fiecare profil
 			int index = 0;
 			String service = orderObjectList.get(0).getService();
 			for (int i = 0; i < profiles.size(); i++) {
@@ -123,8 +117,6 @@ public class PostedQuotesRetriever {
 			totalSocialNetwork -= (map.get(index).size());
 			total.set(index, total.get(index) - map.get(index).size());
 
-			// pt. profilul  cu update-ul detyerminat cel mai recent,
-			// iau urmatorul jstring si orderedObject
 			if (total.get(index) > 0) {
 				jString = scheduler.getUpdatesFor(iSocialNetworkList.get(index),
 						scheduler.getProfileId(profiles.get(index)));
@@ -183,7 +175,7 @@ public class PostedQuotesRetriever {
 				totalSocialNetwork += jsonObject.getInt(Constants.TOTAL);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 		return totalSocialNetwork;
 	}

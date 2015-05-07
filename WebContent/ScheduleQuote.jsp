@@ -22,7 +22,9 @@
 			out.println("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/QuoteHistory\">Quote History</a> \n");
 			out.println("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/PendingQuotes\">Pending Quotes</a> \n");
 			out.println("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/Search\">Search by author</a> \n");
-			out.println("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/Edit\">Edit</a><br><br>");
+			out.println("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/Edit\">Edit</a>");
+			out.println("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/Updates\">Last Updates</a><br><br>");
+			
 			out.println("</head> \n");
 			out.println("<body> \n");
 			out.println("The access token is probably not correct, please insert it again... \n");
@@ -122,7 +124,8 @@
 			out.println("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/QuoteHistory\">Quote History</a> \n");
 			out.println("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/PendingQuotes\">Pending Quotes</a> \n");
 			out.println("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/Search\">Search by author</a>\n");
-			out.println("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/Edit\">Edit</a><br><br>");
+			out.println("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/Edit\">Edit</a>");
+			out.println("<br> <a href=\"http://localhost:8080/SocialMediaScheduler/Updates\">Last Updates</a><br><br>");
 			out.println("</head> \n");
 			out.println("</head> \n");
 			out.println("<body> \n");
@@ -145,7 +148,6 @@
 				if (!previousSelected.get(i).trim().isEmpty() && Integer.parseInt(previousSelected.get(i)) != 0) {
 					out.println("<input type=\"checkbox\" name=\"where\" value=\"" + allProfiles.get(i)
 							+ "\" checked=\"checked\">" + allProfiles.get(i).replaceAll(" ", "") + "\n");
-					//out.println("<select name=\"select\">");
 					out.println("<select name=\"" + allProfiles.get(i) + "\">");
 					for (int j = 1; j <= 10; j++) {
 						if (Integer.parseInt(previousSelected.get(i)) == j) {

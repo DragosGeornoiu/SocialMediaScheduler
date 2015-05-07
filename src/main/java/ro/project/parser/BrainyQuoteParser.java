@@ -90,7 +90,7 @@ public class BrainyQuoteParser extends Parser {
 					.ignoreHttpErrors(true).get();
 			elements = document.getElementsByClass(Constants.NAV).select(Constants.HREF_A);
 			for (Element element : elements) {
-				if (element.text().contains("Next")) {
+				if (element.text().contains(Constants.NEXT)) {
 					return Constants.BRAINIQUOTE_URL + element.attr(Constants.HREF).toString();
 				}
 			}

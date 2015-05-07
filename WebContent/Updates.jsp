@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Insert title here</title>
+<title>Updates</title>
 </head>
 <body>
 <a href="http://localhost:8080/SocialMediaScheduler\">Return to Home</a>

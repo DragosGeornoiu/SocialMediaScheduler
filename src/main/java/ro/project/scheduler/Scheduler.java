@@ -86,7 +86,7 @@ public class Scheduler {
 
 			con.setRequestMethod(Constants.POST);
 			con.setRequestProperty(Constants.USER_AGENT, Constants.MOZILLA);
-			con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
+			con.setRequestProperty(Constants.ACCEPTED_LANGUAGE, Constants.EN_US);
 
 			urlParameters = "text=" + message + "&profile_ids[]=" + userId + "&scheduled_at=" + sheduletAt;
 
@@ -165,7 +165,6 @@ public class Scheduler {
 		} else {
 			return response.toString();
 		}
-
 	}
 
 	/**
@@ -241,7 +240,7 @@ public class Scheduler {
 			HttpsURLConnection con = (HttpsURLConnection) obj.openConnection();
 
 			con.setRequestProperty(Constants.USER_AGENT, Constants.MOZILLA);
-			con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
+			con.setRequestProperty(Constants.ACCEPTED_LANGUAGE, Constants.EN_US);
 
 			String urlParameters = "profile_ids[]=" + userId;
 
@@ -311,13 +310,12 @@ public class Scheduler {
 				if (((String) update.get(Constants.FORMATED_SERVICE)).toLowerCase().replaceAll(" ", "")
 						.equalsIgnoreCase(service.toLowerCase().replaceAll(" ", "")))
 
-					return (String) update.get("id");
+					return (String) update.get(Constants.ID);
 			}
 		} catch (JSONException e) {
 			logger.error("Something went wrong when trying to parse Json for id!", e);
 		}
 		return "";
-
 	}
 
 	/**
@@ -438,8 +436,6 @@ public class Scheduler {
 
 	public void updateWithDeletedPendingUpdate(String parameter, String service, String text, String path) {
 		try {
-
-			// open text file for that service
 			Hashtable<String, Quote> quotesList = new Hashtable<String, Quote>();
 			String servicePath = path + Constants.QUOTES_TXT;
 			
@@ -456,7 +452,6 @@ public class Scheduler {
 			}
 			quotesList.remove(parameter);
 		
-			// rewrite the hashtable.
 			FileOutputStream fileOut = new FileOutputStream(servicePath);
 			ObjectOutputStream out = new ObjectOutputStream(fileOut);
 			out.writeObject(quotesList);
@@ -465,7 +460,7 @@ public class Scheduler {
 		} catch (IOException e) {
 			logger.error("Serialisation of hashtable of quotes unsuccesfull", e);
 		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 	}
 }

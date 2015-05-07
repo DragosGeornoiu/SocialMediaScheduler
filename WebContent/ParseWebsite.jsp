@@ -25,6 +25,8 @@
 	<br>
 	<a href="http://localhost:8080/SocialMediaScheduler/Edit">Edit</a>
 	<br>
+	<a href="http://localhost:8080/SocialMediaScheduler/Updates">Last Updates</a>
+	<br>
 	<br>
 	<%
 		out.println(request.getAttribute("responce"));

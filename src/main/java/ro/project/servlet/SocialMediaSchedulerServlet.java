@@ -85,12 +85,10 @@ public class SocialMediaSchedulerServlet extends HttpServlet {
 			String path = getServletContext().getInitParameter(Constants.PATH_2).replace("/", "\\\\")
 					+ Constants.QUOTES_FILE;
 			request.setAttribute(Constants.PATH, path);
-			// out.print(servletToScheduler.postToSocialMediaView(path));
 			request.setAttribute(Constants.OPTIONS_LIST, servletToScheduler.getOptionsList(path));
 			request.setAttribute(Constants.ALL_PROFILES, scheduler.getAllProfiles());
 
 			List<String> previousSelected = null;
-			// read from properties file last hours set
 			Properties prop = new Properties();
 			InputStream input = null;
 			String fromHourToSet = "";
@@ -179,14 +177,12 @@ public class SocialMediaSchedulerServlet extends HttpServlet {
 			view.forward(request, response);
 		} else if (request.getRequestURI().equals("/SocialMediaScheduler/HelloServlet")) {
 			String[] where = request.getParameterValues(Constants.WHERE);
-
 			Properties prop = new Properties();
 			OutputStream output = null;
 			InputStream input = null;
 			int hourTemp1 = 0, hourTemp2 = 0;
 
 			try {
-
 				File file = new File(getServletContext().getInitParameter(Constants.PATH_2)
 						+ Constants.CONFIG_PROPERTIES);
 				input = new FileInputStream(file);
@@ -295,14 +291,6 @@ public class SocialMediaSchedulerServlet extends HttpServlet {
 			int beginMinutes = Integer.parseInt(request.getParameter(Constants.MINUTE_DROP_DOWN));
 			int endMinutes = Integer.parseInt(request.getParameter(Constants.MINUTE_DROP_DOWN_2));
 
-			// if (beginHour > endHour) {
-			// message +=
-			// "<br> Your 'FROM' hour option of the schedule is after the 'TO' hour of the schedule...";
-			// } else if (beginHour == endHour && beginMinutes >= endMinutes) {
-			// message +=
-			// "<br> Your 'FROM' minutes of the schedule is after the 'TO' minutes of the schedule...";
-			// }
-
 			if (beginHour > endHour) {
 				message += "<br> Your 'FROM' hour option of the schedule is after the 'TO' hour of the schedule...";
 			} else if (beginHour == endHour && beginMinutes >= endMinutes) {
@@ -357,6 +345,7 @@ public class SocialMediaSchedulerServlet extends HttpServlet {
 			RequestDispatcher view = request.getRequestDispatcher("displayPending.jsp");
 			view.forward(request, response);
 		} else if (request.getRequestURI().equals("/SocialMediaScheduler/Updates")) {
+			String warning = "";
 			String message = "";
 			BufferedReader br = null;
 			try {
@@ -369,6 +358,26 @@ public class SocialMediaSchedulerServlet extends HttpServlet {
 					} else if (!line.trim().isEmpty()) {
 						message += line + Constants.BR;
 					}
+
+					if (line.contains(Constants.NOTHING_TO_PRINT)) {
+						if (!warning.contains(Constants.MESSAGE_PROVIDE_OTHER_XML)) {
+
+							warning += Constants.WARNING + Constants.BR + Constants.MESSAGE_PROVIDE_OTHER_XML;
+							warning += Constants.HTML_OL_OPEN;
+						}
+
+						String temp = line.split(Constants.NOTHING_TO_PRINT)[1];
+						if (!warning.contains(temp)) {
+							warning += Constants.HTML_LI_OPEN + temp + Constants.HTML_LI_CLOSE;;
+						}
+
+					}
+				}
+
+				warning += Constants.HTML_OL_CLOSE;
+
+				if (!warning.trim().isEmpty()) {
+					message = warning + Constants.BR + Constants.BR + message;
 				}
 			} catch (Exception e) {
 				logger.error(e.getMessage());

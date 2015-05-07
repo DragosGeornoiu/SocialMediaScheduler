@@ -27,7 +27,7 @@
 	<br>
 	<a href="http://localhost:8080/SocialMediaScheduler/Edit">Edit</a>
 	<br>
-	<br>
+	<a href="http://localhost:8080/SocialMediaScheduler/Updates">Last Updates</a>
 	<br>
 	<br>
 
