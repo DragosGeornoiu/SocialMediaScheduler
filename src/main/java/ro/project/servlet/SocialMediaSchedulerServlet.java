@@ -10,7 +10,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Properties;
 
@@ -184,7 +183,7 @@ public class SocialMediaSchedulerServlet extends HttpServlet {
 			Properties prop = new Properties();
 			OutputStream output = null;
 			InputStream input = null;
-			int hourTemp1 = 0, hourTemp2 = 0, gmtTemp = 0;
+			int hourTemp1 = 0, hourTemp2 = 0;
 
 			try {
 
@@ -222,23 +221,25 @@ public class SocialMediaSchedulerServlet extends HttpServlet {
 						prop.setProperty(Constants.WHERE + i, where[i]);
 						String whereTemp = prop.getProperty(where[i]);
 						if (whereTemp != null) {
-							int temp = Integer.parseInt(prop.getProperty(where[i]));
-							int temp2 = Integer.parseInt(request.getParameter(where[i]));
 							prop.setProperty(where[i], request.getParameter(where[i]));
 						} else {
 							prop.setProperty(where[i], request.getParameter(where[i]));
 						}
 					}
-					
+
 					for (int i = where.length; i < scheduler.getAllProfiles().size(); i++) {
 						String temp = prop.getProperty(Constants.WHERE + i);
-						prop.setProperty(prop.getProperty(temp), "0");
+						if (temp != null) {
+							temp = prop.getProperty(temp);
+							if (temp != null) {
+								prop.setProperty(temp, "0");
+							}
+						}
 					}
 				}
 
 				hourTemp1 = Integer.parseInt(request.getParameter(Constants.HOUR_DROP_DOWN));
 				hourTemp2 = Integer.parseInt(request.getParameter(Constants.HOUR_DROP_DOWN_2));
-				gmtTemp = Integer.parseInt(request.getParameter(Constants.GMT_DROP_DOWN));
 
 				if ((hourTemp1 >= hourTemp2) || (hourTemp1 + 1 != hourTemp2)) {
 					hourTemp2 = hourTemp1 + 1;

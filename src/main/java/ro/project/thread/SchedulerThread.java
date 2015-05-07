@@ -1,10 +1,8 @@
 package ro.project.thread;
 
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -184,9 +182,8 @@ public class SchedulerThread implements Runnable {
 				temp[i] = prop.getProperty(Constants.PROFILES + i);
 			}
 
-			String social = "";
 			for (int i = 0; i < size; i++) {
-				if ((social = prop.getProperty(temp[i])) != null) {
+				if ((prop.getProperty(temp[i])) != null) {
 					prop.setProperty(Constants.POSTED + temp[i], "0");
 					prop.setProperty(temp[i], "0");
 				}
