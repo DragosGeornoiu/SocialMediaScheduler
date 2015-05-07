@@ -133,6 +133,10 @@ public class Constants {
 	public static final String CALENDAR_HOUR = "calendar.Hour";
 	public static final String PROFILESIZES = "profile.sizes";
 	public static final String PROFILES = "profiles";
+	public static final String TEMP = "temp.txt";
+	public static final String NUMBER_OF_ALREADY_POSTED_QUOTES = "alreadyPostedQuotes";
+	public static final String GMT_SET = "gmtSet";
+	public static final String PREVIOUS_SELECTED = "previousSelected";
 	
 	public static final int TWITTER_MAX_CHARC = 140;
 	public static final int FACEBOOK_MAX_CHARC = 500;
@@ -140,8 +144,11 @@ public class Constants {
 	public static final int QUOTE_HISTORY_LIMIT = 1000;
 	public static final int UPDATES_PER_PAGE = 20;
 	public static final int MINUTES_IN_AN_HOUR = 60;
-	public static final String TEMP = "temp.txt";
-	public static final String NUMBER_OF_ALREADY_POSTED_QUOTES = "alreadyPostedQuotes";
-	public static final String GMT_SET = "gmtSet";
+	public static final int HOUR_24 = 24;
+	public static final int HOUR_25 = 25;
+	public static final int HOUR_0 = 0;
+	public static final int HOUR_1 = 1;
+	
+	
 	
 }

@@ -13,6 +13,7 @@
 		String path = (String) request.getAttribute("path");
 		List<String> optionsList = (List<String>) request.getAttribute("optionsList");
 		List<String> allProfiles = (List<String>) request.getAttribute("allProfiles");
+		List<String> previousSelected = (List<String>) request.getAttribute("previousSelected");
 		String outS = "";
 		if (allProfiles == null || allProfiles.size() == 0) {
 			out.println("<br> <a href=\"http://localhost:8080/SocialMediaScheduler\">Home</a> \n");
@@ -67,9 +68,9 @@
 				tempInteger += Integer.parseInt(temp) + 9;
 			}
 			int temp2 = tempInteger + 3;
-			
-			out.println("gmtfield.options[" + tempInteger + "] = new Option(gmttext[" + (tempInteger) + "], gmttext["
-					+ (temp2) + "], true, true) \n");
+
+			out.println("gmtfield.options[" + tempInteger + "] = new Option(gmttext[" + (tempInteger)
+					+ "], gmttext[" + (temp2) + "], true, true) \n");
 
 			out.println("var thisyear = today.getFullYear() \n");
 			out.println("for (var y = 0; y < 20; y++) { \n");
@@ -129,43 +130,40 @@
 			out.println(" \n");
 
 			out.println("When to post: <br>");
-			out.println("<INPUT TYPE=\"radio\" NAME=\"when\" VALUE=\"Workdays\" checked=\"checked\">Mo-Fr <BR> \n");
-			out.println("<INPUT TYPE=\"radio\" NAME=\"when\" VALUE=\"Everyday\" >Mo-Su<BR> \n");
+
+			String when = (String) request.getAttribute("when");
+			if (when == null || when.equals("Workdays")) {
+				out.println("<INPUT TYPE=\"radio\" NAME=\"when\" VALUE=\"Workdays\" checked=\"checked\">Mo-Fr <BR> \n");
+				out.println("<INPUT TYPE=\"radio\" NAME=\"when\" VALUE=\"Everyday\" >Mo-Su<BR> \n");
+			} else {
+				out.println("<INPUT TYPE=\"radio\" NAME=\"when\" VALUE=\"Workdays\" >Mo-Fr <BR> \n");
+				out.println("<INPUT TYPE=\"radio\" NAME=\"when\" VALUE=\"Everyday\" checked=\"checked\" >Mo-Su<BR> \n");
+			}
 			out.println("<br><br>");
 			out.println("Where to post: <br> \n");
 			for (int i = 0; i < allProfiles.size(); i++) {
-				if (i == 0) {
+				if (!previousSelected.get(i).trim().isEmpty() && Integer.parseInt(previousSelected.get(i)) != 0) {
 					out.println("<input type=\"checkbox\" name=\"where\" value=\"" + allProfiles.get(i)
 							+ "\" checked=\"checked\">" + allProfiles.get(i).replaceAll(" ", "") + "\n");
 					//out.println("<select name=\"select\">");
 					out.println("<select name=\"" + allProfiles.get(i) + "\">");
-					out.println("<option name =\"one\" value=\"1\">1</option>");
-					out.println("<option name =\"two\" value=\"2\">2</option>");
-					out.println("<option name =\"three\" value=\"3\">3</option>");
-					out.println("<option name =\"four\" value=\"4\">4</option>");
-					out.println("<option name =\"five\"value=\"5\">5</option>");
-					out.println("<option name =\"six\"value=\"6\">6</option>");
-					out.println("<option name =\"seven\"value=\"7\">7</option>");
-					out.println("<option name =\"eight\"value=\"8\">8</option>");
-					out.println("<option name =\"nine\"value=\"9\">9</option>");
-					out.println("<option name =\"ten\"value=\"10\">10</option>");
+					for (int j = 1; j <= 10; j++) {
+						if (Integer.parseInt(previousSelected.get(i)) == j) {
+							out.println("<option name =\"" + j + "\" value=\"" + j + "\" selected=\"selected\">"
+									+ j + " </option>");
+						} else {
+							out.println("<option name =\"" + j + "\" value=\"" + j + "\">" + j + " </option>");
+						}
+					}
 					out.println("</select>");
 					out.println("<BR> ");
-
 				} else {
-					out.println("<input type=\"checkbox\" name=\"where\" value=\"" + allProfiles.get(i) + "\">"
+					out.println("<input type=\"checkbox\" name=\"where\" value=\"" + allProfiles.get(i) + "\" >"
 							+ allProfiles.get(i).replaceAll(" ", "") + "\n");
 					out.println("<select name=\"" + allProfiles.get(i) + "\">");
-					out.println("<option name =\"one\" value=\"1\">1</option>");
-					out.println("<option name =\"two\" value=\"2\">2</option>");
-					out.println("<option name =\"three\" value=\"3\">3</option>");
-					out.println("<option name =\"four\" value=\"4\">4</option>");
-					out.println("<option name =\"five\"value=\"5\">5</option>");
-					out.println("<option name =\"six\"value=\"6\">6</option>");
-					out.println("<option name =\"seven\"value=\"7\">7</option>");
-					out.println("<option name =\"eight\"value=\"8\">8</option>");
-					out.println("<option name =\"nine\"value=\"9\">9</option>");
-					out.println("<option name =\"ten\"value=\"10\">10</option>");
+					for (int j = 1; j <= 10; j++) {
+						out.println("<option name =\"" + j + "\" value=\"" + j + "\">" + j + " </option>");
+					}
 					out.println("</select>");
 					out.println("<BR> ");
 				}

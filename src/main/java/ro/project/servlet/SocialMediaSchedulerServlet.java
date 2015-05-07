@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Properties;
@@ -89,12 +90,14 @@ public class SocialMediaSchedulerServlet extends HttpServlet {
 			request.setAttribute(Constants.OPTIONS_LIST, servletToScheduler.getOptionsList(path));
 			request.setAttribute(Constants.ALL_PROFILES, scheduler.getAllProfiles());
 
+			List<String> previousSelected = null;
 			// read from properties file last hours set
 			Properties prop = new Properties();
 			InputStream input = null;
 			String fromHourToSet = "";
 			String toHourToSet = "";
 			String gmtSet = "";
+			String when = "";
 			try {
 
 				input = new FileInputStream(getServletContext().getInitParameter(Constants.PATH_2)
@@ -104,6 +107,18 @@ public class SocialMediaSchedulerServlet extends HttpServlet {
 				fromHourToSet = prop.getProperty(Constants.HOUR_DROP_DOWN);
 				toHourToSet = prop.getProperty(Constants.HOUR_DROP_DOWN_2);
 				gmtSet = prop.getProperty(Constants.GMT_DROP_DOWN);
+				when = prop.getProperty(Constants.WHEN);
+
+				previousSelected = new ArrayList<String>();
+				for (int i = 0; i < scheduler.getAllProfiles().size(); i++) {
+					String temp = prop.getProperty(scheduler.getAllProfiles().get(i));
+					if (temp == null) {
+						previousSelected.add(" ");
+					} else {
+						previousSelected.add(temp);
+					}
+				}
+
 			} catch (Exception ex) {
 				logger.error(ex.getMessage());
 			} finally {
@@ -119,6 +134,9 @@ public class SocialMediaSchedulerServlet extends HttpServlet {
 			request.setAttribute(Constants.FROM_HOUR_TO_SET, fromHourToSet);
 			request.setAttribute(Constants.TO_HOUR_TO_SET, toHourToSet);
 			request.setAttribute(Constants.GMT_SET, gmtSet);
+			request.setAttribute(Constants.WHEN, when);
+			request.setAttribute(Constants.PREVIOUS_SELECTED, previousSelected);
+
 			RequestDispatcher view = request.getRequestDispatcher("ScheduleQuote.jsp");
 			view.forward(request, response);
 		} else if (request.getRequestURI().equals("/SocialMediaScheduler/QuoteHistory")) {
@@ -166,8 +184,8 @@ public class SocialMediaSchedulerServlet extends HttpServlet {
 			Properties prop = new Properties();
 			OutputStream output = null;
 			InputStream input = null;
-			int hourTemp1 =0, hourTemp2 = 0, gmtTemp = 0;
-			
+			int hourTemp1 = 0, hourTemp2 = 0, gmtTemp = 0;
+
 			try {
 
 				File file = new File(getServletContext().getInitParameter(Constants.PATH_2)
@@ -185,8 +203,7 @@ public class SocialMediaSchedulerServlet extends HttpServlet {
 					month = date.split(" - ")[1];
 					day = date.split(" - ")[2];
 				}
-				
-				
+
 				output = new FileOutputStream(file);
 				prop.setProperty(Constants.PATH, getServletContext().getInitParameter(Constants.PATH_2));
 				prop.setProperty(Constants.RADIOS, request.getParameter(Constants.RADIOS));
@@ -212,21 +229,26 @@ public class SocialMediaSchedulerServlet extends HttpServlet {
 							prop.setProperty(where[i], request.getParameter(where[i]));
 						}
 					}
+					
+					for (int i = where.length; i < scheduler.getAllProfiles().size(); i++) {
+						String temp = prop.getProperty(Constants.WHERE + i);
+						prop.setProperty(prop.getProperty(temp), "0");
+					}
 				}
-				
+
 				hourTemp1 = Integer.parseInt(request.getParameter(Constants.HOUR_DROP_DOWN));
 				hourTemp2 = Integer.parseInt(request.getParameter(Constants.HOUR_DROP_DOWN_2));
 				gmtTemp = Integer.parseInt(request.getParameter(Constants.GMT_DROP_DOWN));
-				
-				if((hourTemp1 >= hourTemp2) || (hourTemp1 +1 != hourTemp2)) {
+
+				if ((hourTemp1 >= hourTemp2) || (hourTemp1 + 1 != hourTemp2)) {
 					hourTemp2 = hourTemp1 + 1;
 				}
-				
-				if(hourTemp1 == 24 && hourTemp2 == 25) {
-					hourTemp1 = 0;
-					hourTemp2 = 1;
+
+				if (hourTemp1 == Constants.HOUR_24 && hourTemp2 == Constants.HOUR_25) {
+					hourTemp1 = Constants.HOUR_0;
+					hourTemp2 = Constants.HOUR_1;
 				}
-				
+
 				prop.setProperty(Constants.YEAR_DROP_DOWN, request.getParameter(Constants.YEAR_DROP_DOWN));
 				prop.setProperty(Constants.MONTH_DROP_DOWN, request.getParameter(Constants.MONTH_DROP_DOWN));
 				prop.setProperty(Constants.DAY_DROP_DOWN, request.getParameter(Constants.DAY_DROP_DOWN));
@@ -281,7 +303,7 @@ public class SocialMediaSchedulerServlet extends HttpServlet {
 			// }
 
 			if (beginHour > endHour) {
-					message += "<br> Your 'FROM' hour option of the schedule is after the 'TO' hour of the schedule...";
+				message += "<br> Your 'FROM' hour option of the schedule is after the 'TO' hour of the schedule...";
 			} else if (beginHour == endHour && beginMinutes >= endMinutes) {
 				message += "<br> Your 'FROM' minutes of the schedule is after the 'TO' minutes of the schedule...";
 			}
@@ -304,8 +326,7 @@ public class SocialMediaSchedulerServlet extends HttpServlet {
 				request.setAttribute(
 						Constants.MESSAGE,
 						"Daily posts were set between " + hourTemp1 + ":"
-								+ request.getParameter(Constants.MINUTE_DROP_DOWN) + " - "
-								+ hourTemp2 + ":"
+								+ request.getParameter(Constants.MINUTE_DROP_DOWN) + " - " + hourTemp2 + ":"
 								+ request.getParameter(Constants.MINUTE_DROP_DOWN_2) + message + " .");
 			} else {
 				request.setAttribute(Constants.MESSAGE, new String("The scheduler was not updated <br><br>" + message));
