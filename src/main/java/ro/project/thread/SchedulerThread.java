@@ -75,16 +75,21 @@ public class SchedulerThread implements Runnable {
 			prop.load(input);
 			path2 = prop.getProperty(Constants.PATH);
 			radios = prop.getProperty(Constants.RADIOS);
-			whereSize = Integer.parseInt(prop.getProperty(Constants.WHERE_SIZE));
+			String size = prop.getProperty(Constants.WHERE_SIZE);
+			whereSize = Integer.parseInt(size);
 			where = new String[whereSize];
+
+			// de ce wheresize??? not good
 			numbers = new Integer[whereSize];
 			posted = new Integer[whereSize];
 
 			for (int i = 0; i < whereSize; i++) {
 				where[i] = prop.getProperty(Constants.WHERE + i);
-				String post = prop.getProperty("posted" + where[i]);
+				String post = prop.getProperty("posted." + where[i]);
 				if (post != null) {
 					posted[i] = Integer.parseInt(post);
+				} else {
+					posted[i] = 0;
 				}
 				numbers[i] = Integer.parseInt(prop.getProperty(where[i]));
 			}
@@ -99,9 +104,14 @@ public class SchedulerThread implements Runnable {
 			hourDropDown2 = prop.getProperty(Constants.HOUR_DROP_DOWN_2);
 			minuteDropDown2 = prop.getProperty(Constants.MINUTE_DROP_DOWN_2);
 			numberofQuotes = prop.getProperty(Constants.NUMBER_OF_POSTS);
-			calendarYear = prop.getProperty(Constants.CALENDAR_YEAR);
-			calendarMonth = prop.getProperty(Constants.CALENDAR_MONTH);
-			calendarDay = prop.getProperty(Constants.CALENDAR_DAY);
+
+			String date = prop.getProperty(Constants.CALENDAR_DATE);
+			if (date != null) {
+				calendarYear = date.split(" - ")[0];
+				calendarMonth = date.split(" - ")[1];
+				calendarDay = date.split(" - ")[2];
+			}
+			
 			when = prop.getProperty(Constants.WHEN);
 			myFile = prop.getProperty(Constants.MYFILE);
 			startHour = Integer.parseInt(hourDropDown);
@@ -133,8 +143,10 @@ public class SchedulerThread implements Runnable {
 			if (Integer.parseInt(calendarDay) == now.get(Calendar.DAY_OF_MONTH)
 					&& Integer.parseInt(calendarMonth) == now.get(Calendar.MONTH)
 					&& Integer.parseInt(calendarYear) == now.get(Calendar.YEAR)) {
-
 				for (int i = 0; i < whereSize; i++) {
+					if (posted[i] == null) {
+						posted[i] = 0;
+					}
 					finals[i] = numbers[i] - posted[i];
 				}
 
@@ -248,7 +260,7 @@ public class SchedulerThread implements Runnable {
 						}
 					}
 				}
-
+				
 				if (test) {
 					String result = schedulePosts(hour, minute);
 					// write to file result

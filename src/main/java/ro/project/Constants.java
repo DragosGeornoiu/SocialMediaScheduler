@@ -66,18 +66,18 @@ public class Constants {
 	public static final String LAST_TYPE = "lastType";
 	public static final String PATH_2 = "path2";
 	public static final String WHERE = "where";
-	public static final String YEAR_DROP_DOWN = "yeardropdown";
-	public static final String MONTH_DROP_DOWN = "monthdropdown";
-	public static final String DAY_DROP_DOWN = "daydropdown";
-	public static final String HOUR_DROP_DOWN = "hourdropdown";
-	public static final String MINUTE_DROP_DOWN = "minutedropdown";
-	public static final String GMT_DROP_DOWN = "gmtdropdown";
-	public static final String YEAR_DROP_DOWN_2 = "yeardropdown2";
-	public static final String MONTH_DROP_DOWN_2 = "monthdropdown2";
-	public static final String DAY_DROP_DOWN_2 = "daydropdown2";
-	public static final String HOUR_DROP_DOWN_2 = "hourdropdown2";
-	public static final String MINUTE_DROP_DOWN_2 = "minutedropdown2";
-	public static final String GMT_DROP_DOWN_2 = "gmtdropdown2";
+	public static final String YEAR_DROP_DOWN = "dropdown.year";
+	public static final String MONTH_DROP_DOWN = "dropdown.month";
+	public static final String DAY_DROP_DOWN = "dropdown.day";
+	public static final String HOUR_DROP_DOWN = "dropdown.hour";
+	public static final String MINUTE_DROP_DOWN = "dropdown.minute";
+	public static final String GMT_DROP_DOWN = "dropdown.gmt";
+	public static final String YEAR_DROP_DOWN_2 = "dropdown.year2";
+	public static final String MONTH_DROP_DOWN_2 = "dropdown.month2";
+	public static final String DAY_DROP_DOWN_2 = "dropdown.day2";
+	public static final String HOUR_DROP_DOWN_2 = "dropdown.hour2";
+	public static final String MINUTE_DROP_DOWN_2 = "dropdown.minute2";
+	public static final String GMT_DROP_DOWN_2 = "dropdown.gmt2";
 	public static final String NUMBER_OF_POSTS = "numberOfPostsDropDown";
 	public static final String BRAINIQUOTE = "brainyquotecom";
 	public static final String ACCESS_TOKEN_TXT = "accessToken.txt";
@@ -127,6 +127,12 @@ public class Constants {
 	public static final String LI_CLOSE = "</li>";
 	public static final String FROM_HOUR_TO_SET = "fromHourToSet";
 	public static final String TO_HOUR_TO_SET = "toHourToSet";
+	public static final String REMAINING = "remaining";
+	public static final String POSTED = "posted.";
+	public static final String CALENDAR_DATE = "calendar.Date";
+	public static final String CALENDAR_HOUR = "calendar.Hour";
+	public static final String PROFILESIZES = "profile.sizes";
+	public static final String PROFILES = "profiles";
 	
 	public static final int TWITTER_MAX_CHARC = 140;
 	public static final int FACEBOOK_MAX_CHARC = 500;
@@ -136,12 +142,6 @@ public class Constants {
 	public static final int MINUTES_IN_AN_HOUR = 60;
 	public static final String TEMP = "temp.txt";
 	public static final String NUMBER_OF_ALREADY_POSTED_QUOTES = "alreadyPostedQuotes";
-	public static final String REMAINING = "remaining";
-	public static final String POSTED = "posted";
-	public static final String CALENDAR_YEAR = "calendarYear";
-	public static final String CALENDAR_MONTH = "calendarMonth";
-	public static final String CALENDAR_DAY = "calendarDay";
-	public static final String CALENDAR_HOUR = "calendarHour";
-	public static final String PROFILESIZES = "profileSizes";
-	public static final String PROFILES = "profiles";
+	public static final String GMT_SET = "gmtSet";
+	
 }

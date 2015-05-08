@@ -218,10 +218,10 @@ public class ServletToScheduler {
 			} else if ((Integer.parseInt(yearDropDown) < 2015) || (Integer.parseInt(yearDropDown) > 2034)
 					|| (Integer.parseInt(monthDropDown) < 1) || (Integer.parseInt(monthDropDown) > 12)
 					|| (Integer.parseInt(dayDropDown) < 1) || (Integer.parseInt(dayDropDown) > 31)
-					|| (Integer.parseInt(hourDropDown) < 0) || (Integer.parseInt(hourDropDown) > 23)
+					|| (Integer.parseInt(hourDropDown) < 0) || (Integer.parseInt(hourDropDown) > 24)
 					|| (Integer.parseInt(minuteDropDown) < 0) || (Integer.parseInt(minuteDropDown) > 59)
 					|| (Integer.parseInt(dayDropDown2) < 1) || (Integer.parseInt(dayDropDown2) > 31)
-					|| (Integer.parseInt(hourDropDown2) < 0) || (Integer.parseInt(hourDropDown2) > 23)
+					|| (Integer.parseInt(hourDropDown2) < 0) || (Integer.parseInt(hourDropDown2) > 24)
 					|| (Integer.parseInt(dayDropDown) > (Integer.parseInt(dayDropDown2)))) {
 				out += Constants.INVALID_DATE + Constants.NEW_LINE;
 			} else {
@@ -284,12 +284,18 @@ public class ServletToScheduler {
 								configProperty.setProperty(Constants.POSTED + where[j], Integer.toString(numbers[j]));
 							}
 							Calendar now = Calendar.getInstance();
-							configProperty.setProperty(Constants.CALENDAR_YEAR,
-									Integer.toString(now.get(Calendar.YEAR)));
-							configProperty.setProperty(Constants.CALENDAR_MONTH,
-									Integer.toString(now.get(Calendar.MONTH)));
-							configProperty.setProperty(Constants.CALENDAR_DAY,
-									Integer.toString(now.get(Calendar.DAY_OF_MONTH)));
+
+							configProperty.setProperty(
+									Constants.CALENDAR_DATE,
+									Integer.toString(now.get(Calendar.YEAR)) + " - "
+											+ Integer.toString(now.get(Calendar.MONTH)) + " - "
+											+ Integer.toString(now.get(Calendar.DAY_OF_MONTH)));
+							// configProperty.setProperty(Constants.CALENDAR_YEAR,
+							// Integer.toString(now.get(Calendar.YEAR)));
+							// configProperty.setProperty(Constants.CALENDAR_MONTH,
+							// Integer.toString(now.get(Calendar.MONTH)));
+							// configProperty.setProperty(Constants.CALENDAR_DAY,
+							// Integer.toString(now.get(Calendar.DAY_OF_MONTH)));
 							// configProperty.setProperty(Constants.POSTED +
 							// where[j], Integer.toString(postedAfter));
 							configProperty.store(fileOut, "sample properties");

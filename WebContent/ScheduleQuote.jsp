@@ -29,7 +29,7 @@
 			out.println("<script type=\"text/javascript\"> \n");
 			out.println("var monthtext = [ '01', '02', '03', '04', '05', '06', '07', '08', '09','10', '11', '12' ]; \n");
 			out.println("var gmttext = ['-12', '-11', '-10', '-09', '-08', '-07', '-06', '-05', '-04', '-03', '-02', '-01', '00', '+01', '+02', '+03', '+04', '+05', '+06', '+07', '+08', '+09', '+10', '+11', '+12', '+13', '+14', '+15', '+16', '+17', '+18' ]; \n");
-			out.println("var hourtext = ['0', '1', '2', '3', '4', '5', '6', '7', '8','9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20','21', '22', '23' ]; \n");
+			out.println("var hourtext = ['0', '1', '2', '3', '4', '5', '6', '7', '8','9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20','21', '22', '23', '24' ]; \n");
 
 			out.println("function populatedropdown(dayfield, monthfield, yearfield, hourfield, minutefield, gmtfield, dayfield2, hourfield2, numberOfPosts, minutefield2) { \n");
 			out.println("var today = new Date() \n");
@@ -59,7 +59,17 @@
 			out.println("for(var m = 0; m<27;m++) \n");
 			out.println("gmtfield.options[m] = new Option(gmttext[m], gmttext[m+3]) \n");
 			out.println(" \n");
-			out.println("gmtfield.options[15] = new Option(gmttext[15], gmttext[15+3], true, true) \n");
+			//out.println("gmtfield.options[15] = new Option(gmttext[15], gmttext[15+3], true, true) \n");
+
+			String temp = (String) request.getAttribute("gmtSet");
+			int tempInteger = 0;
+			if (temp != null) {
+				tempInteger += Integer.parseInt(temp) + 9;
+			}
+			int temp2 = tempInteger + 3;
+			
+			out.println("gmtfield.options[" + tempInteger + "] = new Option(gmttext[" + (tempInteger) + "], gmttext["
+					+ (temp2) + "], true, true) \n");
 
 			out.println("var thisyear = today.getFullYear() \n");
 			out.println("for (var y = 0; y < 20; y++) { \n");
@@ -68,10 +78,10 @@
 			out.println("} \n");
 			out.println("yearfield.options[0] = new Option(today.getFullYear(), today.getFullYear(), true, true) \n");
 			out.println(" \n");
-			out.println("for (var i = 0; i <= 23; i++) \n");
+			out.println("for (var i = 0; i <= 24; i++) \n");
 			out.println("hourfield.options[i] = new Option(i, i) \n");
 			out.println(" \n");
-			out.println("for (i = 0; i <= 23; i++) \n");
+			out.println("for (i = 0; i <= 24; i++) \n");
 			out.println("hourfield2.options[i] = new Option(i, i) \n");
 			out.println(" \n");
 			//out.println("hourfield.options[today.getHours()] = new Option(hourtext[today.getHours()], hourtext[today.getHours()], true, true) \n");
@@ -81,9 +91,9 @@
 
 			//out.println("hourfield2.options[today.getHours()] = new Option(hourtext[today.getHours()], hourtext[today.getHours()], true, true) \n");
 			out.println("hourfield2.options[" + request.getAttribute("toHourToSet") + "] = new Option(hourtext["
-					+ request.getAttribute("toHourToSet") + "], hourtext["
-					+ request.getAttribute("toHourToSet") + "], true, true) \n");
-	
+					+ request.getAttribute("toHourToSet") + "], hourtext[" + request.getAttribute("toHourToSet")
+					+ "], true, true) \n");
+
 			out.println("for (var i = 0; i < 10; i++) \n");
 			out.println("numberOfPosts.options[i] = new Option(i+1, i+1) \n");
 			out.println(" \n");
@@ -164,15 +174,15 @@
 			out.println("<br> <br> \n");
 			out.println("Interval : <br>");
 
-			out.println("<select id=\"hourdropdown\" name=\"hourdropdown\"></select> -");
-			out.println("<select id=\"hourdropdown2\" name=\"hourdropdown2\"></select> \n");
-			out.println("<select id=\"gmtdropdown\" name=\"gmtdropdown\"></select> \n");
-			out.println("<select style=\"visibility:hidden;\" id=\"yeardropdown\" name=\"yeardropdown\"></select> \n");
-			out.println("<select style=\"visibility:hidden;\" id=\"monthdropdown\" name=\"monthdropdown\"></select> \n");
-			out.println("<select style=\"visibility:hidden;\" id=\"daydropdown\" name=\"daydropdown\"></select> \n");
-			out.println("<select style=\"visibility:hidden;\" value =\"0\" id=\"minutedropdown\" name=\"minutedropdown\"></select>");
-			out.println("<select style=\"visibility:hidden;\" value =\"0\" id=\"minutedropdown2\" name=\"minutedropdown2\"></select> \n");
-			out.println("<select style=\"visibility:hidden;\" id=\"daydropdown2\" name=\"daydropdown2\"></select> \n");
+			out.println("<select id=\"dropdown.hour\" name=\"dropdown.hour\"></select> -");
+			out.println("<select id=\"dropdown.hour2\" name=\"dropdown.hour2\"></select> \n");
+			out.println("<select id=\"dropdown.gmt\" name=\"dropdown.gmt\"></select> \n");
+			out.println("<select style=\"visibility:hidden;\" id=\"dropdown.year\" name=\"dropdown.year\"></select> \n");
+			out.println("<select style=\"visibility:hidden;\" id=\"dropdown.month\" name=\"dropdown.month\"></select> \n");
+			out.println("<select style=\"visibility:hidden;\" id=\"dropdown.day\" name=\"dropdown.day\"></select> \n");
+			out.println("<select style=\"visibility:hidden;\" value =\"0\" id=\"dropdown.minute\" name=\"dropdown.minute\"></select>");
+			out.println("<select style=\"visibility:hidden;\" value =\"0\" id=\"dropdown.minute2\" name=\"dropdown.minute2\"></select> \n");
+			out.println("<select style=\"visibility:hidden;\" id=\"dropdown.day2\" name=\"dropdown.day2\"></select> \n");
 
 			//out.println("<br> <br> \n");
 			//out.println("How many posts? <br>");
@@ -201,7 +211,7 @@
 			out.println(" \n");
 			out.println("<script type=\"text/javascript\"> \n");
 			out.println("window.onload = function() { \n");
-			out.println("populatedropdown(\"daydropdown\", \"monthdropdown\", \"yeardropdown\", \"hourdropdown\", \"minutedropdown\", \"gmtdropdown\", \"daydropdown2\", \"hourdropdown2\", \"numberOfPostsDropDown\", \"minutedropdown2\") \n");
+			out.println("populatedropdown(\"dropdown.day\", \"dropdown.month\", \"dropdown.year\", \"dropdown.hour\", \"dropdown.minute\", \"dropdown.gmt\", \"dropdown.day2\", \"dropdown.hour2\", \"numberOfPostsDropDown\", \"dropdown.minute2\") \n");
 			out.println("} \n");
 			out.println("</script> \n");
 			out.println("</body> \n");
